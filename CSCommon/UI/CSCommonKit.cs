@@ -144,12 +144,11 @@ namespace CSCommon.UI
             b.textScale = Scale(13.5f);
             // 게임 기본 글꼴은 한글 폭을 잘못 재 가운데가 왼쪽으로 쏠림 → 라벨과 같은 글꼴
             if (BoldFont != null) b.font = BoldFont;
-            b.textHorizontalAlignment = UIHorizontalAlignment.Center;
             b.textVerticalAlignment = UIVerticalAlignment.Middle;
-            b.textPadding = new RectOffset(8, 8, 0, 2);
             b.text = text ?? "";
             b.relativePosition = new Vector3(x, y);
             b.size = new Vector2(w, h);
+            CenterText(b, 0f, false);
             b.canFocus = false;
             if (click != null) b.eventClick += (c, e) => click();
             return b;
@@ -284,15 +283,63 @@ namespace CSCommon.UI
             b.focusedTextColor = b.textColor;
             b.textScale = Scale(13f);
             if (BoldFont != null) b.font = BoldFont;
-            b.textHorizontalAlignment = UIHorizontalAlignment.Center;
             b.textVerticalAlignment = UIVerticalAlignment.Middle;
-            b.textPadding = new RectOffset(14, 14, 0, 2);
-            b.autoSize = true;
             b.canFocus = false;
             b.text = text ?? "";
             b.height = 32f;
+            CenterText(b, 14f, true);
             if (click != null) b.eventClick += (c, e) => click();
             return b;
+        }
+
+        /// <summary>
+        /// 단추 글을 칸 정가운데에(UX 1.1). 게임 글꼴(OpenSans + 한글 대체 글꼴)은 잰 폭과 그린 글자 자리가 달라, 엔진 가운데 정렬로는
+        /// 긴 한글일수록 왼쪽으로 쏠렸음('이전 내역 더 보기' 약 14px). 그래서 렌더러(DynamicFontRenderer)와 같은 규칙 — 글자마다 Ceil(maxX) 씩,
+        /// 빈칸 묶음은 advance 합의 올림 — 으로 실제 잉크 왼쪽 · 오른쪽 끝을 재고, 왼쪽 정렬 + 왼쪽 여백으로 그 잉크를 가운데에 둠.
+        /// 세로는 위 2px 여백(예전 아래 2px 은 글이 2 ~ 3px 위로 떠 보였음). fit = 칩처럼 폭을 글에 맞춤(양옆 padX).
+        /// </summary>
+        static void CenterText(UIButton b, float padX, bool fit)
+        {
+            b.autoSize = false;
+            b.textPadding = new RectOffset(0, 0, 2, 0);
+            b.textHorizontalAlignment = UIHorizontalAlignment.Center;
+            if (!(b.font is UIDynamicFont df) || df.baseFont == null || string.IsNullOrEmpty(b.text))
+            {
+                if (fit) b.width = 48f;
+                return;
+            }
+            string s = b.text;
+            int size = Mathf.CeilToInt(df.size * b.textScale);
+            var f = df.baseFont;
+            f.RequestCharactersInTexture(s, size, FontStyle.Normal);
+            float pen = 0f, inkL = float.MaxValue, inkR = float.MinValue;
+            int i = 0;
+            while (i < s.Length)
+            {
+                if (s[i] == ' ')
+                {
+                    float adv = 0f;
+                    for (; i < s.Length && s[i] == ' '; i++)
+                        if (f.GetCharacterInfo(' ', out var sp, size, FontStyle.Normal)) adv += sp.advance;
+                    pen += Mathf.Ceil(adv);
+                    continue;
+                }
+                float start = pen, p = pen, sum = 0f;
+                for (; i < s.Length && s[i] != ' '; i++)
+                {
+                    if (!f.GetCharacterInfo(s[i], out var info, size, FontStyle.Normal)) continue;
+                    inkL = Mathf.Min(inkL, p + info.minX);
+                    inkR = Mathf.Max(inkR, p + info.minX + info.glyphWidth);
+                    p += Mathf.Ceil(info.maxX);
+                    sum += info.maxX;
+                }
+                pen = start + Mathf.Ceil(sum);
+            }
+            if (inkR < inkL) return; // 글자 정보가 아직 없음 — 엔진 가운데 정렬 그대로
+            float ink = inkR - inkL;
+            if (fit) b.width = Mathf.Ceil(ink + padX * 2f);
+            b.textHorizontalAlignment = UIHorizontalAlignment.Left;
+            b.textPadding = new RectOffset(Mathf.RoundToInt((b.width - ink) * 0.5f - inkL), 0, 2, 0);
         }
 
         /// <summary>
