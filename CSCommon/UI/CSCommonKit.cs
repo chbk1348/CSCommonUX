@@ -102,17 +102,22 @@ namespace CSCommon.UI
             // CSCommon.Badge: 그 색 16% 바탕 · 그 색 굵은 글
             var l = parent.AddUIComponent<UILabel>();
             l.atlas = CSCommonAtlas.Atlas;
-            l.backgroundSprite = CSCommonAtlas.Pill;
+            l.backgroundSprite = CSCommonAtlas.BadgePill;
             l.color = Over(Draw.Alpha(bg, 0.16f));
             l.textScale = Scale(12f);
             l.textColor = bg == Pal.Line2 ? Pal.Sub : bg;
             if (BoldFont != null) l.font = BoldFont;
             l.textAlignment = UIHorizontalAlignment.Center;
             l.verticalAlignment = UIVerticalAlignment.Middle;
-            l.padding = new RectOffset(10, 10, 4, 2);
+            // 단추와 같은 글 높이 보정(아래 2)
+            l.padding = new RectOffset(10, 10, 0, 2);
             l.autoSize = true;
             l.text = text ?? "";
             l.PerformLayout();
+            // 높이를 24 로 고정 — 글에 맞춘 높이(약 22)는 알약 그림 높이와 달라 양끝이 틀어졌음
+            float w = l.width;
+            l.autoSize = false;
+            l.size = new Vector2(Mathf.Max(w, 24f), 24f);
             return l;
         }
 
@@ -171,7 +176,7 @@ namespace CSCommon.UI
 
             public Switch(UIComponent parent, float x, float y, bool value)
             {
-                Track = Panel(parent, CSCommonAtlas.Pill, Look.Tone1, x + 6f, y + 2f, 46f, 26f);
+                Track = Panel(parent, CSCommonAtlas.SwitchPill, Look.Tone1, x + 6f, y + 2f, 46f, 26f);
                 knob = Track.AddUIComponent<UISprite>();
                 knob.atlas = CSCommonAtlas.Atlas;
                 knob.spriteName = CSCommonAtlas.Disc;
