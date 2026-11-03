@@ -112,6 +112,8 @@ namespace CSCommon
         public const float FieldAffixGap = 4f, FieldClear = 16f;
         /// <summary>입력 칸 · 분절 홈 모서리.</summary>
         public const float RadiusField = 9f;
+        /// <summary>입력 칸 · 고르기 칸 · 펼친 목록 테두리 두께(상하좌우 같음, 1080p 에서 2px) · 초점 · 오류 · 열림 두께.</summary>
+        public const float FieldLineW = 1.5f, FieldFocusW = 2f;
 
         public const float RadiusWindow = 14f;
         public const float RadiusTile = 8f;

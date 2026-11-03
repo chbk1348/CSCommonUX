@@ -40,6 +40,8 @@ namespace CSCommon
             // 새로 누를 때마다 지난 누름은 버림(다른 데를 눌렀다 옛 버튼 위에서 떼도 눌리지 않게)
             var e = Event.current;
             if (e != null && e.type == EventType.MouseDown) held = false;
+            // 열린 고르기 목록이 창보다 먼저 클릭을 받음
+            Select.PreInput();
         }
 
         /// <summary>논리 화면 크기.</summary>
@@ -178,8 +180,15 @@ namespace CSCommon
             }
             Color old = GUI.color;
             GUI.color = Op(c);
-            style.Draw(ToScreen(r), false, false, false, false);
+            style.Draw(Snap(ToScreen(r)), false, false, false, false);
             GUI.color = old;
+        }
+
+        /// <summary>화면 픽셀 경계로 맞춤 — 칸 끝이 소수 픽셀이면 9칸 그림이 번져 테두리가 변마다 두께 · 진하기가 달라 보였음.</summary>
+        static Rect Snap(Rect s)
+        {
+            float x0 = Mathf.Round(s.x), y0 = Mathf.Round(s.y);
+            return new Rect(x0, y0, Mathf.Round(s.xMax) - x0, Mathf.Round(s.yMax) - y0);
         }
 
         /// <summary>둥근 모서리 테두리.</summary>
@@ -196,7 +205,7 @@ namespace CSCommon
             }
             Color old = GUI.color;
             GUI.color = Op(c);
-            style.Draw(ToScreen(r), false, false, false, false);
+            style.Draw(Snap(ToScreen(r)), false, false, false, false);
             GUI.color = old;
         }
 

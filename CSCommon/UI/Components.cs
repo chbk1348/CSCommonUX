@@ -21,6 +21,8 @@ namespace CSCommon
     public static class Look
     {
         public static Color Field = Draw.Hex("#1B1F26"), FieldFocus = Draw.Hex("#14171C");
+        /// <summary>입력 칸 · 고르기 칸 · 펼친 목록 테두리 — 칸 바탕 · 창 바탕 모두와 3:1 이상(UI 경계 기준). 라이트 #7A8089 · 다크 #737B88.</summary>
+        public static Color FieldLine = Draw.Hex("#737B88");
         public static Color Tone0 = Draw.Hex("#262B33"), Tone1 = Draw.Hex("#30363F"), Tone2 = Draw.Hex("#22262E");
         public static Color OffInk = Draw.Hex("#4A505B"), OffText = Draw.Hex("#5B6370");
         public static Color Ink = Draw.Hex("#0B0D11"), PanelLine = Draw.Hex("#2A2F38"), Divider = Draw.Hex("#22262E");
@@ -490,10 +492,10 @@ namespace CSCommon
             {
                 Draw.Round(r, !enabled ? Look.Off : focus ? Look.FieldFocus : Look.Field, CSCommonDesign.ActionRadius);
                 if (!enabled) { }
-                else if (error) Draw.RoundOutline(r, Pal.Red, CSCommonDesign.ActionRadius, 1.5f);
-                else if (focus) Draw.RoundOutline(r, Pal.Primary, CSCommonDesign.ActionRadius, 1.5f);
-                // UX 1.1: 입력 칸은 늘 테두리(밝은 화면에서도 칸 끝이 보이게), 호버는 한 단 진하게
-                else Draw.RoundOutline(r, Draw.Hover(r) ? Pal.Dim : Look.PanelLine, CSCommonDesign.ActionRadius);
+                else if (error) Draw.RoundOutline(r, Pal.Red, CSCommonDesign.ActionRadius, CSCommonDesign.FieldFocusW);
+                else if (focus) Draw.RoundOutline(r, Pal.Primary, CSCommonDesign.ActionRadius, CSCommonDesign.FieldFocusW);
+                // UX 1.1: 입력 칸은 늘 테두리(FieldLine 3:1 이상 · 상하좌우 같은 두께), 호버는 한 단 진하게
+                else Draw.RoundOutline(r, Draw.Hover(r) ? Pal.Sub : Look.FieldLine, CSCommonDesign.ActionRadius, CSCommonDesign.FieldLineW);
             }
             float lead = 0f;
             if (!string.IsNullOrEmpty(icon))
@@ -570,10 +572,56 @@ namespace CSCommon
         /// <summary>열린 칸을 마지막으로 그린 프레임 — 칸이 안 그려지면(창을 닫음) 목록도 닫음.</summary>
         static int openSeenFrame;
 
+        /// <summary>지난 그림의 목록 판 · 줄 자리(바탕 좌표) — 창보다 먼저 클릭을 받는 데 씀(PreInput).</summary>
+        static Rect menuRect;
+        static readonly List<Rect> itemRects = new();
+        static int pressed = -1;
+
         public static bool AnyOpen => openKey != 0;
 
         /// <summary>열린 목록을 닫음(탭을 바꾸거나 스크롤할 때).</summary>
-        public static void Close() => openKey = 0;
+        public static void Close()
+        {
+            openKey = 0;
+            itemRects.Clear();
+            pressed = -1;
+        }
+
+        /// <summary>
+        /// GUI 차례 맨 앞(Draw.Begin)에서 열린 목록이 먼저 클릭을 받음: 목록 안 누름은 여기서 쓰고(떼면 고름), 밖 누름은 목록을 닫고 아래로 보냄.
+        /// 목록은 창 위에 그리지만(Flush) 창이 먼저 그려져 — 목록 아래 카드 단추나 창의 '창 위 클릭은 여기서 끝' 처리가 누름을 먼저 써 버려
+        /// 목록 줄을 눌러도 고를 수 없던 것(올림픽 구역 지구 고르기).
+        /// </summary>
+        internal static void PreInput()
+        {
+            if (openKey == 0 || itemRects.Count == 0) return;
+            var e = Event.current;
+            if (e == null) return;
+            Vector2 m = e.mousePosition / Draw.S;
+            if (e.type == EventType.MouseDown && e.button == 0)
+            {
+                if (menuRect.Contains(m))
+                {
+                    pressed = itemRects.FindIndex(it => it.Contains(m));
+                    if (pressed < 0) pressed = -2; // 판 여백 — 쓰기만
+                    e.Use();
+                }
+                else if (!openRect.Contains(m)) Close();
+            }
+            else if (e.type == EventType.MouseDrag && pressed != -1) e.Use();
+            else if (e.rawType == EventType.MouseUp && pressed != -1)
+            {
+                int i = pressed;
+                pressed = -1;
+                e.Use();
+                if (i >= 0 && i < itemRects.Count && itemRects[i].Contains(m))
+                {
+                    var pick = openPick;
+                    if (openOn == null) Close();
+                    pick?.Invoke(i);
+                }
+            }
+        }
 
         /// <summary>하나 고르기 칸(bg = 닫힌 칸 바탕, 없으면 Field). heads[i] = 줄 i 위에 둘 묶음 머리(없으면 null).</summary>
         public static void In(Rect r, string text, Color? dot, string[] items, Color?[] dots, int cur, Action<int> pick, bool enabled = true, string tip = null, Color? bg = null, string[] heads = null)
@@ -591,8 +639,8 @@ namespace CSCommon
             if (Draw.Repaint)
             {
                 Draw.Round(r, !enabled ? Look.Off : open ? Look.FieldFocus : bg ?? Look.Field, CSCommonDesign.ActionRadius);
-                if (open) Draw.RoundOutline(r, Pal.Primary, CSCommonDesign.ActionRadius, 1.5f);
-                else if (enabled) Draw.RoundOutline(r, Draw.Hover(r) ? Pal.Dim : Look.PanelLine, CSCommonDesign.ActionRadius);
+                if (open) Draw.RoundOutline(r, Pal.Primary, CSCommonDesign.ActionRadius, CSCommonDesign.FieldFocusW);
+                else if (enabled) Draw.RoundOutline(r, Draw.Hover(r) ? Pal.Sub : Look.FieldLine, CSCommonDesign.ActionRadius, CSCommonDesign.FieldLineW);
                 float tx = r.x + 12f;
                 if (dot.HasValue) { Draw.Dot(new Vector2(tx + 4f, r.center.y), 4f, enabled ? dot.Value : Look.OffInk); tx += 16f; }
                 Draw.TextFit(new Rect(tx, r.y, r.xMax - tx - 34f, r.height), text, 14.5f, enabled ? Pal.Txt : Look.OffText);
@@ -610,6 +658,8 @@ namespace CSCommon
             {
                 openKey = key;
                 openSeenFrame = Time.frameCount;
+                itemRects.Clear();
+                pressed = -1;
                 openAt = Time.unscaledTime;
                 open = true;
             }
@@ -641,11 +691,15 @@ namespace CSCommon
             var menu = new Rect(openRect.x, openRect.yMax + 6f, Mathf.Max(openRect.width, 200f), pad * 2f + body);
             bool above = menu.yMax > Draw.Height - 8f;
             if (above) menu.y = openRect.y - 6f - menu.height;
+            menuRect = menu;
+            itemRects.Clear();
             float t = CSCommonAnim.EaseOut((Time.unscaledTime - openAt) / CSCommonDesign.MenuOpenSeconds);
             float opacity = Draw.Opacity;
             Draw.Opacity *= t;
             Draw.BeginScale(new Vector2(menu.x, above ? menu.yMax : menu.y), Mathf.Lerp(CSCommonDesign.MenuOpenScale, 1f, t));
             Look.Elevated(menu, 10f, Look.FieldFocus);
+            // 펼친 목록도 칸과 같은 테두리(떠 있는 판 선은 옅어 목록 끝이 안 보였음)
+            Draw.RoundOutline(menu, Look.FieldLine, 10f, CSCommonDesign.FieldLineW);
             int picked = -1;
             float iy = menu.y + pad;
             for (int i = 0; i < openItems.Length; i++)
@@ -658,6 +712,7 @@ namespace CSCommon
                 }
                 iy += hh;
                 var it = new Rect(menu.x + pad, iy, menu.width - pad * 2f, row);
+                itemRects.Add(it);
                 iy += row;
                 bool on = many ? i < openOn.Length && openOn[i] : i == openCur, hov = Draw.Hover(it);
                 if (Draw.Repaint)
