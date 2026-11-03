@@ -567,6 +567,8 @@ namespace CSCommon
         static string[] openHeads;
         static Action<int> openPick;
         static float openAt;
+        /// <summary>열린 칸을 마지막으로 그린 프레임 — 칸이 안 그려지면(창을 닫음) 목록도 닫음.</summary>
+        static int openSeenFrame;
 
         public static bool AnyOpen => openKey != 0;
 
@@ -585,6 +587,7 @@ namespace CSCommon
         {
             int key = Look.Key(r, "select", on != null ? "many" : text) | 1;
             bool open = openKey == key;
+            if (open) openSeenFrame = Time.frameCount;
             if (Draw.Repaint)
             {
                 Draw.Round(r, !enabled ? Look.Off : open ? Look.FieldFocus : bg ?? Look.Field, CSCommonDesign.ActionRadius);
@@ -606,6 +609,7 @@ namespace CSCommon
             if (hit)
             {
                 openKey = key;
+                openSeenFrame = Time.frameCount;
                 openAt = Time.unscaledTime;
                 open = true;
             }
@@ -626,6 +630,8 @@ namespace CSCommon
         public static void Flush()
         {
             if (openKey == 0 || openItems == null) return;
+            // 목록을 연 칸이 이번(또는 바로 앞) 프레임에 안 그려졌으면 그 창이 닫힌 것 — 목록만 남아 잔상으로 보이던 것(열린 채 X 로 닫기)
+            if (Time.frameCount - openSeenFrame > 1) { Close(); return; }
             float row = CSCommonDesign.MenuRowH, pad = CSCommonDesign.MenuPad, mark = CSCommonDesign.MenuMark;
             bool many = openOn != null;
             // 묶음 머리: 첫 묶음은 머리 줄만, 다음 묶음부터 위 구분선 + 4
