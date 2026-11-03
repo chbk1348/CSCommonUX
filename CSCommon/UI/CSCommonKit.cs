@@ -273,12 +273,13 @@ namespace CSCommon.UI
             var b = parent.AddUIComponent<UIButton>();
             b.atlas = CSCommonAtlas.Atlas;
             b.normalBgSprite = b.hoveredBgSprite = b.pressedBgSprite = b.focusedBgSprite = CSCommonAtlas.Round6;
-            b.color = selected ? Pal.Line2 : Look.Tone0;
-            b.hoveredColor = selected ? Pal.Line2 : Look.Tone1;
+            // UX 1.1: 고른 칩 = 진한 면(진한 글 색) + 바탕 색 글 — 라이트에서 회색 면 위 흰 글이 안 보이던 것
+            b.color = selected ? Pal.Txt : Look.Tone0;
+            b.hoveredColor = selected ? Pal.Txt : Look.Tone1;
             b.pressedColor = Look.Tone2;
             b.focusedColor = b.color;
-            b.textColor = selected ? Color.white : Pal.Sub;
-            b.hoveredTextColor = selected ? Color.white : Pal.Txt;
+            b.textColor = selected ? Pal.Win : Pal.Sub;
+            b.hoveredTextColor = selected ? Pal.Win : Pal.Txt;
             b.pressedTextColor = b.hoveredTextColor;
             b.focusedTextColor = b.textColor;
             b.textScale = Scale(13f);

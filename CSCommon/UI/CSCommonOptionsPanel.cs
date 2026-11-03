@@ -137,10 +137,11 @@ namespace CSCommon.UI
                     float lh = logo.width > 0 ? Mathf.Min(24f, 80f * logo.height / logo.width) : 20f;
                     Draw.Image(new Rect(x, cy - lh * 0.5f, 80f, lh), logo);
                 }
-                else Draw.Text(new Rect(x, h.y, 80f, h.height), "F1", 20f, Pal.Accent, true);
-                Draw.Round(new Rect(h.x, h.yMax, h.width, 3f), Pal.Accent, 0f);
+                // UX 1.1: 머리 띠 = 모드 주 색(라이트 모드엔 Accent 가 파랑이라 청록 모드와 안 맞았음)
+                Draw.Round(new Rect(h.x, h.yMax, h.width, 3f), Pal.Primary, 0f);
             }
-            x += 80f + 12f;
+            // 로고 없는 모드는 자리를 비우지 않음(예전엔 모든 모드에 'F1' 글이 찍혔음)
+            if (Logo != null) x += 80f + 12f;
             float tw = Mathf.Ceil(Draw.TextWidth(Title, 17f, true));
             if (Draw.Repaint) Draw.Text(new Rect(x, h.y, tw + 2f, h.height), Title, 17f, Pal.Txt, true);
             x += tw + 12f;

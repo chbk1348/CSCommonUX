@@ -147,16 +147,17 @@ namespace CSCommon.UI
 
                     if (isPrimary)
                     {
-                        bgCol = Draw.Alpha(ac, Mathf.Lerp(0.18f, 0.32f, hv));
+                        // UX 1.1: 주 = 강조색으로 꽉 채움 + OnPrimary 글
+                        bgCol = Color.Lerp(ac, Pal.Haze, 0.10f * hv);
                         borderCol = ac;
-                        fgCol = ac;
+                        fgCol = Pal.OnPrimary;
                     }
                     else
                     {
-                        // 꺼짐 ↔ 켜짐을 서서히(호버는 그 위에)
-                        bgCol = Color.Lerp(Color.Lerp(Pal.Card, Pal.Line2, hv), Draw.Alpha(ac, Mathf.Lerp(0.25f, 0.38f, hv)), onT);
+                        // 꺼짐 ↔ 켜짐을 서서히(호버는 그 위에) — 켜짐도 꽉 채움, 글은 테마 색(라이트에서 흰 글이 사라지던 것)
+                        bgCol = Color.Lerp(Color.Lerp(Pal.Card, Pal.Line2, hv), Color.Lerp(ac, Pal.Haze, 0.10f * hv), onT);
                         borderCol = Color.Lerp(Color.Lerp(Pal.Line, Pal.Light, hv), ac, onT);
-                        fgCol = Color.Lerp(Color.Lerp(Pal.Txt, Color.white, hv), Color.white, onT);
+                        fgCol = Color.Lerp(Color.Lerp(Pal.Txt, Pal.Strong, hv), Pal.OnPrimary, onT);
                     }
 
                     Draw.Round(r, bgCol, CSCommonDesign.RadiusTool);
@@ -208,7 +209,7 @@ namespace CSCommon.UI
                 float pr = PressAnim(key, r, hov);
                 if (Draw.Repaint)
                 {
-                    Color fill = Color.Lerp(bg, Color.white, 0.18f * hv);
+                    Color fill = Color.Lerp(bg, Pal.Haze, 0.18f * hv);
                     Draw.Round(r, fill, CSCommonDesign.RadiusTool);
                     Draw.RoundOutline(r, Draw.Alpha(fg, 0.4f), CSCommonDesign.RadiusTool);
                     PressShade(r, pr, 7f);
@@ -365,12 +366,13 @@ namespace CSCommon.UI
                 if (Draw.Repaint)
                 {
                     Color ac = accent ?? Pal.Primary;
-                    Color idleFg = idle ?? Color.Lerp(Pal.Light, Color.white, hv);
-                    Color fg = Color.Lerp(idleFg, Pal.AccentInk, onT);
-                    // 꺼짐: 흰 아웃라인(호버면 짙게) · 켜짐: 강조색으로 채워짐(서서히)
-                    Draw.Round(r, Draw.Alpha(Color.white, 0.07f * hv * (1f - onT)), CSCommonDesign.IconBtnRadius);
-                    if (onT > 0f) Draw.Round(r, Draw.Alpha(Color.Lerp(ac, Color.white, 0.12f * hv), onT), CSCommonDesign.IconBtnRadius);
-                    Draw.RoundOutline(r, Draw.Alpha(Color.white, (0.14f + 0.18f * hv) * (1f - onT)), CSCommonDesign.IconBtnRadius);
+                    // UX 1.1: 켜짐 글 = OnPrimary(빨강 위 짙은 글은 4.2:1 이었음) · 호버 · 테두리는 테마 덮개 색(Haze)
+                    Color idleFg = idle ?? Color.Lerp(Pal.Light, Pal.Strong, hv);
+                    Color fg = Color.Lerp(idleFg, Pal.OnPrimary, onT);
+                    // 꺼짐: 옅은 아웃라인(호버면 짙게) · 켜짐: 강조색으로 채워짐(서서히)
+                    Draw.Round(r, Draw.Alpha(Pal.Haze, 0.07f * hv * (1f - onT)), CSCommonDesign.IconBtnRadius);
+                    if (onT > 0f) Draw.Round(r, Draw.Alpha(Color.Lerp(ac, Pal.Haze, 0.12f * hv), onT), CSCommonDesign.IconBtnRadius);
+                    Draw.RoundOutline(r, Draw.Alpha(Pal.Haze, (0.14f + 0.18f * hv) * (1f - onT)), CSCommonDesign.IconBtnRadius);
                     PressShade(r, pr, CSCommonDesign.IconBtnRadius);
 
                     // 아이콘 위 · 이름 아래(누르는 동안 1px 내려감)
@@ -383,7 +385,7 @@ namespace CSCommon.UI
                     {
                         var dot = new Vector2(r.xMax - 8.5f, r.y + 8.5f);
                         Draw.Dot(dot, 5.5f, Pal.Win);
-                        Draw.Dot(dot, 3.5f, on ? Pal.AccentInk : ac);
+                        Draw.Dot(dot, 3.5f, on ? Pal.OnPrimary : ac);
                     }
                 }
 
