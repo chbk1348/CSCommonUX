@@ -36,7 +36,7 @@ namespace CSCommon
                 Pal.Red = H("#B3261E"); Pal.Green = H("#146C2E"); Pal.PersonalBest = H("#146C2E"); Pal.Yellow = H("#B08800");
                 Pal.AccentInk = Color.white; Pal.DoneDot = H("#E6F4EA"); Pal.DoneInk = H("#146C2E"); Pal.TodoDot = H("#FCE8E6"); Pal.WarnDot = H("#FEF0DB");
                 Pal.Selected = H("#FFFFFF"); Pal.OnSelected = H("#14171A"); Pal.Strong = H("#0B0D10"); Pal.Haze = Color.black;
-                Look.Field = H("#F1F3F5"); Look.FieldFocus = H("#FFFFFF");
+                Look.Field = H("#F1F3F5"); Look.FieldFocus = H("#FFFFFF"); Look.FieldLine = H("#7A8089");
                 Look.Tone0 = H("#E9ECEF"); Look.Tone1 = H("#DEE2E6"); Look.Tone2 = H("#D3D7DC");
                 Look.Ink = H("#14171A"); Look.PanelLine = H("#B9BFC7"); Look.Divider = H("#D3D7DC");
                 Look.OffInk = H("#9AA1A9"); Look.OffText = H("#80868E");
@@ -54,7 +54,7 @@ namespace CSCommon
                 Pal.Red = H("#FF6B5E"); Pal.Green = H("#22C55E"); Pal.PersonalBest = H("#00C761"); Pal.Yellow = H("#F5C400");
                 Pal.AccentInk = H("#06121A"); Pal.DoneDot = H("#1F4D33"); Pal.DoneInk = H("#4CC787"); Pal.TodoDot = H("#4D1F1C"); Pal.WarnDot = H("#3A2A14");
                 Pal.Selected = H("#3A404B"); Pal.OnSelected = Color.white; Pal.Strong = Color.white; Pal.Haze = Color.white;
-                Look.Field = H("#1E232B"); Look.FieldFocus = H("#14171C");
+                Look.Field = H("#1E232B"); Look.FieldFocus = H("#14171C"); Look.FieldLine = H("#737B88");
                 Look.Tone0 = H("#2A3039"); Look.Tone1 = H("#343B45"); Look.Tone2 = H("#22262E");
                 Look.Ink = H("#0B0D11"); Look.PanelLine = H("#4A515D"); Look.Divider = H("#343A44");
                 Look.OffInk = H("#4A515D"); Look.OffText = H("#6B7380");
