@@ -107,17 +107,27 @@ namespace CSCommon.UI
             l.textScale = Scale(12f);
             l.textColor = bg == Pal.Line2 ? Pal.Sub : bg;
             if (BoldFont != null) l.font = BoldFont;
-            l.textAlignment = UIHorizontalAlignment.Center;
             l.verticalAlignment = UIVerticalAlignment.Middle;
-            // 단추와 같은 글 높이 보정(아래 2)
-            l.padding = new RectOffset(10, 10, 0, 2);
-            l.autoSize = true;
             l.text = text ?? "";
-            l.PerformLayout();
-            // 높이를 24 로 고정 — 글에 맞춘 높이(약 22)는 알약 그림 높이와 달라 양끝이 틀어졌음
-            float w = l.width;
+            // 높이 24 고정(알약 그림과 같은 높이) · 폭은 실제 글자 잉크 + 양옆 10, 글은 정가운데(단추와 같은 CenterText 규칙)
             l.autoSize = false;
-            l.size = new Vector2(Mathf.Max(w, 24f), 24f);
+            l.height = 24f;
+            if (Ink(l.font, l.textScale, l.text, out float inkL, out float ink))
+            {
+                l.width = Mathf.Max(Mathf.Ceil(ink + 20f), 24f);
+                l.textAlignment = UIHorizontalAlignment.Left;
+                l.padding = new RectOffset(Mathf.RoundToInt((l.width - ink) * 0.5f - inkL), 0, 2, 0);
+            }
+            else
+            {
+                l.textAlignment = UIHorizontalAlignment.Center;
+                l.padding = new RectOffset(10, 10, 2, 0);
+                l.autoSize = true;
+                l.PerformLayout();
+                float w = l.width;
+                l.autoSize = false;
+                l.size = new Vector2(Mathf.Max(w, 24f), 24f);
+            }
             return l;
         }
 
@@ -303,16 +313,25 @@ namespace CSCommon.UI
             b.autoSize = false;
             b.textPadding = new RectOffset(0, 0, 2, 0);
             b.textHorizontalAlignment = UIHorizontalAlignment.Center;
-            if (!(b.font is UIDynamicFont df) || df.baseFont == null || string.IsNullOrEmpty(b.text))
+            if (!Ink(b.font, b.textScale, b.text, out float inkL, out float ink))
             {
                 if (fit) b.width = 48f;
                 return;
             }
-            string s = b.text;
-            int size = Mathf.CeilToInt(df.size * b.textScale);
+            if (fit) b.width = Mathf.Ceil(ink + padX * 2f);
+            b.textHorizontalAlignment = UIHorizontalAlignment.Left;
+            b.textPadding = new RectOffset(Mathf.RoundToInt((b.width - ink) * 0.5f - inkL), 0, 2, 0);
+        }
+
+        /// <summary>렌더러 규칙으로 잰 글자 잉크의 왼쪽 끝(inkL) · 폭(ink). 동적 글꼴이 아니거나 글자 정보가 없으면 false.</summary>
+        static bool Ink(UIFont font, float textScale, string s, out float inkL, out float ink)
+        {
+            inkL = ink = 0f;
+            if (!(font is UIDynamicFont df) || df.baseFont == null || string.IsNullOrEmpty(s)) return false;
+            int size = Mathf.CeilToInt(df.size * textScale);
             var f = df.baseFont;
             f.RequestCharactersInTexture(s, size, FontStyle.Normal);
-            float pen = 0f, inkL = float.MaxValue, inkR = float.MinValue;
+            float pen = 0f, left = float.MaxValue, inkR = float.MinValue;
             int i = 0;
             while (i < s.Length)
             {
@@ -328,18 +347,17 @@ namespace CSCommon.UI
                 for (; i < s.Length && s[i] != ' '; i++)
                 {
                     if (!f.GetCharacterInfo(s[i], out var info, size, FontStyle.Normal)) continue;
-                    inkL = Mathf.Min(inkL, p + info.minX);
+                    left = Mathf.Min(left, p + info.minX);
                     inkR = Mathf.Max(inkR, p + info.minX + info.glyphWidth);
                     p += Mathf.Ceil(info.maxX);
                     sum += info.maxX;
                 }
                 pen = start + Mathf.Ceil(sum);
             }
-            if (inkR < inkL) return; // 글자 정보가 아직 없음 — 엔진 가운데 정렬 그대로
-            float ink = inkR - inkL;
-            if (fit) b.width = Mathf.Ceil(ink + padX * 2f);
-            b.textHorizontalAlignment = UIHorizontalAlignment.Left;
-            b.textPadding = new RectOffset(Mathf.RoundToInt((b.width - ink) * 0.5f - inkL), 0, 2, 0);
+            if (inkR < left) return false; // 글자 정보가 아직 없음 — 엔진 가운데 정렬 그대로
+            inkL = left;
+            ink = inkR - left;
+            return true;
         }
 
         /// <summary>
