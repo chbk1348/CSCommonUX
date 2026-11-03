@@ -1,6 +1,6 @@
 # CSCommon UX 1.1
 
-Cities: Skylines 모드(F1 그랑프리 · 환경음 조절기 · 기상청 · 주차장 · 농장 … — 모두 비공개 모드)가 같이 쓰는 UI 공유 폴더입니다.
+Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 
 - `CSCommon/Style/Pal.cs` — 색 토큰(다크 기본값)
 - `CSCommon/Style/CSCommonTheme.cs` — 다크 · 라이트 테마 값과 모드 팔레트(청록 · F1 빨강)
@@ -8,6 +8,14 @@ Cities: Skylines 모드(F1 그랑프리 · 환경음 조절기 · 기상청 · �
 - `CSCommon/UI/Components.cs` — IMGUI 컴포넌트(Button · Textfield · Select · Switch · Slider · Toast · Dialog …)
 - `CSCommon/UI/CSCommonKit.cs` · `CSCommonToolbar.cs` — 게임 UI(ColossalFramework) 부품 · 툴바
 - `CSCommon/DesignCheck.targets` — 모드 코드에 색 값 · 치수 숫자 · 직접 그린 IMGUI 부품이 늘면 빌드 오류(CSC001)
+
+## 사용하는 모드
+
+- F1 그랑프리 — 개인 사용 / 비공개
+- 환경음 조절기 — 개인 사용 / 비공개
+- 기상청 — 개인 사용 / 비공개
+- 주차장 — 개인 사용 / 비공개
+- 농장 — 개인 사용 / 비공개
 
 ## UX 1.1 (B안 선명 대비)
 
