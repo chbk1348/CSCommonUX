@@ -12,11 +12,11 @@ namespace CSCommon.UI
     {
         public const string Round10 = "UxRound10", Round6 = "UxRound6", RoundLine10 = "UxRoundLine10", RoundLine6 = "UxRoundLine6";
         public const string Pill = "UxPill", PillLine = "UxPillLine", Disc = "UxDisc", White = "UxWhite", Ring = "UxRing";
-        /// <summary>높이 24(뱃지) · 26(스위치 홈) 알약. 알약(테두리 15)은 높이 30 밑에서 9칸 나눔이 안 맞아 양끝이 찌그러짐 — 높이마다 반지름 = 높이 ÷ 2 그림.</summary>
-        public const string BadgePill = "UxBadgePill", SwitchPill = "UxSwitchPill";
-        /// <summary>얇은 막대(슬라이더 홈 · 채움, 높이 8 안팎) · 아주 얇은 막대(스크롤 손잡이, 폭 4). 9칸 나눔 테두리가 막대보다 크면
-        /// 그 크기 밑으로 줄지 않아 막대가 부풀어 그려짐 — 알약(테두리 15)을 얇은 막대에 쓰지 말 것.</summary>
-        public const string Bar = "UxBar", Thin = "UxThin";
+        /// <summary>높이 24 알약(뱃지). 알약(테두리 15)은 높이 30 밑에서 9칸 나눔이 안 맞아 양끝이 찌그러짐 — 높이마다 반지름 = 높이 ÷ 2 그림.</summary>
+        public const string BadgePill = "UxBadgePill";
+        /// <summary>아주 얇은 막대(스크롤 손잡이, 폭 4). 9칸 나눔 테두리가 막대보다 크면 그 크기 밑으로 줄지 않아 막대가 부풀어 그려짐 —
+        /// 부품 높이(폭)는 테두리 × 2 이상으로.</summary>
+        public const string Thin = "UxThin";
 
         static UITextureAtlas atlas;
 
@@ -50,11 +50,9 @@ namespace CSCommon.UI
             Add(Pill, RoundRect(32, 16f, 0f), 15);
             Add(PillLine, RoundRect(32, 16f, 1f), 15);
             Add(BadgePill, RoundRect(26, 12f, 0f), 12);
-            Add(SwitchPill, RoundRect(28, 13f, 0f), 13);
             Add(Disc, RoundRect(48, 24f, 0f), 0);
             Add(Ring, RoundRect(48, 24f, 11.5f), 0); // 글 속 목록 빈 원(선 = 지름 × 0.24)
             Add(White, Solid(8), 0); // 단색이라 나눌 필요 없음 — 테두리가 있으면 1px 선이 그 두께 밑으로 안 줄어듦
-            Add(Bar, RoundRect(12, 4f, 0f), 4);
             Add(Thin, RoundRect(6, 2f, 0f), 2);
 
             var sheet = new Texture2D(256, 256, TextureFormat.ARGB32, false) { name = "F1UXAtlas", filterMode = FilterMode.Bilinear };
