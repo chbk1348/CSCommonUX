@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CSCommon: F1 UX 공용 바탕(저장소 안 공유 프로젝트, 글은 한국어만). 모드 진입 · Harmony 준비 · 로그 · 설정 XML · 업데이트 내역 ·
+     IMGUI 그리기(Draw · Pal) · 게임 UI 부품(설정 패널 · 알림 창). 모드 csproj가 Import 해서 같은 어셈블리로 빌드. -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6f1e0f3a-5b7c-4d2e-9a61-f1a2b3c4d5e6</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CSCommon</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonChangelog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonLoading.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonLog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonMod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonPatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonSettingsXml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Style\Pal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonDesign.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonTheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAtlas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonKit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonOptionsHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonOptionsPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonToolbar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAnim.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components.cs" />
+  </ItemGroup>
+</Project>
