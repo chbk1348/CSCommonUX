@@ -1,0 +1,84 @@
+<Project>
+  <!--
+    CSCommon 디자인 규칙 검사(AGENTS.md 4장): 모드 코드(공유 폴더 밖)에 색 값 · 직접 그린 IMGUI 부품을 새로 쓰면 빌드 오류.
+    - 색 = "#RRGGBB" 글 · new Color(…) · new Color32(…) → Pal(색) · CSCommonDesign(치수)에 이름을 붙여 쓸 것
+    - 직접 그린 부품 = GUI.Button/Box/Label/Toggle/TextField/TextArea/Window · GUILayout → CSCommon 부품을 쓸 것
+    이미 있던 곳은 모드 폴더의 DesignBaseline.txt(파일마다 개수)가 기준 — 개수가 늘면 오류, 줄면 통과.
+    기준 다시 잡기(옮겨서 줄였을 때): dotnet build -p:DesignBaseline=update
+  -->
+  <PropertyGroup>
+    <DesignBaselineFile Condition="'$(DesignBaselineFile)' == ''">$(MSBuildProjectDirectory)\DesignBaseline.txt</DesignBaselineFile>
+  </PropertyGroup>
+
+  <UsingTask TaskName="CSCommonDesignCheck" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Root ParameterType="System.String" Required="true" />
+      <Exclude ParameterType="System.String" Required="true" />
+      <Baseline ParameterType="System.String" Required="true" />
+      <Update ParameterType="System.Boolean" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+var rx = new Regex("\"#[0-9A-Fa-f]{6}|\\bnew\\s+Color(32)?\\s*\\(|\\bGUI\\.(Button|Box|Label|Toggle|TextField|TextArea|Window)\\s*\\(|\\bGUILayout\\.");
+string root = Path.GetFullPath(Root).TrimEnd('\\', '/') + Path.DirectorySeparatorChar;
+string exclude = Path.GetFullPath(Exclude);
+var now = new SortedDictionary<string, int>(StringComparer.Ordinal);
+var where = new Dictionary<string, string>();
+foreach (var f in Files)
+{
+    string full = Path.GetFullPath(f.ItemSpec);
+    if (full.StartsWith(exclude, StringComparison.OrdinalIgnoreCase) || !File.Exists(full)) continue;
+    int n = 0;
+    foreach (var line in File.ReadAllLines(full))
+    {
+        // 주석(/// 설명 포함)은 세지 않음
+        if (line.TrimStart().StartsWith("//")) continue;
+        n += rx.Matches(line).Count;
+    }
+    if (n == 0) continue;
+    string rel = (full.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? full.Substring(root.Length) : full).Replace('\\', '/');
+    now[rel] = n;
+    where[rel] = full;
+}
+if (Update)
+{
+    var sb = new StringBuilder();
+    sb.Append("# CSCommon 디자인 규칙 기준(DesignCheck.targets) — 파일마다 색 값 · 직접 그린 IMGUI 부품 개수. 늘리지 말 것, 옮겨서 줄인 뒤 -p:DesignBaseline=update\n");
+    foreach (var kv in now) sb.Append(kv.Value).Append('\t').Append(kv.Key).Append('\n');
+    File.WriteAllText(Baseline, sb.ToString(), new UTF8Encoding(false));
+    Log.LogMessage(MessageImportance.High, "CSCommon 디자인 기준을 새로 씀: " + now.Count + "개 파일 → " + Baseline);
+}
+else
+{
+    var base0 = new Dictionary<string, int>(StringComparer.Ordinal);
+    if (File.Exists(Baseline))
+        foreach (var line in File.ReadAllLines(Baseline))
+        {
+            if (line.Length == 0 || line[0] == '#') continue;
+            int tab = line.IndexOf('\t');
+            int c;
+            if (tab > 0 && int.TryParse(line.Substring(0, tab), out c)) base0[line.Substring(tab + 1)] = c;
+        }
+    foreach (var kv in now)
+    {
+        int b;
+        base0.TryGetValue(kv.Key, out b);
+        if (kv.Value > b)
+            Log.LogError("CSCommon", "CSC001", null, where[kv.Key], 0, 0, 0, 0,
+                "CSCommon 디자인 규칙: 모드 코드에 색 값 · 직접 그린 IMGUI 부품이 늘었습니다(" + b + " → " + kv.Value + "). 색은 Pal, 치수는 CSCommonDesign, 화면은 CSCommon 부품을 쓰세요(AGENTS.md 4장).");
+    }
+}
+]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="CSCommonDesignCheck" BeforeTargets="CoreCompile">
+    <CSCommonDesignCheck Files="@(Compile)" Root="$(MSBuildProjectDirectory)" Exclude="$(CommonDir)" Baseline="$(DesignBaselineFile)" Update="$([System.String]::Equals('$(DesignBaseline)', 'update'))" />
+  </Target>
+</Project>
