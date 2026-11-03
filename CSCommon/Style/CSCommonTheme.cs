@@ -7,11 +7,12 @@ namespace CSCommon
     /// Pal · Look 의 같은 토큰 이름에 테마 값을 넣음 — 부품은 토큰만 읽으므로 그대로 따라감.
     /// 값은 디자인 시스템 토큰(f1-dark · light)과 같음. 지도 마커 · 차트 계열 같은 '뜻 색'은 테마와 상관없이 그대로.
     /// </summary>
-    /// <summary>모드 기본 팔레트(Pal.Primary · PrimaryInk · OnPrimary): 청록(기본 — 기상청 · 주차장 · 농장) · F1 빨강(F1 로고 #E10600).</summary>
+    /// <summary>모드 기본 팔레트(Pal.Primary · PrimaryInk · OnPrimary): 청록(기본 — 주차장 · 농장) · F1 빨강(F1 로고 #E10600) · 하늘(스카이캐스트).</summary>
     internal enum CSCommonPalette
     {
         Teal,
         F1Red,
+        Sky,
     }
 
     internal static class CSCommonTheme
@@ -66,6 +67,13 @@ namespace CSCommon
                 Pal.Primary = H(light ? "#D10A00" : "#E10600");
                 Pal.PrimaryInk = H(light ? "#B80900" : "#FF5A4E");
                 Pal.OnPrimary = Color.white;
+            }
+            else if (palette == CSCommonPalette.Sky)
+            {
+                // 하늘 파랑: 라이트 면 · 글 #0B57D0(흰 바탕 6.4:1, 흰 글 6.4:1) · 다크 면 #2E9BFF(어두운 글) · 글 #6CB4FF
+                Pal.Primary = H(light ? "#0B57D0" : "#2E9BFF");
+                Pal.PrimaryInk = H(light ? "#0B57D0" : "#6CB4FF");
+                Pal.OnPrimary = light ? Color.white : Pal.AccentInk;
             }
             else
             {

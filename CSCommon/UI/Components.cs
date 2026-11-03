@@ -1196,7 +1196,12 @@ namespace CSCommon
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 12f);
             if (!Draw.Repaint) return;
             Draw.Round(r, !enabled ? Look.Off : Color.Lerp(Look.Field, Look.Tone0, hv), CSCommonDesign.RadiusField);
-            Look.Raised(r, CSCommonDesign.RadiusField, onT);
+            // UX 1.1: 고른 타일 = 주 색 옅은 면 + 주 색 2px 테두리(떠오른 면은 라이트에서 거의 안 보였음)
+            if (onT > 0.01f)
+            {
+                Draw.Round(r, Draw.Alpha(Pal.Primary, 0.12f * onT), CSCommonDesign.RadiusField);
+                Draw.RoundOutline(r, Draw.Alpha(Pal.Primary, onT), CSCommonDesign.RadiusField, 2f);
+            }
         }
 
         /// <summary>바탕 + 누르기. 누르면 true(꺼짐이면 늘 false).</summary>
