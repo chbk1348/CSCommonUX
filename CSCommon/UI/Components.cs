@@ -835,7 +835,7 @@ namespace CSCommon
         }
     }
 
-    /// <summary>CSCommon.Swatch — 색 칸 28: 고른 색은 흰 고리. 누르면 true.</summary>
+    /// <summary>CSCommon.Swatch — 색 칸 28: 고른 색은 Strong 고리(다크 흰 · 라이트 검정). 누르면 true.</summary>
     public static class Swatch
     {
         public static bool In(Rect r, Color color, bool on, string tip = null)
@@ -844,7 +844,8 @@ namespace CSCommon
             {
                 if (on)
                 {
-                    Draw.Round(new Rect(r.x - 4f, r.y - 4f, r.width + 8f, r.height + 8f), Color.white, CSCommonDesign.IconBtnRadius);
+                    // 고리 = 가장 진한 글 색(다크 흰색 · 라이트 거의 검정 — 라이트 흰 바탕에 흰 고리가 안 보였음)
+                    Draw.Round(new Rect(r.x - 4f, r.y - 4f, r.width + 8f, r.height + 8f), Pal.Strong, CSCommonDesign.IconBtnRadius);
                     Draw.Round(new Rect(r.x - 2f, r.y - 2f, r.width + 4f, r.height + 4f), Look.FieldFocus, 8.5f);
                 }
                 else if (Draw.Hover(r)) Draw.Round(new Rect(r.x - 2f, r.y - 2f, r.width + 4f, r.height + 4f), Look.Tone1, 8.5f);
@@ -943,7 +944,7 @@ namespace CSCommon
             Draw.Round(bar, Look.Tone0, 4f);
             Color c = color ?? (goal < 0f || t >= goal ? Pal.Teal : Pal.Warn);
             if (t > 0f) Draw.Round(new Rect(bar.x, bar.y, Mathf.Max(8f, bar.width * t), bar.height), c, 4f);
-            if (goal >= 0f) Draw.Round(new Rect(bar.x + bar.width * Mathf.Clamp01(goal) - 1f, bar.y - 4f, 2f, bar.height + 8f), Color.white, 1f);
+            if (goal >= 0f) Draw.Round(new Rect(bar.x + bar.width * Mathf.Clamp01(goal) - 1f, bar.y - 4f, 2f, bar.height + 8f), Pal.Strong, 1f);
         }
     }
 

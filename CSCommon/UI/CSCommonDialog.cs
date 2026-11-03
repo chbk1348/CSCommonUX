@@ -30,7 +30,7 @@ namespace CSCommon.UI
                     if (r.Version <= since) continue;
                     if (lines >= maxLines) { more = true; break; }
                     string verStr = "v" + r.Version;
-                    var badge = CSCommonKit.Badge(body, verStr, Pal.Accent);
+                    var badge = CSCommonKit.Badge(body, verStr, Pal.PrimaryInk);
                     badge.relativePosition = new Vector3(0f, y);
                     badge.PerformLayout();
                     float badgeW = Mathf.Max(badge.width, 56f);
