@@ -36,8 +36,10 @@ namespace CSCommon.UI
                     float badgeW = Mathf.Max(badge.width, 56f);
                     if (r.Date.Length > 0)
                     {
-                        var d = CSCommonKit.Label(body, r.Date, 12f, Pal.Dim, badgeW + 8f, y + 3f);
+                        var d = CSCommonKit.Label(body, r.Date, 12f, Pal.Dim, badgeW + 8f, y);
                         d.PerformLayout();
+                        // 날짜를 뱃지 높이 가운데에
+                        d.relativePosition = new Vector3(d.relativePosition.x, y + Mathf.Round((badge.height - d.height) * 0.5f));
                     }
                     float headH = Mathf.Max(badge.height, 22f);
                     y += headH + 8f;
