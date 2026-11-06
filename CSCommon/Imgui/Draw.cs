@@ -230,35 +230,32 @@ namespace CSCommon
             int size = radius * 2 + 2;
             var tex = new Texture2D(size, size, TextureFormat.ARGB32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear, hideFlags = HideFlags.HideAndDontSave };
             var px = new Color32[size * size];
-            float r = radius;
+            float r = radius, ir = Mathf.Max(0f, r - lineWidth);
+            // 화소마다 8×8 표본으로 실제로 덮인 넓이를 셈 — 거리 근사는 모서리 호가 두 화소에 반씩 번져 곧은 변보다 얇고 얼룩져 보였음.
+            const int N = 8;
             for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
             {
-                float cx = Mathf.Clamp(x + 0.5f, r, size - r);
-                float cy = Mathf.Clamp(y + 0.5f, r, size - r);
-                float d = Mathf.Sqrt((x + 0.5f - cx) * (x + 0.5f - cx) + (y + 0.5f - cy) * (y + 0.5f - cy));
-                float outer = Mathf.Clamp01(r - d + 0.5f);
-                if (x + 0.5f > r && x + 0.5f < size - r) outer = Mathf.Min(Mathf.Clamp01(y + 0.5f), Mathf.Clamp01(size - y - 0.5f));
-                if (y + 0.5f > r && y + 0.5f < size - r) outer = Mathf.Min(Mathf.Clamp01(x + 0.5f), Mathf.Clamp01(size - x - 0.5f));
-                if (x + 0.5f > r && x + 0.5f < size - r && y + 0.5f > r && y + 0.5f < size - r) outer = 1f;
-                float a = outer;
-                if (lineWidth > 0)
+                int hit = 0;
+                for (int sy = 0; sy < N; sy++)
+                for (int sx = 0; sx < N; sx++)
                 {
-                    // 안쪽 둥근 사각을 빼서 테두리만
-                    float ir = Mathf.Max(0f, r - lineWidth);
-                    float ix = Mathf.Clamp(x + 0.5f, lineWidth + ir, size - lineWidth - ir);
-                    float iy = Mathf.Clamp(y + 0.5f, lineWidth + ir, size - lineWidth - ir);
-                    float id = Mathf.Sqrt((x + 0.5f - ix) * (x + 0.5f - ix) + (y + 0.5f - iy) * (y + 0.5f - iy));
-                    bool insideBox = x + 0.5f > lineWidth && x + 0.5f < size - lineWidth && y + 0.5f > lineWidth && y + 0.5f < size - lineWidth;
-                    float inner = insideBox ? Mathf.Clamp01(ir - id + 0.5f) : 0f;
-                    if (ir <= 0f) inner = insideBox ? 1f : 0f;
-                    a = Mathf.Clamp01(outer - inner);
+                    float u = x + (sx + 0.5f) / N, v = y + (sy + 0.5f) / N;
+                    if (InRounded(u, v, 0f, size, r) && !(lineWidth > 0 && InRounded(u, v, lineWidth, size - lineWidth, ir))) hit++;
                 }
-                px[y * size + x] = new Color32(255, 255, 255, (byte)(a * 255f));
+                px[y * size + x] = new Color32(255, 255, 255, (byte)(hit * 255 / (N * N)));
             }
             tex.SetPixels32(px);
             tex.Apply();
             return tex;
+        }
+
+        /// <summary>점 (u, v)가 [lo, hi] 정사각의 반지름 rad 둥근 사각 안인가(rad 0 = 각진 사각).</summary>
+        static bool InRounded(float u, float v, float lo, float hi, float rad)
+        {
+            if (u < lo || u > hi || v < lo || v > hi) return false;
+            float cx = Mathf.Clamp(u, lo + rad, hi - rad), cy = Mathf.Clamp(v, lo + rad, hi - rad);
+            return (u - cx) * (u - cx) + (v - cy) * (v - cy) <= rad * rad;
         }
 
         // ---------------- 원
@@ -1235,6 +1232,109 @@ namespace CSCommon
             tex.SetPixels32(px);
             tex.Apply(false);
             return tex;
+        }
+
+        // ---------------- 구글 머티리얼 서클 인디케이터(Spinner)
+
+        static Texture2D spinnerTex;
+        static Color32[] spinnerPx;
+        static int spinnerSize;
+        static int spinnerLastFrame = -1;
+        static float spinnerLastR = -1f, spinnerLastW = -1f;
+
+        /// <summary>
+        /// 구글 머티리얼 서클 인디케이터(Google Circular Progress Indicator):
+        /// 1.333초 주기로 호의 머리(head)가 먼저 270° 치고 나가며 늘어나고(16° → 286°), 뒤이어 꼬리(tail)가 따라붙으며 줄어듦(286° → 16°).
+        /// 동시에 전체 고리가 끊임없이 회전하며, 양 끝은 둥근 마감(stroke-linecap: round).
+        /// 한 장의 재사용 텍스처를 써서 매 프레임 새 Texture2D · GC 할당이 없고, GUI.matrix 회전을 쓰지 않아 BeginClip 안에서도 잘리지 않음.
+        /// </summary>
+        public static void Spinner(Vector2 center, float radius, float width, Color c)
+        {
+            if (!Repaint || c.a <= 0f || radius <= 0f || width <= 0f) return;
+
+            const float Cycle = 1.333f;
+            float t = Time.unscaledTime;
+            float tCycle = t / Cycle;
+            int cycleIdx = Mathf.FloorToInt(tCycle);
+            float u = tCycle - cycleIdx;
+
+            static float EaseInOut(float x)
+            {
+                x = Mathf.Clamp01(x);
+                return x < 0.5f ? 4f * x * x * x : 1f - Mathf.Pow(-2f * x + 2f, 3f) * 0.5f;
+            }
+
+            float head = u < 0.5f ? EaseInOut(u * 2f) * 270f : 270f;
+            float tail = u < 0.5f ? 0f : EaseInOut((u - 0.5f) * 2f) * 270f;
+            float baseDeg = -90f + cycleIdx * 270f + t * 156f;
+            float from = baseDeg + tail;
+            float to = baseDeg + head + 16f;
+
+            float rPx = Mathf.Max(2f, radius * S);
+            float half = Mathf.Max(0.75f, width * S * 0.5f);
+            int d = Mathf.Clamp(Mathf.CeilToInt((rPx + half + 2f) * 2f), 8, 256);
+
+            if (spinnerTex == null || spinnerSize != d)
+            {
+                if (spinnerTex != null) UnityEngine.Object.Destroy(spinnerTex);
+                spinnerSize = d;
+                spinnerTex = new Texture2D(d, d, TextureFormat.ARGB32, false)
+                {
+                    wrapMode = TextureWrapMode.Clamp,
+                    filterMode = FilterMode.Bilinear,
+                    hideFlags = HideFlags.HideAndDontSave
+                };
+                spinnerPx = new Color32[d * d];
+                spinnerLastFrame = -1;
+            }
+
+            if (spinnerLastFrame != Time.frameCount || Mathf.Abs(spinnerLastR - rPx) > 0.1f || Mathf.Abs(spinnerLastW - half) > 0.1f)
+            {
+                spinnerLastFrame = Time.frameCount;
+                spinnerLastR = rPx;
+                spinnerLastW = half;
+
+                float mid = (from + to) * 0.5f;
+                float halfSpan = (to - from) * 0.5f;
+                float rad0 = from * Mathf.Deg2Rad, rad1 = to * Mathf.Deg2Rad;
+                float x0 = Mathf.Cos(rad0) * rPx, y0 = Mathf.Sin(rad0) * rPx;
+                float x1 = Mathf.Cos(rad1) * rPx, y1 = Mathf.Sin(rad1) * rPx;
+                float cMid = d * 0.5f;
+
+                for (int y = 0; y < d; y++)
+                {
+                    float dy = d - y - 0.5f - cMid;
+                    int row = y * d;
+                    for (int x = 0; x < d; x++)
+                    {
+                        float dx = x + 0.5f - cMid;
+                        float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                        float ang = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+                        float distToArc;
+                        if (Mathf.Abs(Mathf.DeltaAngle(mid, ang)) <= halfSpan)
+                        {
+                            distToArc = Mathf.Abs(dist - rPx);
+                        }
+                        else
+                        {
+                            float d0 = (dx - x0) * (dx - x0) + (dy - y0) * (dy - y0);
+                            float d1 = (dx - x1) * (dx - x1) + (dy - y1) * (dy - y1);
+                            distToArc = Mathf.Sqrt(d0 < d1 ? d0 : d1);
+                        }
+                        float a = Mathf.Clamp01(half + 0.5f - distToArc);
+                        spinnerPx[row + x] = new Color32(255, 255, 255, (byte)(a * 255f));
+                    }
+                }
+                spinnerTex.SetPixels32(spinnerPx);
+                spinnerTex.Apply(false);
+            }
+
+            Vector2 sc = ToScreen(center);
+            float halfD = d * 0.5f;
+            Color old = GUI.color;
+            GUI.color = Op(c);
+            GUI.DrawTexture(new Rect(Mathf.Round(sc.x - halfD), Mathf.Round(sc.y - halfD), d, d), spinnerTex);
+            GUI.color = old;
         }
 
         /// <summary>부드러운 빛 번짐(가운데 진하고 가장자리로 0 — 타원으로 늘려 찍음). 계기판 뒤 후광 · 페달 빛.</summary>

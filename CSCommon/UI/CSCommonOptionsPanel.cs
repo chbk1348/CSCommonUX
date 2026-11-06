@@ -83,7 +83,9 @@ namespace CSCommon.UI
 
         void OnGUI()
         {
-            if (!isVisible || pages.Count == 0 || !OnTop()) return;
+            bool top = OnTop();
+            if (!isVisible || pages.Count == 0 || (!top && !CSCommonDialog.IsOpen)) return;
+            if (!top && Event.current != null && Event.current.type != EventType.Repaint && Event.current.type != EventType.Layout) return;
             try
             {
                 Draw.Begin();
