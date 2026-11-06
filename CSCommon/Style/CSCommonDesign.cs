@@ -89,6 +89,8 @@ namespace CSCommon
         public const float SectionPadX = 20f, SectionTop = 22f, SectionBottom = 20f, SectionTitleH = 28f, SectionTitleFont = 17f, SectionHeadGap = 14f, BandH = 10f;
         /// <summary>창 · 패널(F1 창 · 설정 패널): 머리 높이 · 바깥 여백(창 끝 → 카드) · 카드 사이 간격.</summary>
         public const float PanelHeadH = 54f, PanelPad = 16f, PanelGap = 14f;
+        /// <summary>F1 창 제목줄 시리즈 고르기(로고 칸 4개, 높이는 Segmented.H): 칸 폭 · 칸 안 로고 폭 · 높이 · 안 고른 칸 불투명도 · 이보다 좁은 창은 칸을 숨기고 로고만.</summary>
+        public const float SeriesCellW = 64f, SeriesLogoW = 48f, SeriesLogoH = 12f, SeriesDim = 0.45f, SeriesHideW = 900f;
         /// <summary>떠 있는 판(메뉴 · 점수 판 · 줄 판) 안쪽 여백.</summary>
         public const float FloatPad = 14f;
         /// <summary>카드 안: 두 칸 사이 · 타일 격자 간격 · 줄 위아래 여백.</summary>
