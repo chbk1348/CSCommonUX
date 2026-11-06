@@ -8,6 +8,12 @@ namespace CSCommon
         public static Color Win = Draw.Hex("#14171C");
         /// <summary>고른 칸(떠오른 면) 바탕 · 그 위 글 · 아이콘(다크 #3A404B · 흰 글 / 라이트 흰 바탕 · 짙은 글).</summary>
         public static Color Selected = Draw.Hex("#3A404B"), OnSelected = Color.white;
+        /// <summary>휴대폰 틀(CSCommon.Phone): 티타늄 테두리 · 화면 바탕 · 번지는 색, 리퀴드 글라스 면(바탕 · 위 반짝임 · 테두리 · 위 1px 빛).</summary>
+        public static Color PhoneBezel = Draw.Hex("#2E3035"), PhoneBezelEdge = Draw.Hex("#5A5E66"), PhoneWall = Color.white;
+        public static Color PhoneGlowA = new(0.18f, 0.42f, 1f, 0.5f), PhoneGlowB = new(0.62f, 0.25f, 0.95f, 0.45f);
+        public static Color GlassFill = new(0.93f, 0.95f, 0.98f, 0.85f), GlassSheen = new(1f, 1f, 1f, 0.6f), GlassEdge = new(0f, 0f, 0f, 0.10f), GlassShine = new(1f, 1f, 1f, 1f);
+        /// <summary>휴대폰 화면(흰색 고정) 위 글: 짙은 글 · 옅은 글.</summary>
+        public static Color PhoneInk = Draw.Hex("#1C1C1E"), PhoneInkSub = new(0.11f, 0.11f, 0.12f, 0.6f);
         /// <summary>가장 진한 글(호버 · 강조 — 다크 흰색 / 라이트 거의 검정).</summary>
         public static Color Strong = Color.white;
         /// <summary>호버 · 판 가장자리 살짝 덮는 색(알파는 쓰는 곳에서 — 다크 흰색 / 라이트 검정).</summary>
