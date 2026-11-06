@@ -33,6 +33,8 @@ namespace CSCommon
         public static Color Warn = Draw.Hex("#FFA94D");
         public static Color Red = Draw.Hex("#FF6B5E");
         public static Color Accent = Draw.Hex("#E10600");
+        /// <summary>시리즈 대표색(F1 창 제목줄 아래 띠 · F1 은 Accent): F2 파랑 · WEC 청록 · 모토GP 주황.</summary>
+        public static Color SeriesF2 = Draw.Hex("#1F6FEB"), SeriesWec = Draw.Hex("#12A594"), SeriesMoto = Draw.Hex("#F08A00");
         public static Color Yellow = Draw.Hex("#F5C400");
         public static Color Green = Draw.Hex("#22C55E");
         public static Color Teal = Draw.Hex("#2ED4BF");
