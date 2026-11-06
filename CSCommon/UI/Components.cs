@@ -152,9 +152,8 @@ namespace CSCommon
                 float x = Mathf.Max(r.x + 6f, Mathf.Round(r.center.x - (iw + tw) * 0.5f));
                 if (loading)
                 {
-                    // 로딩: 글 · 아이콘 대신 스피너(아이콘 크기 · 선 2 · 글자색), 폭은 그대로
-                    float a0 = Time.unscaledTime * 360f % 360f;
-                    Draw.Arc(r.center, isz * 0.5f - 1f, 2f, a0, a0 + 270f, textInk);
+                    // 로딩: 글 · 아이콘 대신 구글 서클 인디케이터(아이콘 크기 · 선 2 · 글자색), 폭은 그대로
+                    Draw.Spinner(r.center, isz * 0.5f - 1f, 2f, textInk);
                 }
                 else if (!string.IsNullOrEmpty(icon))
                     Draw.Icon(icon, new Rect(x, Mathf.Round(r.center.y - isz * 0.5f), isz, isz), ink, 24f, 2f);
@@ -1006,6 +1005,24 @@ namespace CSCommon
             Color c = color ?? (goal < 0f || t >= goal ? Pal.Teal : Pal.Warn);
             if (t > 0f) Draw.Round(new Rect(bar.x, bar.y, Mathf.Max(8f, bar.width * t), bar.height), c, 4f);
             if (goal >= 0f) Draw.Round(new Rect(bar.x + bar.width * Mathf.Clamp01(goal) - 1f, bar.y - 4f, 2f, bar.height + 8f), Pal.Strong, 1f);
+        }
+    }
+
+    /// <summary>
+    /// CSCommon.Spinner — 구글 머티리얼 서클 인디케이터(Google Circular Progress Indicator):
+    /// 호가 16° ↔ 286° 로 늘었다 줄어들며 회전하는 둥근 끝(round cap) 원형 로딩 인디케이터.
+    /// </summary>
+    public static class Spinner
+    {
+        public static void At(Vector2 center, float size = 20f, float stroke = 2.2f, Color? color = null)
+        {
+            if (Draw.Repaint) Draw.Spinner(center, Mathf.Max(2f, (size - stroke) * 0.5f), stroke, color ?? Pal.Primary);
+        }
+
+        public static void In(Rect r, Color? color = null, float stroke = 2.2f)
+        {
+            float size = Mathf.Min(r.width, r.height);
+            At(r.center, size, stroke, color);
         }
     }
 
