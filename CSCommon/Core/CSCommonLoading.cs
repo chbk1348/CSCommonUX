@@ -86,14 +86,6 @@ namespace CSCommon
             {
                 CSCommonLog.Exception(e, "설정 패널 고리 걸기");
             }
-            try
-            {
-                CSCommonChangelog.ShowIfNew();
-            }
-            catch (Exception e)
-            {
-                CSCommonLog.Exception(e, "업데이트 내역 알림");
-            }
             IsLoaded = true;
             CSCommonLog.Info("도시 불러오기 끝");
         }
