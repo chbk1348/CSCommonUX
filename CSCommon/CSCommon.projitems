@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonOptionsHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonOptionsPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonToolbar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonGlassToolBar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAnim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components.cs" />
   </ItemGroup>

@@ -1526,32 +1526,10 @@ namespace CSCommon
         /// <summary>하단 툴바(탭 바): 홈 막대 위에 뜬 유리 알약. 칸마다 아이콘 + 이름, 고른 칸은 강조색으로 물든 알약. content = Frame 이 돌려준 쓸 자리.</summary>
         public static void TabBar(Rect content, string[] icons, string[] labels, int cur, Action<int> pick)
         {
-            float h = CSCommonDesign.TabBarH;
-            var bar = new Rect(content.x, content.yMax - h - 6f, content.width, h);
-            Glass(bar, h * 0.5f, 1f);
-            float cw = (bar.width - 8f) / labels.Length;
-            // 고른 칸을 따라 미끄러지는 유리 알약(iOS 탭 바 렌즈)
-            float slide = CSCommonAnim.Smooth(Look.Key(bar, "phonetabslide"), cur, 16f);
-            if (Draw.Repaint)
-            {
-                var lens = new Rect(bar.x + 4f + slide * cw, bar.y + 4f, cw, h - 8f);
-                Draw.Round(lens, Draw.Alpha(Pal.Accent, 0.16f), lens.height * 0.5f);
-                Draw.RoundOutline(lens, Draw.Alpha(Pal.Accent, 0.28f), lens.height * 0.5f, 1f);
-            }
-            for (int i = 0; i < labels.Length; i++)
-            {
-                var cell = new Rect(bar.x + 4f + i * cw, bar.y + 4f, cw, h - 8f);
-                bool on = i == cur;
-                float hv = Look.Hover(Look.Key(cell, "phonetab", labels[i]), cell, !on);
-                if (Draw.Repaint)
-                {
-                    if (!on && hv > 0.01f) Draw.Round(cell, Draw.Alpha(Pal.Accent, 0.07f * hv), cell.height * 0.5f);
-                    Color ink = on ? Pal.Accent : Pal.PhoneInkSub;
-                    if (icons != null && i < icons.Length) Draw.Icon(icons[i], new Rect(cell.center.x - 11f, cell.y + 6f, 22f, 22f), ink, 24f, 1.9f);
-                    Draw.TextFit(new Rect(cell.x + 4f, cell.y + 30f, cell.width - 8f, 16f), labels[i], 11f, ink, true, TextAnchor.MiddleCenter);
-                }
-                if (Draw.Button(cell)) pick(i);
-            }
+            // .GlassToolBar(iOS 27 리퀴드 글래스) — 모드 창 하단 툴바와 같은 부품
+            int hit = GlassToolBar.Bar(content, labels.Length, cur, (i, cell, sel, hover) =>
+                GlassToolBar.Cell(cell, icons != null && i < icons.Length ? icons[i] : null, labels[i], sel, hover));
+            if (hit >= 0) pick(hit);
         }
     }
 }
