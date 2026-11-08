@@ -108,7 +108,6 @@ namespace CSCommon.UI
             if (Draw.Repaint)
             {
                 Draw.Round(r, Pal.Win, CSCommonDesign.RadiusWindow);
-                Draw.RoundOutline(r, Look.PanelLine, CSCommonDesign.RadiusWindow);
             }
             DrawHead(new Rect(r.x, r.y, r.width, HeadH));
 
