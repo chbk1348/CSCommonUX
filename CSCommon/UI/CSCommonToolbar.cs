@@ -696,7 +696,7 @@ namespace CSCommon.UI
             if (!string.IsNullOrEmpty(text) && Draw.Hover(r) && !Draw.Holding)
             {
                 tip = text;
-                tipAt = r;
+                tipAt = Draw.ToRoot(r);
             }
         }
 

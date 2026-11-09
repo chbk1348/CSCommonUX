@@ -41,14 +41,18 @@ namespace CSCommon
 
             if (Draw.Repaint)
             {
-                for (int i = 1; i <= 3; i++)
-                    Draw.Round(new Rect(bar.x - i * 2f, bar.y + i * 3f, bar.width + i * 4f, bar.height + i * 2f), new Color(0f, 0f, 0f, 0.07f), Radius + i * 2f);
+                // 1px 씩 넓어지며 옅어지는 여덟 겹(Look.Elevated 와 같은 방식) — 예전 세 겹 큰 상자는 가장자리가 띠처럼 겹겹이 보였음
+                for (int i = 8; i >= 1; i--)
+                    Draw.Round(new Rect(bar.x - i, bar.y + 2f + i * 0.5f - i, bar.width + i * 2f, bar.height + i * 2f), Draw.Alpha(Color.black, Look.ShadowAlpha * (1f - (i - 1f) / 8f)), Radius + i);
                 Draw.Round(bar, Draw.Alpha(Pal.Win, 0.58f), Radius);
                 Draw.Round(bar, new Color(1f, 1f, 1f, 0.07f), Radius);
-                Draw.Round(new Rect(bar.x + 2f, bar.y + 2f, bar.width - 4f, bar.height * 0.46f), new Color(1f, 1f, 1f, 0.06f), Radius - 2f);
-                Draw.RoundOutline(bar, new Color(1f, 1f, 1f, 0.16f), Radius);
-                Draw.Fill(new Rect(bar.x + Radius, bar.y + 1f, Mathf.Max(0f, bar.width - Radius * 2f), 1f), new Color(1f, 1f, 1f, 0.38f));
             }
+            // 위 반짝임: 판과 중심이 같은 안쪽 알약(반지름 Radius - 2)의 위 46% 만 잘라 그림. 예전처럼 높이 46% 칸에 반지름 28 을 주면
+            // 칸 절반(약 14)으로 줄어든 작은 모서리가 판 모서리(30) 밖으로 최대 4px 삐져나와 위 모서리가 계단처럼 보였음.
+            // 잘라내기(GUI.BeginGroup)는 컨트롤 번호를 쓰므로 모든 이벤트에서 부름(Round 는 Repaint 때만 그림).
+            Draw.BeginClip(new Rect(bar.x, bar.y, bar.width, 2f + bar.height * 0.46f), Vector2.zero);
+            Draw.Round(new Rect(2f, 2f, bar.width - 4f, bar.height - 4f), new Color(1f, 1f, 1f, 0.06f), Radius - 2f);
+            Draw.EndClip();
 
             // 렌즈: 앞쪽(head)이 먼저 도착하고 뒤쪽(tail)이 늦게 따라와 옮기는 동안 두 칸에 걸쳐 늘어남. 누른 칸이 있으면 그 칸 밑으로
             int target = pressed >= 0 ? pressed : Mathf.Clamp(cur, 0, count - 1);
@@ -62,13 +66,9 @@ namespace CSCommon
                 var lens = new Rect(bar.x + Pad + left - 2f * amt, bar.y + Pad - 2f * amt, right - left + 4f * amt, CellH + 4f * amt);
                 if (pressed >= 0) lens = new Rect(lens.x + 1.5f * amt, lens.y + 1.5f * amt, lens.width - 3f * amt, lens.height - 3f * amt);
                 float round = lens.height * 0.5f;
-                if (amt > 0.02f) Draw.Round(new Rect(lens.x, lens.y + 5f, lens.width, lens.height), new Color(0f, 0f, 0f, 0.14f * amt), round);
-                Draw.Round(lens, new Color(1f, 1f, 1f, Mathf.Lerp(0.10f, pressed >= 0 ? 0.26f : 0.22f, amt)), round);
-                if (amt > 0.02f)
-                {
-                    Draw.RoundOutline(lens, new Color(1f, 1f, 1f, 0.20f * amt), round);
-                    Draw.Fill(new Rect(lens.x + round, lens.y + 1f, Mathf.Max(0f, lens.width - round * 2f), 1f), new Color(1f, 1f, 1f, 0.55f * amt));
-                }
+                // 가만히 고른 칸: 떠오른 면(Look.Raised, 테마에 맞는 밝은 면 + 선). 옮기거나 누르는 동안에는 유리 렌즈가 그 위로 나타남
+                if (amt < 0.98f) Look.Raised(new Rect(bar.x + Pad + left, bar.y + Pad, right - left, CellH), round, 1f - amt);
+                if (amt > 0.02f) Draw.Round(lens, new Color(1f, 1f, 1f, (pressed >= 0 ? 0.26f : 0.22f) * amt), round);
             }
 
             int hit = -1;
