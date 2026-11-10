@@ -2,11 +2,11 @@ using System;
 using ColossalFramework.UI;
 using UnityEngine;
 
-using CSCommon;
+using CSCommonUX;
 
-namespace CSCommon.UI
+namespace CSCommonUX.UI
 {
-    /// <summary>버튼 톤(CSCommon.Button 과 같음): 보통(회색 톤) · 주(청록 톤) · 지움(회색 톤 + 빨강 글).</summary>
+    /// <summary>버튼 톤(CSCommonUX.Button 과 같음): 보통(회색 톤) · 주(청록 톤) · 지움(회색 톤 + 빨강 글).</summary>
     public enum CSCommonButtonKind
     {
         Outline,
@@ -92,7 +92,7 @@ namespace CSCommon.UI
         /// <summary>둥근 배지(판 · 상태): 색 바탕 · 흰 굵은 글.</summary>
         public static UILabel Badge(UIComponent parent, string text, Color bg)
         {
-            // CSCommon.Badge: 그 색 16% 바탕 · 그 색 굵은 글
+            // CSCommonUX.Badge: 그 색 16% 바탕 · 그 색 굵은 글
             var l = parent.AddUIComponent<UILabel>();
             l.atlas = CSCommonAtlas.Atlas;
             l.backgroundSprite = CSCommonAtlas.BadgePill;
@@ -127,7 +127,7 @@ namespace CSCommon.UI
         /// <summary>F1 창 버튼: 테두리(기본) · 빨강 채움(Primary) · 빨강 테두리(Danger). 꺼지면 흐림.</summary>
         public static UIButton Button(UIComponent parent, string text, float x, float y, float w, float h, CSCommonButtonKind kind, Action click)
         {
-            // CSCommon.Button: 톤 바탕 · 테두리 없음 · 글 13.5(보통 굵기), 주 = 청록 톤 · 지움 = 빨강 글
+            // CSCommonUX.Button: 톤 바탕 · 테두리 없음 · 글 13.5(보통 굵기), 주 = 청록 톤 · 지움 = 빨강 글
             var b = parent.AddUIComponent<UIButton>();
             b.atlas = CSCommonAtlas.Atlas;
             b.normalBgSprite = b.hoveredBgSprite = b.pressedBgSprite = b.focusedBgSprite = b.disabledBgSprite = CSCommonAtlas.Round6;

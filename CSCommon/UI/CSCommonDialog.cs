@@ -5,16 +5,16 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace CSCommon.UI
+namespace CSCommonUX.UI
 {
     /// <summary>
     /// 알림 창(F1 창 모양): 화면 가운데 창 하나 — 제목줄 · 주 색 띠 · 가상화 스크롤 본문 · 버튼.
     /// 업데이트 내역(판마다 볼드 뱃지 · 날짜 · 신규/개선/수정 대분류 볼드 · 항목)과 일반 알림(문단 · 목록)에 씀.
-    /// 게임 UILabel 수백 개를 만들지 않고 IMGUI(CSCommon.Draw) 가상화 스크롤로 보이는 줄만 그려 렉 없이 즉시 열림.
+    /// 게임 UILabel 수백 개를 만들지 않고 IMGUI(CSCommonUX.Draw) 가상화 스크롤로 보이는 줄만 그려 렉 없이 즉시 열림.
     /// </summary>
     public static class CSCommonDialog
     {
-        const float W = 680f, MaxH = 660f, Pad = 20f, HeadH = 54f, FootH = 64f, ScrollBarW = 10f;
+        const float W = CSCommonUX.Modal.Width, MaxH = 660f, Pad = CSCommonUX.Modal.PadX, HeadH = CSCommonUX.Modal.HeadH, FootH = CSCommonUX.Modal.FootH, ScrollBarW = 10f;
 
         static UIPanel win;
         static DialogHost host;
@@ -217,7 +217,7 @@ namespace CSCommon.UI
                 if (view == null) return;
                 Vector2 screen = view.GetScreenResolution();
 
-                // 모달 입력 차단용 투명 UIPanel (실제 그리기는 DialogHost.OnGUI 에서 CSCommon.Draw 로 수행)
+                // 모달 입력 차단용 투명 UIPanel (실제 그리기는 DialogHost.OnGUI 에서 CSCommonUX.Draw 로 수행)
                 win = (UIPanel)view.AddUIComponent(typeof(UIPanel));
                 win.backgroundSprite = "";
                 win.color = new Color32(0, 0, 0, 0);
@@ -421,23 +421,22 @@ namespace CSCommon.UI
                     float bodyInnerW = W - Pad * 2f - ScrollBarW - 8f;
                     EnsureMeasured(bodyInnerW);
 
-                    float maxBodyH = MaxH - HeadH - 3f - 16f - FootH;
+                    float maxBodyH = MaxH - HeadH - CSCommonUX.Modal.BodyTop - CSCommonUX.Modal.BodyBottom - FootH;
                     float bodyH = Mathf.Clamp(contentH, 60f, maxBodyH);
-                    float winH = HeadH + 3f + 16f + bodyH + FootH;
+                    float winH = HeadH + CSCommonUX.Modal.BodyTop + bodyH + CSCommonUX.Modal.BodyBottom + FootH;
                     float maxScroll = Mathf.Max(0f, contentH - bodyH);
                     targetScroll = Mathf.Clamp(targetScroll, 0f, maxScroll);
                     scroll = Mathf.Clamp(scroll, 0f, maxScroll);
 
-                    // 등장 애니메이션 (0.16초 CubicEaseOut)
+                    // 등장 애니메이션(CSCommonUX.Modal: 0.18초 · 시안 곡선 · 10 아래에서 떠오름)
                     float age = Time.realtimeSinceStartup - openTime;
-                    float t = Mathf.Clamp01(age / 0.16f);
-                    float ease = 1f - (1f - t) * (1f - t) * (1f - t);
+                    float ease = CSCommonUX.Modal.Ease(age / CSCommonUX.Modal.OpenSeconds);
                     float oldOp = Draw.Opacity;
                     Draw.Opacity = oldOp * ease;
 
                     var box = new Rect(
                         Mathf.Round((Draw.Width - W) * 0.5f),
-                        Mathf.Round((Draw.Height - winH) * 0.5f + (1f - ease) * 10f),
+                        Mathf.Round((Draw.Height - winH) * 0.5f + (1f - ease) * CSCommonUX.Modal.Rise),
                         W,
                         winH);
 
@@ -492,30 +491,16 @@ namespace CSCommon.UI
                     }
                 }
 
-                // 창 외곽 프레임 & 그림자
-                Look.Elevated(box, CSCommonDesign.RadiusWindow, Pal.Win);
-
-                // 제목줄: 모드 주 색 머리 · 제목(볼드) · 닫기(✕) · 하단 3px 강조선
-                var headR = new Rect(box.x, box.y, box.width, HeadH);
-                if (Draw.Repaint)
-                {
-                    float tx = headR.x + Pad;
-                    if (CSCommonTheme.Palette == CSCommonPalette.F1Red)
-                    {
-                        DrawBoldText(new Rect(tx, headR.y, 40f, HeadH), "F1", 20f, Pal.Primary, TextAnchor.MiddleLeft);
-                        tx += 42f;
-                    }
-                    DrawBoldText(new Rect(tx, headR.y, headR.xMax - tx - 56f, HeadH), title, 17f, Pal.Txt, TextAnchor.MiddleLeft);
-                    Draw.Fill(new Rect(headR.x, headR.yMax, headR.width, 3f), Pal.Primary);
-                }
-                if (CSCommon.Button.Square(new Rect(headR.xMax - HeadH + 10f, headR.y + (HeadH - 34f) * 0.5f, 34f, 34f), Icons.Close, "닫기 (Esc)"))
+                // 덮개 · 판 · 머리(제목 · 원 닫기) · 발 띠(CSCommonUX.Modal)
+                CSCommonUX.Modal.Frame(box, title, null, out bool closed, true);
+                if (closed)
                 {
                     Close();
                     return;
                 }
 
                 // 본문 스크롤 영역
-                var bodyRect = new Rect(box.x + Pad, box.y + HeadH + 3f + 16f, box.width - Pad * 2f, bodyH);
+                var bodyRect = new Rect(box.x + Pad, box.y + HeadH + CSCommonUX.Modal.BodyTop, box.width - Pad * 2f, bodyH);
                 var barTrack = new Rect(bodyRect.xMax - ScrollBarW, bodyRect.y, ScrollBarW, bodyH);
 
                 // 마우스 휠 스크롤 (가속 · 부드러운 감속)
@@ -591,24 +576,19 @@ namespace CSCommon.UI
                     Draw.Round(new Rect(barX, thumbY, barW, thumbH), thumbCol, barW * 0.5f);
                 }
 
-                // 하단 버튼 영역
-                var footR = new Rect(box.x, box.yMax - FootH, box.width, FootH);
-                if (Draw.Repaint)
-                    Draw.Fill(new Rect(footR.x + Pad, footR.y, footR.width - Pad * 2f, 1f), Look.Divider);
-
-                float by = footR.y + (FootH - 36f) * 0.5f;
-                var closeBtn = new Rect(box.xMax - Pad - 140f, by, 140f, 36f);
-                CSCommon.Button.In(closeBtn, null, "닫기", null, Tone.Primary, null, true, Close, false);
-
-                if (dontShowAgain != null)
+                // 발 단추: 오른쪽부터 [닫기 = 파스텔 알약] [다시 보지 않기 = 회색 알약]
+                float right = 0f;
+                if (CSCommonUX.Modal.FootButton(box, ref right, Icons.Check, "닫기", true))
                 {
-                    var hideBtn = new Rect(closeBtn.x - 10f - 160f, by, 160f, 36f);
+                    Close();
+                    return;
+                }
+                if (dontShowAgain != null && CSCommonUX.Modal.FootButton(box, ref right, null, "다시 보지 않기"))
+                {
                     var cb = dontShowAgain;
-                    CSCommon.Button.In(hideBtn, null, "다시 보지 않기", null, Tone.Neutral, null, true, () =>
-                    {
-                        cb();
-                        Close();
-                    }, false);
+                    cb();
+                    Close();
+                    return;
                 }
 
                 // 모달 밖/안의 남은 마우스 이벤트를 소비해 뒤쪽 창이 눌리지 않게 보호

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using CitiesHarmony.API;
 using HarmonyLib;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>먼저 따로 붙이고, 다른 패치가 실패해도 떼지 않음(세이브를 읽는 데 꼭 필요한 것 — 예: 길 프리팹 올리기). 모드를 끌 때만 뗌.</summary>
     [AttributeUsage(AttributeTargets.Class)]

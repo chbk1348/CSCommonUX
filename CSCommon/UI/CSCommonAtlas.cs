@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace CSCommon.UI
+namespace CSCommonUX.UI
 {
     /// <summary>
     /// 게임 UI 부품용 그림 모음(실행 중에 그려 만듦, 그림 파일 없음). 모두 흰색이라 부품 색(color)으로 물들임.

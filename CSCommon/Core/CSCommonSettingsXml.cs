@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>
     /// 모드 설정 XML 바탕: 마지막으로 본 업데이트 내역 판 · 자세한 로그를 같이 저장(언어 칸 없음 — 한국어만).

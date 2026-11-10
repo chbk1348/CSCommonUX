@@ -4,7 +4,7 @@ using System.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>
     /// IMGUI 그리기 바탕. 모든 좌표는 논리 좌표(화면 높이 1080 기준)로 받고 여기서 실제 화소로 바꿈 —
@@ -40,6 +40,8 @@ namespace CSCommon
             // 새로 누를 때마다 지난 누름은 버림(다른 데를 눌렀다 옛 버튼 위에서 떼도 눌리지 않게)
             var e = Event.current;
             if (e != null && e.type == EventType.MouseDown) held = false;
+            // 뗀 다음 프레임에 풂(같은 프레임의 다른 OnGUI 가 먼저 풀면 창 단추가 뗌을 못 봄)
+            if (releaseFrame >= 0 && Time.frameCount != releaseFrame) { held = false; releaseFrame = -1; }
             // 열린 고르기 목록이 창보다 먼저 클릭을 받음
             Select.PreInput();
         }
@@ -54,7 +56,10 @@ namespace CSCommon
         /// <summary>논리 마우스 자리(지금 잘라낸 영역 기준).</summary>
         public static Vector2 Mouse => Event.current.mousePosition / S - offset;
 
-        public static bool Hover(Rect r) => r.Contains(Mouse);
+        /// <summary>
+        /// 마우스가 칸 안이고 지금 잘라낸 영역(Visible) 안일 때만 참. 잘라낸 밖(스크롤로 머리 · 툴바 밑으로 들어간 칸)은 눌림 · 호버를 가로채지 않음.
+        /// </summary>
+        public static bool Hover(Rect r) { var m = Mouse; return r.Contains(m) && visible.Contains(m); }
 
         /// <summary>전환 애니메이션용: 이 값(0 ~ 1)을 모든 그리기 색 알파에 곱함. 쓰고 나면 되돌릴 것.</summary>
         public static float Opacity = 1f;
@@ -69,7 +74,7 @@ namespace CSCommon
         public static void Shift(Vector2 d) => offset += d;
 
         /// <summary>
-        /// 글 속 목록 점(GLDS): 글자 • 대신 도형 — 지름 = 글 크기 × 0.38, 깊이 0 채운 원 → 1 빈 원(선 × 0.24) → 2 채운 네모(× 0.86) → 다시 채운 원.
+        /// 글 속 목록 점(시안 '글 속 목록 점'): 글자 • 대신 도형 — 지름 = 글 크기 × 0.38(13.5 → 5), 깊이 0 채운 원 → 1 빈 원(선 × 0.24) → 2 채운 네모(× 0.8 → 4) → 다시 채운 원.
         /// center = 첫 줄 높이의 가운데, 색 = 글과 같은 색.
         /// </summary>
         public static void Bullet(Vector2 center, float fontSize, int depth, Color c)
@@ -78,7 +83,7 @@ namespace CSCommon
             switch (depth % 3)
             {
                 case 1: Ring(center, d * 0.5f - d * 0.12f, d * 0.24f, c); break;
-                case 2: Fill(new Rect(center.x - d * 0.43f, center.y - d * 0.43f, d * 0.86f, d * 0.86f), c); break;
+                case 2: Fill(new Rect(center.x - d * 0.4f, center.y - d * 0.4f, d * 0.8f, d * 0.8f), c); break;
                 default: Dot(center, d * 0.5f, c); break;
             }
         }
@@ -520,6 +525,7 @@ namespace CSCommon
                 facesFound = true;
                 // 찾기 전에 만든 글 모양(기본 글꼴)은 버림
                 textStyles.Clear();
+                widthCache.Clear();
                 CSCommonLog.Info($"글꼴: 게임 UI 글꼴 씀(보통 {faceRegular.name} · 굵게 {(faceBold != null ? faceBold.name : "엔진 굵게")})");
             }
             catch (Exception e)
@@ -713,12 +719,29 @@ namespace CSCommon
         /// <summary>바탕색 위에서 읽히는 글자색: 밝은 바탕 = 어두운 글(Pal.OnLight), 어두운 바탕 = 흰 글(테마와 상관없이 바탕 밝기로).</summary>
         public static Color On(Color bg) => 0.299f * bg.r + 0.587f * bg.g + 0.114f * bg.b > 0.62f ? Pal.OnLight : Color.white;
 
-        static readonly Dictionary<string, string> ellipsisCache = new();
+        /// <summary>캐시 키(글 · 정수 셋): 문자열을 이어 붙이지 않아 찾을 때 쓰레기가 없음. 글은 값으로 비교(참조가 같으면 바로).</summary>
+        struct TextKey
+        {
+            public string T;
+            public int A, B, C;
+            public TextKey(string t, int a, int b, int c) { T = t; A = a; B = b; C = c; }
+        }
+
+        sealed class TextKeyComparer : IEqualityComparer<TextKey>
+        {
+            public static readonly TextKeyComparer I = new();
+            public bool Equals(TextKey x, TextKey y) => x.A == y.A && x.B == y.B && x.C == y.C && string.Equals(x.T, y.T);
+            public int GetHashCode(TextKey k) { unchecked { return (((k.T?.GetHashCode() ?? 0) * 397 ^ k.A) * 397 ^ k.B) * 397 ^ k.C; } }
+        }
+
+        static readonly Dictionary<TextKey, string> ellipsisCache = new(TextKeyComparer.I);
+        // 글 폭 캐시: (글, 화소 크기, 굵기) → CalcSize 화소 폭. 글꼴을 찾으면(EnsureFaces) 비움, 배율은 화소 크기에 들어 있음
+        static readonly Dictionary<TextKey, float> widthCache = new(TextKeyComparer.I);
 
         public static string Ellipsis(string text, float size, bool bold, float width)
         {
             if (TextWidth(text, size, bold) <= width) return text;
-            string key = text + "\u0001" + Px(size) + (bold ? "b" : "") + Mathf.RoundToInt(width);
+            var key = new TextKey(text, Px(size), bold ? 1 : 0, Mathf.RoundToInt(width));
             if (ellipsisCache.TryGetValue(key, out string cut)) return cut;
             int lo = 0, hi = text.Length;
             while (lo < hi)
@@ -736,9 +759,17 @@ namespace CSCommon
         public static float TextWidth(string text, float size, bool bold = false)
         {
             if (string.IsNullOrEmpty(text)) return 0f;
-            var style = TextStyle(Px(size), bold, TextAnchor.MiddleLeft, false);
-            content.text = text;
-            return style.CalcSize(content).x / S;
+            int px = Px(size);
+            var key = new TextKey(text, px, bold ? 1 : 0, 0);
+            if (!widthCache.TryGetValue(key, out float w))
+            {
+                var style = TextStyle(px, bold, TextAnchor.MiddleLeft, false);
+                content.text = text;
+                w = style.CalcSize(content).x;
+                if (widthCache.Count > 4000) widthCache.Clear();
+                widthCache[key] = w;
+            }
+            return w / S;
         }
 
         public static float TextHeight(string text, float size, float width, bool bold = false)
@@ -755,6 +786,7 @@ namespace CSCommon
         // 프레임마다 늘고 줄면 밀려서, 누를 때와 뗄 때 번호가 달라 클릭이 사라졌음(확인 상자 · 창 버튼이 안 눌림).
         static bool held;
         static int heldKey;
+        static int releaseFrame = -1;
 
         /// <summary>IMGUI 버튼을 누르고 있는 중(지도 도구가 클릭을 가져가지 않게).</summary>
         public static bool Holding => held && Input.GetMouseButton(0);
@@ -806,19 +838,28 @@ namespace CSCommon
         public static void EndInput()
         {
             var e = Event.current;
-            if (e != null && e.rawType == EventType.MouseUp && e.button == 0) held = false;
+            if (e != null && e.rawType == EventType.MouseUp && e.button == 0) releaseFrame = Time.frameCount;
         }
 
         /// <summary>누르고 있는 동안 true(꾹 누르기).</summary>
         public static bool Pressed(Rect r) => (held || GUIUtility.hotControl != 0) && Input.GetMouseButton(0) && Hover(r);
 
         /// <summary>글 입력 칸. 배율 맞춘 GUI.TextField.</summary>
+        // 글 입력 칸 모양: (글자 화소, 여백 화소)마다 하나. 글색은 테마가 바뀔 수 있어 부를 때마다 넣음
+        static readonly Dictionary<long, GUIStyle> fieldStyles = new();
+
         public static string Field(Rect r, string value, float size, int maxLength)
         {
-            var style = new GUIStyle(GUI.skin.textField) { fontSize = Px(size), alignment = TextAnchor.MiddleLeft, padding = new RectOffset(Px(10), Px(10), 0, 0) };
-            style.normal.background = null;
-            style.focused.background = null;
-            style.hover.background = null;
+            int fpx = Px(size), pad = Px(10);
+            long key = ((long)fpx << 32) | (uint)pad;
+            if (!fieldStyles.TryGetValue(key, out var style))
+            {
+                style = new GUIStyle(GUI.skin.textField) { fontSize = fpx, alignment = TextAnchor.MiddleLeft, padding = new RectOffset(pad, pad, 0, 0) };
+                style.normal.background = null;
+                style.focused.background = null;
+                style.hover.background = null;
+                fieldStyles[key] = style;
+            }
             style.normal.textColor = style.focused.textColor = style.hover.textColor = Pal.Txt;
             return GUI.TextField(ToScreen(r), value ?? "", maxLength, style);
         }
@@ -1033,7 +1074,8 @@ namespace CSCommon
 
         // ---------------- 선명한 아이콘 · 그림
 
-        static readonly Dictionary<string, Texture2D> iconCache = new();
+        // 키 = (경로 글, 화소, 선 굵기 · viewBox 를 1/10000 단위 정수로) — 예전 문자열 이어 붙인 키와 같은 구분, 찾을 때 쓰레기 없음
+        static readonly Dictionary<TextKey, Texture2D> iconCache = new(TextKeyComparer.I);
 
         /// <summary>
         /// 아웃라인 아이콘(SVG 경로, viewBox 0 ~ viewBox 정사각): 화면 화소 크기에 맞춰 선까지 거리로 한 번 구운 텍스처(둥근 끝 · 둥근 이음)를
@@ -1044,7 +1086,7 @@ namespace CSCommon
             if (!Repaint || c.a <= 0f || string.IsNullOrEmpty(d)) return;
             Rect sr = ToScreen(r);
             int px = Mathf.Max(4, Mathf.RoundToInt(sr.width));
-            string key = d + "|" + px + "|" + stroke.ToString(CultureInfo.InvariantCulture) + "|" + viewBox.ToString(CultureInfo.InvariantCulture);
+            var key = new TextKey(d, px, Mathf.RoundToInt(stroke * 10000f), Mathf.RoundToInt(viewBox * 10000f));
             if (!iconCache.TryGetValue(key, out var tex) || tex == null)
             {
                 tex = BakeIcon(d, px, viewBox, stroke);
@@ -1171,7 +1213,7 @@ namespace CSCommon
         public static void Arc(Vector2 center, float radius, float width, float fromDeg, float toDeg, Color c, float feather = 0f)
         {
             if (!Repaint || c.a <= 0f || width <= 0f) return;
-            if (toDeg < fromDeg) (fromDeg, toDeg) = (toDeg, fromDeg);
+            if (toDeg < fromDeg) { float t = fromDeg; fromDeg = toDeg; toDeg = t; }
             int a0 = Mathf.RoundToInt(fromDeg * 2f), a1 = Mathf.RoundToInt(toDeg * 2f);
             if (a1 - a0 > 720) a1 = a0 + 720;
             if (a1 <= a0) return;

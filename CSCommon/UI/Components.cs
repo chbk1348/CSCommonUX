@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     // CSCommon 컴포넌트(디자인 아티팩트 'CSCommon 컴포넌트' 페이지 · 입력 / 표시 · 알림 / 판 · 창 보드 그대로).
     // 공통 규칙: 톤 바탕 · 테두리 없음(초점 · 고름만 청록 1.5px) · 높이 40(작게 32) · 글 14.5 · 아이콘 18 뜻 색 · 꺼짐 #5B6370.
@@ -31,11 +31,82 @@ namespace CSCommon
         /// <summary>떠 있는 판 그림자 한 겹 알파(다크 0.045 / 라이트 0.03).</summary>
         public static float ShadowAlpha = 0.045f;
 
+        /// <summary>
+        /// C안 알약(하단 툴바 · 서브 알약 · 독 · FAB): 판 바탕 · 1px 선 · 안 고른 칸 아이콘/글 · 모드 파스텔(고른 칸 채움 · 글) · 서브 파스텔(채움 · 글) ·
+        /// FAB 되돌리기(파랑) · 취소(빨강). CSCommonTheme.Use 가 테마 · 팔레트에 맞춰 채움(기본값 = 다크 청록).
+        /// </summary>
+        public static Color BarSurface = Draw.Hex("#1B1E24"), BarLine = new(1f, 1f, 1f, 0.08f), BarOff = Draw.Hex("#A7ADB8");
+        public static Color PastelFill = Draw.Hex("#B8EFE6"), PastelInk = Draw.Hex("#0A3D37"), PastelSubFill = new(184f / 255f, 239f / 255f, 230f / 255f, 0.18f), PastelSubInk = Draw.Hex("#D3F5EF");
+        public static Color FabUndoFill = Draw.Hex("#BCD4FF"), FabUndoInk = Draw.Hex("#0F2A5C"), FabCancelFill = Draw.Hex("#FFC9C4"), FabCancelInk = Draw.Hex("#5C0F0B");
+        /// <summary>독 모드 나가기 FAB 아이콘(빨강 — 면은 판 바탕) · 독 안내 알약 머리 글.</summary>
+        public static Color FabExitInk = Draw.Hex("#FF6B5E"), BarInk = Color.white;
+        /// <summary>CSCommonUX.Button · IconButton(시안 'CSCommonUX.Button'): 주 · 지움 · 보통 · 글 톤 호버 · 누름 면, 꺼진 단추 면 · 글, 꺼진 아이콘 단추 아이콘.</summary>
+        public static Color PastelHover = Draw.Hex("#A8E8DE"), PastelPress = Draw.Hex("#98E0D5"), DangerHover = Draw.Hex("#FFBAB4"), DangerPress = Draw.Hex("#FFAAA3");
+        public static Color NeutralHover = Draw.Hex("#30363F"), NeutralPress = Draw.Hex("#22262E"), TextHover = new(184f / 255f, 239f / 255f, 230f / 255f, 0.10f), TextPress = new(184f / 255f, 239f / 255f, 230f / 255f, 0.18f);
+        public static Color BtnOff = new(1f, 1f, 1f, 0.03f), BtnOffInk = Draw.Hex("#5B6370"), IconOffInk = Draw.Hex("#4A505B");
+
+        /// <summary>
+        /// 모달 · 알약 글 칸(시안 'CSCommonUX.Modal' · 'CSCommonUX.Textfield'): 덮개 · 발/머리 띠 면 · 발 위 선 · 알약 바탕(글 칸 · 탭 홈 · 타일) · 회색 알약(보통 단추 · 닫기 원) ·
+        /// 회색 알약 글 · 알약 호버 선 · 밑줄 제목 선 · 파스텔 테두리(초점 · 커서 · 밑줄) · 파스텔 글 단추 · 손잡이 점 투명도 · 모달 그림자(알파 · 아래 · 흐림).
+        /// </summary>
+        public static Color Scrim = new(5f / 255f, 6f / 255f, 8f / 255f, 0.55f), Foot = Draw.Hex("#171A20"), FootLine = Draw.Hex("#22262E");
+        public static Color Pill = Draw.Hex("#1B1F26"), PillNeutral = Draw.Hex("#262B33"), PillNeutralInk = Draw.Hex("#C9CFD8"), PillHoverLine = Draw.Hex("#30363F"), TitleLine = Draw.Hex("#3A404B");
+        public static Color PastelRing = Draw.Hex("#B8EFE6"), PastelLink = Draw.Hex("#B8EFE6");
+        public static float GripAlpha = 0.6f, ModalShadow = 0.5f, ModalShadowY = 10f, ModalShadowBlur = 26f;
+
+        /// <summary>
+        /// 컨트롤 시안(CtlA · B · C): 분절 고른 칸 면 · 보조 글(서브라벨 · 타일 · 줄 메모 · 숫자 이름) · 알약 1px 선(칩 · 우물 · 카드 · 토스트 · 슬라이더 빈 막대) ·
+        /// 펼친 목록 면 · 선 · 줄 호버 · 손잡이(슬라이더 · 채운 눈금) · 꺼진 손잡이(스위치 · 빈 눈금) · 파스텔 위 보조 글 · 색 칸 선 · 진한 파스텔(슬라이더 · 목표 넘은 막대) ·
+        /// 못 미친 막대 · 말풍선 면 · 글 · 상태 알약 주황 면 · 글. CSCommonTheme.UsePastel 이 채움(기본값 = 다크 청록).
+        /// </summary>
+        public static Color SegmentOn = Draw.Hex("#3A404B"), PillSub = Draw.Hex("#7F8894"), PillLine = Draw.Hex("#30363F");
+        public static Color MenuSurface = Draw.Hex("#1F232B"), MenuLine = new(1f, 1f, 1f, 0.14f), MenuHover = Draw.Hex("#2A3039");
+        public static Color Knob = Draw.Hex("#FCFCFC"), KnobOff = Draw.Hex("#8A919B"), PastelNote = Draw.Hex("#0A3D37"), SwatchLine = new(1f, 1f, 1f, 0.12f);
+        public static Color PastelStrong = Draw.Hex("#B8EFE6"), ProgressLow = Draw.Hex("#FFA94D"), TipFill = Draw.Hex("#0B0D11"), TipInk = Draw.Hex("#ECEDF2");
+        public static Color WarnFill = Draw.Hex("#FFD9A8"), WarnInk = Draw.Hex("#5A3000");
+
         /// <summary>호버 0 ~ 1(서서히).</summary>
         public static float Hover(int key, Rect r, bool enabled = true) => CSCommonAnim.Toward(key, enabled && Draw.Hover(r) ? 1f : 0f, 12f);
 
-        /// <summary>누름 0 ~ 1(누르는 동안 빠르게).</summary>
-        public static float Press(int key, Rect r, bool enabled = true) => CSCommonAnim.Toward(key ^ 0x27d4eb2f, enabled && Draw.Hover(r) && Draw.Pressed(r) ? 1f : 0f, 22f);
+        /// <summary>눌림: 누르는 데 걸리는 초 · 떼고 돌아오는 초 · 돌아오는 곡선 cubic-bezier(.2, .9, .3, 1.3)(시안 '.press' — 살짝 넘쳤다 앉음).</summary>
+        public const float PressInSeconds = 0.03f, PressOutSeconds = 0.26f, PressX1 = 0.2f, PressY1 = 0.9f, PressX2 = 0.3f, PressY2 = 1.3f;
+
+        struct PressRun
+        {
+            public float V, From, Rel, Last;
+            public bool Down;
+        }
+
+        static readonly Dictionary<int, PressRun> presses = new();
+
+        /// <summary>
+        /// 누름 정도: 누르는 동안 0.03초에 0 → 1, 떼면 0.26초 동안 시안 곡선으로 0 쪽으로 돌아가며 잠깐 0 아래(음수)로 넘침.
+        /// 배율은 PressScale(press, 눌림 배율) 로 — 넘침이 잘리지 않게(Mathf.Lerp 는 0 ~ 1 로 자름). 그리기(Repaint) 때만 움직임.
+        /// </summary>
+        public static float Press(int key, Rect r, bool enabled = true)
+        {
+            key ^= 0x27d4eb2f;
+            bool down = enabled && Draw.Hover(r) && Draw.Pressed(r);
+            float now = Time.unscaledTime;
+            if (!presses.TryGetValue(key, out var s)) s = new PressRun { Rel = -100f, Last = now };
+            if (Event.current == null || Event.current.type == EventType.Repaint)
+            {
+                if (down) s.V = Mathf.MoveTowards(Mathf.Max(s.V, 0f), 1f, Mathf.Clamp(now - s.Last, 0f, 0.1f) / PressInSeconds);
+                else
+                {
+                    if (s.Down) { s.From = s.V; s.Rel = now; }
+                    float t = (now - s.Rel) / PressOutSeconds;
+                    s.V = t >= 1f ? 0f : s.From * (1f - Modal.Ease(t, PressX1, PressY1, PressX2, PressY2));
+                }
+                s.Down = down;
+                s.Last = now;
+                presses[key] = s;
+            }
+            return s.V;
+        }
+
+        /// <summary>눌림 정도 → 그릴 배율(1 ↔ scale, 뗄 때 1 을 살짝 넘음).</summary>
+        public static float PressScale(float press, float scale) => Mathf.LerpUnclamped(1f, scale, press);
 
         public static int Key(Rect r, string a, string b = null)
         {
@@ -86,6 +157,9 @@ namespace CSCommon
         public const string Info = "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-5M12 8h.01";
         public const string Trash = "M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2";
         public const string Undo = "M3 10h10a5 5 0 0 1 5 5v2M3 10l5-5M3 10l5 5";
+        /// <summary>모드 나가기(문 + 바깥 화살표) · 확정 체크(독 FAB).</summary>
+        public const string Exit = "M9 21H5V3h4M16 17l5-5-5-5M21 12H9";
+        public const string Done = "M5 12.5L9.5 17L19 7.5";
 
         /// <summary>한 글자 단추 글 → 아이콘(− + × ‹ › ✓), 없으면 null.</summary>
         public static string ForGlyph(string text) => text switch
@@ -100,90 +174,106 @@ namespace CSCommon
         };
     }
 
-    /// <summary>CSCommon.Button — 공통 단추(톤 바탕 + 뜻 색 아이콘). 글에 맞춘 너비(At) · 주어진 칸(In) · 아이콘만 네모(Square).</summary>
+    /// <summary>
+    /// CSCommonUX.Button — 공통 단추(시안 'CSCommonUX.Button'): 알약(반지름 = 높이/2) · 그림자 · 테두리 없음, [아이콘 + 글] 한 덩어리를 칸 정가운데.
+    /// 보통 높이 40 · 좌우 20 · 사이 8 · 글 14.5 · 아이콘 18, 작게(small · 높이 36 미만 칸) 32 · 16 · 6 · 12.5 · 15. 아이콘만이면 정사각(40 · 32).
+    /// 톤: 주 = 모드 파스텔(굵게) · 보통 = 회색 알약 · 지움 = 빨강 파스텔(굵게) · 글 = 면 없이 파스텔 글(호버 · 누름에 옅은 파스텔 면). 호버 · 누름은 한 단씩 진해지고 누르면 0.95배.
+    /// 꺼짐 = 옅은 면(글 톤은 면 없음) + 흐린 글. 글에 맞춘 너비(At) · 주어진 칸(In) · 아이콘만(Square).
+    /// </summary>
     public static class Button
     {
-        /// <summary>글에 맞춘 너비(small = 높이 32 · 글 12.5).</summary>
+        /// <summary>높이 · 좌우 · 아이콘↔글 · 글 · 아이콘(보통 / 작게) · 누름 배율.</summary>
+        public const float H = 40f, PadX = 20f, Gap = 8f, Font = 14.5f, Icon = 18f;
+        public const float HSmall = 32f, PadXSmall = 16f, GapSmall = 6f, FontSmall = 12.5f, IconSmall = 15f, PressScale = 0.95f;
+
+        /// <summary>글에 맞춘 너비(small = 높이 32). 글이 없으면 정사각.</summary>
         public static float Width(string icon, string label, bool small = false)
         {
-            float font = small ? CSCommonDesign.ActionFontSmall : CSCommonDesign.ActionFont;
-            float isz = small ? CSCommonDesign.ActionIconSmall : CSCommonDesign.ActionIcon;
-            float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, font));
-            float iw = string.IsNullOrEmpty(icon) ? 0f : isz + (tw > 0f ? CSCommonDesign.ActionGap : 0f);
-            if (tw <= 0f) return small ? CSCommonDesign.ActionHeightSmall : CSCommonDesign.ActionHeight;
-            return (small ? 10f : CSCommonDesign.ActionPadL) + iw + tw + (small ? 12f : CSCommonDesign.ActionPadR);
+            float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, small ? FontSmall : Font, true));
+            if (tw <= 0f) return small ? HSmall : H;
+            float iw = string.IsNullOrEmpty(icon) ? 0f : (small ? IconSmall + GapSmall : Icon + Gap);
+            return (small ? PadXSmall : PadX) * 2f + iw + tw;
         }
 
         /// <summary>줄 가운데 cy · 왼쪽 x 에 글에 맞춘 단추(draw = false 면 재기만). 그린 너비를 돌려줌.</summary>
         public static float At(float x, float cy, string icon, string label, string tip, Tone tone, Color? iconColor = null, bool enabled = true, Action click = null, bool draw = true, bool small = false, bool loading = false)
         {
             float w = Width(icon, label, small);
-            float h = small ? CSCommonDesign.ActionHeightSmall : CSCommonDesign.ActionHeight;
-            if (draw) In(new Rect(x, Mathf.Round(cy - h * 0.5f), w, h), icon, label, tip, tone, iconColor, enabled, click, false, loading);
+            float h = small ? HSmall : H;
+            if (draw) In(new Rect(x, Mathf.Round(cy - h * 0.5f), w, h), icon, label, tip, tone, iconColor, enabled, click, loading);
             return w;
         }
 
-        /// <summary>주어진 칸에 단추. 아이콘 + 글 묶음은 늘 칸 정가운데(UX 1.1 — left 는 예전 호출 호환용, 무시). 높이 36 미만이면 작은 글 · 아이콘. loading = 글 대신 스피너 · 누름 안 받음.</summary>
-        public static void In(Rect r, string icon, string label, string tip, Tone tone, Color? iconColor = null, bool enabled = true, Action click = null, bool left = true, bool loading = false)
+        /// <summary>주어진 칸에 단추. 높이 36 미만이면 작은 글 · 아이콘. iconColor = 아이콘 뜻 색(없으면 톤 글색). loading = 글 대신 스피너 · 누름 안 받음.</summary>
+        public static void In(Rect r, string icon, string label, string tip, Tone tone, Color? iconColor = null, bool enabled = true, Action click = null, bool loading = false)
         {
             int key = Look.Key(r, icon, label) ^ 0x2f9a6b1d;
-            float hv = Look.Hover(key, r, enabled && !loading), pr = Look.Press(key, r, enabled && !loading);
+            bool live = enabled && !loading;
+            float hv = Look.Hover(key, r, live), pr = Look.Press(key, r, live);
             if (Draw.Repaint)
             {
-                // 누르면 0.97배로 줄고 한 단 진해짐(GLDS 눌림)
-                Draw.BeginScale(r.center, Mathf.Lerp(1f, CSCommonDesign.PressScale, pr));
+                Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
                 bool text = tone == Tone.Text;
-                Color bg;
-                if (!enabled) bg = text ? Color.clear : Look.Off;
-                // UX 1.1: 주 단추는 주 색으로 꽉 채움 · 호버는 한 단 진하게(라이트) / 밝게(다크)
-                else if (tone == Tone.Primary) bg = Color.Lerp(Pal.Primary, Pal.Haze, 0.10f * hv + 0.08f * pr);
-                else if (text) bg = Color.Lerp(Draw.Alpha(Pal.Primary, 0.08f * hv), Draw.Alpha(Pal.Primary, 0.12f), pr);
-                else bg = Color.Lerp(Color.Lerp(Look.Tone0, Look.Tone1, hv), Look.Tone2, pr);
-                if (bg.a > 0f) Draw.Round(r, bg, CSCommonDesign.ActionRadius);
-                bool big = r.height >= 36f;
-                float font = big ? CSCommonDesign.ActionFont : CSCommonDesign.ActionFontSmall;
-                float isz = big ? CSCommonDesign.ActionIcon : CSCommonDesign.ActionIconSmall;
-                bool filled = enabled && tone == Tone.Primary;
-                Color ink = !enabled ? Look.OffInk : filled ? Pal.OnPrimary : iconColor ?? (text ? Pal.Primary : tone == Tone.Danger ? Pal.Red : Pal.Sub);
-                Color textInk = !enabled ? Look.OffText : filled ? Pal.OnPrimary : text ? Pal.PrimaryInk : Color.Lerp(Pal.Txt, Pal.Strong, hv);
-                float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, font));
-                float iw = string.IsNullOrEmpty(icon) ? 0f : isz + (tw > 0f ? CSCommonDesign.ActionGap : 0f);
+                Color bg, ink;
+                if (!enabled)
+                {
+                    bg = text ? Color.clear : Look.BtnOff;
+                    ink = Look.BtnOffInk;
+                }
+                else
+                {
+                    switch (tone)
+                    {
+                        case Tone.Primary: bg = Tri(Look.PastelFill, Look.PastelHover, Look.PastelPress, hv, pr); ink = Look.PastelInk; break;
+                        case Tone.Danger: bg = Tri(Look.FabCancelFill, Look.DangerHover, Look.DangerPress, hv, pr); ink = Look.FabCancelInk; break;
+                        case Tone.Text: bg = Tri(Color.clear, Look.TextHover, Look.TextPress, hv, pr); ink = Look.PastelLink; break;
+                        default: bg = Tri(Look.PillNeutral, Look.NeutralHover, Look.NeutralPress, hv, pr); ink = Look.PillNeutralInk; break;
+                    }
+                }
+                if (bg.a > 0f) Draw.Round(r, bg, Mathf.Min(r.width, r.height) * 0.5f);
+                bool small = r.height < 36f;
+                bool bold = tone == Tone.Primary || tone == Tone.Danger;
+                float font = small ? FontSmall : Font, isz = small ? IconSmall : Icon;
+                float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, font, bold));
+                float iw = string.IsNullOrEmpty(icon) ? 0f : isz + (tw > 0f ? (small ? GapSmall : Gap) : 0f);
                 // 칸보다 길면 왼쪽 6 부터(넘친 글은 TextFit 이 줄임)
                 float x = Mathf.Max(r.x + 6f, Mathf.Round(r.center.x - (iw + tw) * 0.5f));
                 if (loading)
+                    Draw.Spinner(r.center, isz * 0.5f - 1f, 2f, ink);
+                else
                 {
-                    // 로딩: 글 · 아이콘 대신 구글 서클 인디케이터(아이콘 크기 · 선 2 · 글자색), 폭은 그대로
-                    Draw.Spinner(r.center, isz * 0.5f - 1f, 2f, textInk);
+                    if (!string.IsNullOrEmpty(icon))
+                        Draw.Icon(icon, new Rect(x, Mathf.Round(r.center.y - isz * 0.5f), isz, isz), enabled ? iconColor ?? ink : ink, 24f, 2f);
+                    // 글만 있는 단추는 칸 정가운데(가로 · 세로)
+                    if (tw > 0f && iw <= 0f)
+                        Draw.TextFit(new Rect(r.x + 6f, r.y, r.width - 12f, r.height), label, font, ink, bold, TextAnchor.MiddleCenter);
+                    else if (tw > 0f)
+                        Draw.TextFit(new Rect(x + iw, r.y, Mathf.Max(0f, r.xMax - x - iw - 6f), r.height), label, font, ink, bold, TextAnchor.MiddleLeft);
                 }
-                else if (!string.IsNullOrEmpty(icon))
-                    Draw.Icon(icon, new Rect(x, Mathf.Round(r.center.y - isz * 0.5f), isz, isz), ink, 24f, 2f);
-                // 글만 있는 가운데 단추는 칸 정가운데(가로 · 세로)
-                if (loading) { }
-                else if (tw > 0f && iw <= 0f)
-                    Draw.TextFit(new Rect(r.x + 6f, r.y, r.width - 12f, r.height), label, font, textInk, false, TextAnchor.MiddleCenter);
-                else if (tw > 0f)
-                    Draw.TextFit(new Rect(x + iw, r.y, Mathf.Max(0f, r.xMax - x - iw - 6f), r.height), label, font, textInk, false, TextAnchor.MiddleLeft);
                 Draw.EndScale();
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
-            if (enabled && !loading && Draw.Button(r)) click?.Invoke();
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            if (live && Draw.Button(r)) click?.Invoke();
         }
 
-        /// <summary>아이콘만 네모 단추(− · + · 지우기 · 닫기 · ‹ ›). 누르면 true.</summary>
+        /// <summary>평소 → 호버 → 누름 면(한 단씩 진하게).</summary>
+        static Color Tri(Color idle, Color hover, Color press, float hv, float pr) => Color.Lerp(Color.Lerp(idle, hover, hv), press, pr);
+
+        /// <summary>아이콘만 정사각 단추(− · + · 지우기 · 닫기 · ‹ ›). 누르면 true.</summary>
         public static bool Square(Rect r, string icon, string tip = null, Tone tone = Tone.Neutral, bool enabled = true, Color? iconColor = null)
         {
             bool hit = false;
-            In(r, icon, null, tip, tone, iconColor ?? (tone == Tone.Neutral ? Pal.Txt : (Color?)null), enabled, () => hit = true, false);
+            In(r, icon, null, tip, tone, iconColor, enabled, () => hit = true);
             return hit;
         }
 
-        /// <summary>한 글자 네모(예전 '−' '+' '‹' '›' 단추): 아는 글자는 아이콘, 아니면 글.</summary>
+        /// <summary>한 글자 정사각(예전 '−' '+' '‹' '›' 단추): 아는 글자는 아이콘, 아니면 글.</summary>
         public static bool Glyph(Rect r, string text, bool enabled = true)
         {
             string icon = Icons.ForGlyph(text);
             if (icon != null) return Square(r, icon, null, Tone.Neutral, enabled);
             bool hit = false;
-            In(r, null, text, null, Tone.Neutral, null, enabled, () => hit = true, false);
+            In(r, null, text, null, Tone.Neutral, null, enabled, () => hit = true);
             return hit;
         }
 
@@ -198,38 +288,50 @@ namespace CSCommon
         }
     }
 
-    /// <summary>CSCommon.IconButton — 위 판 아이콘 단추(38): 평소 투명 · 호버 톤 · 켜짐 청록 톤.</summary>
+    /// <summary>
+    /// CSCommonUX.IconButton — 아이콘 원 단추(시안 'CSCommonUX.IconButton'): 지름 40 · 아이콘 20 · 평소 면 없이 Look.BarOff, 호버 = 회색 원 면 + 짙은 아이콘,
+    /// 켜짐 = 모드 파스텔 원(파스텔 글), 꺼짐 = 흐린 아이콘. 누르면 0.88배.
+    /// </summary>
     public static class IconButton
     {
+        /// <summary>지름 · 아이콘 · 누름 배율.</summary>
+        public const float Size = 40f, IconSize = 20f, PressScale = 0.88f;
+
         public static float At(float x, float cy, string icon, bool on, string tip, bool draw, Action click, Color? color = null, bool enabled = true)
         {
-            float s = CSCommonDesign.IconBtnSize;
-            if (!draw) return s;
-            var r = new Rect(x, Mathf.Round(cy - s * 0.5f), s, s);
+            if (!draw) return Size;
+            var r = new Rect(x, Mathf.Round(cy - Size * 0.5f), Size, Size);
             int key = Look.Key(r, icon, tip) ^ 0x4cf5ad43;
             float hv = Look.Hover(key, r, enabled), pr = Look.Press(key, r, enabled);
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 9f);
             if (Draw.Repaint)
             {
-                Draw.Round(r, Draw.Alpha(Look.Tone0, hv * (1f - onT)), CSCommonDesign.RadiusTile);
-                if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Primary, 0.16f * onT), CSCommonDesign.RadiusTile);
-                Color fg = !enabled ? Look.OffInk : color ?? Color.Lerp(Color.Lerp(Pal.Sub, Pal.Txt, hv), Pal.Primary, onT);
-                Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - 9f), Mathf.Round(r.center.y - 9f + pr), 18f, 18f), fg, 24f, 1.9f);
+                float rad = Size * 0.5f;
+                Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
+                if (hv * (1f - onT) > 0.01f) Draw.Round(r, Draw.Alpha(Look.PillNeutral, hv * (1f - onT)), rad);
+                if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Color.Lerp(Look.PastelFill, Look.PastelHover, hv), onT), rad);
+                Color fg = !enabled ? Look.IconOffInk : Color.Lerp(color ?? Color.Lerp(Look.BarOff, Look.BarInk, hv), Look.PastelInk, onT);
+                Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - IconSize * 0.5f), Mathf.Round(r.center.y - IconSize * 0.5f), IconSize, IconSize), fg, 24f, 1.9f);
+                Draw.EndScale();
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             if (enabled && Draw.Button(r)) click?.Invoke();
-            return s;
+            return Size;
         }
     }
 
     /// <summary>
-    /// CSCommon.Chip — 필터 알약 32(GLDS 칩 D): 평소 Field + 안쪽 1 Tone1, 고르면 테두리 없이 기본 팔레트 12% + Ink 굵게(color = 팀 색이면 그 색),
-    /// ▾(dropdown — 목록을 여는 칩) · ✕(고른 칩에 clear 를 주면), 누르면 0.95배.
+    /// CSCommonUX.Chip — 필터 알약(시안 'CSCommonUX.Chip'): 높이 32 · 좌우 14 · 글 13 · 반지름 = 높이/2. 평소 Look.Pill + 안쪽 1px Look.PillLine(호버 Look.NeutralHover),
+    /// 고르면 선 없이 모드 파스텔 + 굵은 파스텔 글(0.2초). color = 팀 색이면 고른 칩을 그 색의 옅은 면 · 짙은 글로(팀 칩은 호버 없음).
+    /// ▾(dropdown — 목록을 여는 칩) · ✕(고른 칩에 clear 를 주면) 14 · 글 뒤 4, 누르면 0.95배. 폭은 굵은 글로 재서 고를 때 안 바뀜.
     /// </summary>
     public static class Chip
     {
+        /// <summary>팀 색 → 고른 칩 면(흰색에 섞는 비율 라이트 · 다크) · 글(어둡게 하는 배율 라이트 · 다크) · 색 전환 초.</summary>
+        const float TeamFillLight = 0.13f, TeamFillDark = 0.22f, TeamInkLight = 0.6f, TeamInkDark = 0.4f, FadeSeconds = 0.2f, Stroke = 2.4f;
+
         public static float Width(string label, bool on, bool icon)
-            => CSCommonDesign.ChipPadX * 2f + Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ChipFont, on)) + (icon ? CSCommonDesign.ChipIconGap + CSCommonDesign.ChipIcon : 0f);
+            => CSCommonDesign.ChipPadX * 2f + Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ChipFont, true)) + (icon ? CSCommonDesign.ChipIconGap + CSCommonDesign.ChipIcon : 0f);
 
         /// <summary>줄 가운데 cy · 왼쪽 x 에 칩(draw = false 면 재기만). 그린 너비를 돌려줌.</summary>
         public static float At(float x, float cy, string label, bool on, Action click, bool draw = true, string tip = null, Color? color = null, bool dropdown = false, Action clear = null)
@@ -239,27 +341,33 @@ namespace CSCommon
             if (!draw) return w;
             var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
             int key = Look.Key(r, "chip", label);
-            float hv = Look.Hover(key, r), pr = Look.Press(key, r);
+            float hv = Look.Hover(key, r, !on && color == null), pr = Look.Press(key, r);
+            float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {
-                Draw.BeginScale(r.center, Mathf.Lerp(1f, CSCommonDesign.ChipPressScale, pr));
-                Color fg = on ? color ?? Pal.PrimaryInk : Pal.Txt;
-                if (on) Draw.Round(r, Draw.Alpha(color ?? Pal.Primary, 0.12f + 0.06f * hv), h * 0.5f);
-                else
+                float rad = h * 0.5f;
+                Draw.BeginScale(r.center, Look.PressScale(pr, CSCommonDesign.ChipPressScale));
+                Color fill = Look.PastelFill, ink = Look.PastelInk;
+                if (color.HasValue)
                 {
-                    Draw.Round(r, Color.Lerp(Look.Field, Look.Tone0, hv), h * 0.5f);
-                    Draw.RoundOutline(r, Look.Tone1, h * 0.5f);
+                    bool light = CSCommonTheme.Light;
+                    fill = Color.Lerp(Color.white, color.Value, light ? TeamFillLight : TeamFillDark);
+                    ink = Draw.Shade(color.Value, light ? TeamInkLight : TeamInkDark);
+                    fill.a = ink.a = 1f;
                 }
-                float tx = r.x + CSCommonDesign.ChipPadX, tw = Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ChipFont, on));
-                Draw.Text(new Rect(tx, r.y, tw + 2f, h), label, CSCommonDesign.ChipFont, fg, on, TextAnchor.MiddleLeft);
+                Draw.Round(r, Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), fill, onT), rad);
+                if (onT < 0.99f) Draw.RoundOutline(r, Draw.Alpha(Look.PillLine, 1f - onT), rad);
+                Color fg = Color.Lerp(Look.BarInk, ink, onT);
+                float tx = r.x + CSCommonDesign.ChipPadX, tw = Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ChipFont, true));
+                Draw.Text(new Rect(tx, r.y, tw, h), label, CSCommonDesign.ChipFont, fg, on, TextAnchor.MiddleCenter);
                 if (canClear || dropdown)
                 {
                     float s = CSCommonDesign.ChipIcon;
-                    Draw.Icon(canClear ? Icons.Close : Icons.Chevron, new Rect(tx + tw + CSCommonDesign.ChipIconGap, Mathf.Round(r.center.y - s * 0.5f), s, s), on ? fg : Pal.Sub, 24f, 2.4f);
+                    Draw.Icon(canClear ? Icons.Close : Icons.Chevron, new Rect(tx + tw + CSCommonDesign.ChipIconGap, Mathf.Round(r.center.y - s * 0.5f), s, s), fg, 24f, Stroke);
                 }
                 Draw.EndScale();
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             // ✕ 자리를 먼저(칩 오른쪽 끝 · 아이콘보다 넓게)
             if (canClear && Draw.Button(new Rect(r.xMax - CSCommonDesign.ChipPadX - CSCommonDesign.ChipIcon - 4f, r.y, CSCommonDesign.ChipPadX + CSCommonDesign.ChipIcon + 4f, h)))
             {
@@ -271,214 +379,252 @@ namespace CSCommon
         }
     }
 
-    /// <summary>CSCommon.Badge — 상태 알약(그 색 16% 바탕 · 그 색 글) · 수 알약(주황).</summary>
+    /// <summary>
+    /// CSCommonUX.Badge — 상태 알약(시안 'CSCommonUX.Badge'): 높이 24 · 좌우 12 · 반지름 = 높이/2 · 글 12 굵게 · 아이콘 13(선 2.4) + 5.
+    /// 색은 뜻 → 파스텔 짝(Colors): 청록 · 초록 · 하늘 = 모드 파스텔, 주황 · 노랑 = Look.WarnFill/Ink, 빨강 = Look.FabCancel*, 회색 글 = Look.PillNeutral + Look.BarOff,
+    /// 그 밖 뜻 색(팀 색 등)은 그 색 16% 면 + 그 색 글. 수 알약 Count: 높이 20(탭 안 18) · 최소 폭 = 높이 · 좌우 = 높이/2 − 3 · Look.CountBg + Pal.Warn 굵은 글.
+    /// </summary>
     public static class Badge
     {
-        public static float At(float x, float cy, string text, Color color, string icon = null, bool draw = true, float height = 24f)
+        public const float H = 24f, PadX = 12f, Icon = 13f, IconGap = 5f, Stroke = 2.4f, CountH = 20f, CountAlpha = 0.22f, CountOnAlpha = 0.26f;
+
+        /// <summary>뜻 색 → 파스텔 면 · 글.</summary>
+        public static void Colors(Color c, out Color fill, out Color ink)
         {
-            float font = CSCommonDesign.FontMin;
-            float tw = Mathf.Ceil(Draw.TextWidth(text, font, true)), iw = icon != null ? 13f + 5f : 0f;
-            float w = 10f + iw + tw + 10f;
+            if (c == Pal.Primary || c == Pal.Teal || c == Pal.Ok || c == Pal.Green || c == Pal.DoneInk) { fill = Look.PastelFill; ink = Look.PastelInk; }
+            else if (c == Pal.Warn || c == Pal.Yellow) { fill = Look.WarnFill; ink = Look.WarnInk; }
+            else if (c == Pal.Red || c == Pal.MapDanger) { fill = Look.FabCancelFill; ink = Look.FabCancelInk; }
+            else if (c == Pal.Sub || c == Pal.Dim || c == Pal.Light || c == Look.OffText) { fill = Look.PillNeutral; ink = Look.BarOff; }
+            else { fill = Draw.Alpha(c, 0.16f); ink = c; }
+        }
+
+        public static float At(float x, float cy, string text, Color color, string icon = null, bool draw = true, float height = H)
+        {
+            float tw = Mathf.Ceil(Draw.TextWidth(text, CSCommonDesign.FontMin, true)), iw = icon != null ? Icon + IconGap : 0f;
+            float w = PadX * 2f + iw + tw;
             if (draw && Draw.Repaint)
             {
                 var r = new Rect(x, Mathf.Round(cy - height * 0.5f), w, height);
-                Draw.Round(r, Draw.Alpha(color, 0.16f), height * 0.5f);
-                float tx = r.x + 10f;
-                if (icon != null) { Draw.Icon(icon, new Rect(tx, r.center.y - 6.5f, 13f, 13f), color, 24f, 2f); tx += iw; }
-                Draw.Text(new Rect(tx, r.y, tw + 2f, r.height), text, font, color, true, TextAnchor.MiddleLeft);
+                Colors(color, out var fill, out var ink);
+                Draw.Round(r, fill, height * 0.5f);
+                float tx = r.x + PadX;
+                if (icon != null) { Draw.Icon(icon, new Rect(tx, Mathf.Round(r.center.y - Icon * 0.5f), Icon, Icon), ink, 24f, Stroke); tx += iw; }
+                Draw.Text(new Rect(tx, r.y, tw + 2f, r.height), text, CSCommonDesign.FontMin, ink, true, TextAnchor.MiddleLeft);
             }
             return w;
         }
 
-        /// <summary>주어진 칸에 상태 알약(그 색 16% 바탕 · 그 색 굵은 글, 글 크기는 칸 높이에 맞춤).</summary>
+        /// <summary>주어진 칸에 상태 알약(뜻 색 → 파스텔 짝 · 굵은 글 가운데).</summary>
         public static void In(Rect r, string text, Color color)
         {
             if (!Draw.Repaint || string.IsNullOrEmpty(text)) return;
-            Draw.Round(r, Draw.Alpha(color, 0.16f), r.height * 0.5f);
-            Draw.TextFit(r, text, CSCommonDesign.FontMin, color, true, TextAnchor.MiddleCenter);
+            Colors(color, out var fill, out var ink);
+            Draw.Round(r, fill, r.height * 0.5f);
+            Draw.TextFit(r, text, CSCommonDesign.FontMin, ink, true, TextAnchor.MiddleCenter);
         }
 
-        /// <summary>수 알약(18 · 주황 · 고정폭 숫자).</summary>
-        public static float Count(float x, float cy, string text, bool draw = true, bool on = false)
+        /// <summary>수 알약(높이 h · 주황, color 를 주면 그 색 22% 면 + 그 색 글). on = 고른 칸 위(조금 진한 면).</summary>
+        public static float Count(float x, float cy, string text, bool draw = true, bool on = false, float h = CountH, Color? color = null)
         {
-            float w = Mathf.Max(18f, Draw.TextWidth(text, CSCommonDesign.FontMin, true) + 12f);
+            float w = Mathf.Max(h, Mathf.Ceil(Draw.TextWidth(text, CSCommonDesign.FontMin, true)) + (h * 0.5f - 3f) * 2f);
             if (draw && Draw.Repaint)
             {
-                var r = new Rect(x, Mathf.Round(cy - 9f), w, 18f);
-                Draw.Round(r, on ? Draw.Alpha(Pal.Warn, 0.26f) : Look.CountBg, CSCommonDesign.RadiusField);
-                Draw.Text(r, text, CSCommonDesign.FontMin, Pal.Warn, true, TextAnchor.MiddleCenter);
+                var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
+                Color ink = color ?? Pal.Warn;
+                Draw.Round(r, color.HasValue ? Draw.Alpha(ink, CountAlpha) : on ? Draw.Alpha(Pal.Warn, CountOnAlpha) : Look.CountBg, h * 0.5f);
+                Draw.Text(r, text, CSCommonDesign.FontMin, ink, true, TextAnchor.MiddleCenter);
             }
             return w;
         }
     }
 
-    /// <summary>CSCommon.Tabs — 묶음 탭: 홈 안에서 켜짐 = 떠오른 면(Look.Raised, 미끄러져 옮겨 감) · 굵은 글, 수 · 점수 알약.</summary>
+    /// <summary>
+    /// CSCommonUX.Tabs — 묶음 탭(시안 'CSCommonUX.Tabs'): 알약 홈(Look.Pill · 안쪽 4 · 칸 사이 2 · 반지름 = 높이/2) 안에 이름이 늘 보이는 알약 칸 40.
+    /// 칸 폭 = 아이콘 있으면 16 + [아이콘 16 · 8 · 이름] + 18, 없으면 20 + 이름 + 20(글 13.5), 내용은 칸 가운데. 고른 칸 = 모드 파스텔 + 굵은 파스텔 글,
+    /// 안 고른 칸 = Look.BarOff 글 · 호버 Look.NeutralHover. 색 전환 0.2초 · 누르면 0.95배. 수 알약(Badge.Count 18)은 이름 뒤 8.
+    /// Modal.Tabs · SheetTabs 도 같은 칸(Cell)을 씀. 펼쳐지는 칸(아이콘만 → 이름)은 Toolbar · Dockbar 전용(PillBar).
+    /// </summary>
     public static class Tabs
     {
-        public static float At(float x, float cy, string[] icons, string[] labels, int cur, string[] badges, Color[] badgeColors, Color[] accents, string[] tips, bool draw, Action<int> pick)
-        {
-            float h = CSCommonDesign.TabHeight, pad = 4f, gap = 2f;
-            const float font = 13.5f;
-            var widths = new float[labels.Length];
-            float total = pad * 2f;
-            for (int i = 0; i < labels.Length; i++)
-            {
-                float bw = badges != null && !string.IsNullOrEmpty(badges[i]) ? 8f + Mathf.Max(18f, Draw.TextWidth(badges[i], CSCommonDesign.FontMin, true) + 12f) : 0f;
-                float iw = icons != null && !string.IsNullOrEmpty(icons[i]) ? 16f + 8f : 0f; // 아이콘 없는 탭은 자리도 안 잡음(글이 가운데)
-                widths[i] = CSCommonDesign.TabPadX * 2f + iw + Mathf.Ceil(Draw.TextWidth(labels[i], font, true)) + bw;
-                total += widths[i] + (i > 0 ? gap : 0f);
-            }
-            if (!draw) return total;
-            var frame = new Rect(x, Mathf.Round(cy - (h + pad * 2f) * 0.5f), total, h + pad * 2f);
-            if (Draw.Repaint) Draw.Round(frame, Look.Field, CSCommonDesign.IconBtnRadius);
-            int skey = CSCommonAnim.Key(labels[0], labels[labels.Length - 1]) ^ 0x7a3c1e5d;
-            if (cur >= 0 && cur < labels.Length)
-            {
-                float cx0 = pad;
-                for (int i = 0; i < cur; i++) cx0 += widths[i] + gap;
-                float px = CSCommonAnim.Smooth(skey, cx0), pw = CSCommonAnim.Smooth(skey ^ 0x51ed270b, widths[cur]);
-                if (Draw.Repaint)
-                {
-                    var sel = new Rect(frame.x + px, frame.y + pad, pw, h);
-                    Look.Raised(sel, 8f);
-                }
-            }
-            float ix = x + pad;
-            for (int i = 0; i < labels.Length; i++)
-            {
-                var r = new Rect(ix, frame.y + pad, widths[i], h);
-                bool on = i == cur;
-                float hv = CSCommonAnim.Toward(skey ^ (i + 1) * 0x2f6b8d3, Draw.Hover(r) && !on ? 1f : 0f, 12f);
-                float pr = Look.Press(skey ^ (i + 7) * 0x1b56c4e9, r);
-                if (Draw.Repaint)
-                {
-                    if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Haze, 0.05f * hv), CSCommonDesign.RadiusTile);
-                    Color fg = on ? Pal.OnSelected : Color.Lerp(Pal.Sub, Pal.Txt, hv);
-                    float tx = r.x + CSCommonDesign.TabPadX, yy = r.center.y + pr;
-                    if (icons != null && !string.IsNullOrEmpty(icons[i]))
-                    {
-                        Draw.Icon(icons[i], new Rect(tx, Mathf.Round(yy - 8f), 16f, 16f), fg, 24f, 1.8f);
-                        tx += 24f;
-                    }
-                    float lw = Mathf.Ceil(Draw.TextWidth(labels[i], font, true));
-                    Draw.Text(new Rect(tx, r.y + pr, lw + 2f, r.height), labels[i], font, fg, on, TextAnchor.MiddleLeft);
-                    if (badges != null && !string.IsNullOrEmpty(badges[i]))
-                    {
-                        Color bc = badgeColors != null ? badgeColors[i] : Pal.Warn;
-                        float bw = Mathf.Max(18f, Draw.TextWidth(badges[i], CSCommonDesign.FontMin, true) + 12f);
-                        var pill = new Rect(tx + lw + 8f, Mathf.Round(yy - 9f), bw, 18f);
-                        Draw.Round(pill, Draw.Alpha(bc, 0.18f), CSCommonDesign.RadiusField);
-                        Draw.Text(pill, badges[i], CSCommonDesign.FontMin, bc, true, TextAnchor.MiddleCenter);
-                    }
-                }
-                if (tips != null) CSCommon.UI.CSCommonToolbar.Tip(r, tips[i]);
-                if (Draw.Button(r)) pick?.Invoke(i);
-                ix += widths[i] + gap;
-            }
-            return total;
-        }
-    }
+        public const float H = 40f, Pad = 4f, Gap = 2f, PadL = 16f, PadR = 18f, PadX = 20f, Icon = 16f, IconGap = 8f, Font = 13.5f, Stroke = 1.9f;
+        public const float CountH = 18f, CountGap = 8f, PressScale = 0.95f, FadeSeconds = 0.2f;
 
-    /// <summary>CSCommon.Segmented — 하나 고르기: 홈 #1B1F26 · 켜짐 칸 떠오른 면(Look.Raised, 미끄러져 옮겨 감) · 굵은 글, 높이 34 · 글 13.5.</summary>
-    public static class Segmented
-    {
-        public const float H = 34f, Pad = 3f, Gap = 2f, Font = 13.5f;
-
-        /// <summary>홈: 판 색 #14171C + 1px 선 — 카드(#1B1F26) 위에서도 홈이 보이게(예전 Field 는 카드와 같은 색이라 칸만 흩어져 보였음).</summary>
-        static void Groove(Rect r)
+        /// <summary>칸 폭(이름은 굵게 재서 고를 때 폭이 안 바뀜). 아이콘이 없으면 좌우 padX.</summary>
+        public static float CellWidth(string icon, string label, string badge, float font = Font, float padX = PadX)
         {
-            if (!Draw.Repaint) return;
-            Draw.Round(r, Pal.Win, CSCommonDesign.RadiusField);
-            Draw.RoundOutline(r, Look.PanelLine, CSCommonDesign.RadiusField);
+            float w = Mathf.Ceil(Draw.TextWidth(label ?? "", font, true));
+            if (!string.IsNullOrEmpty(badge)) w += CountGap + Badge.Count(0f, 0f, badge, false, false, CountH);
+            return string.IsNullOrEmpty(icon) ? padX * 2f + w : PadL + Icon + IconGap + w + PadR;
         }
 
-        public static float At(float x, float cy, string[] labels, int cur, string[] tips, Color?[] dots, bool draw, Action<int> pick)
+        /// <summary>줄 가운데 cy · 왼쪽 x 에 묶음 탭(draw = false 면 재기만). badgeColors[i] = 수 알약 색(없으면 주황). 그린 폭을 돌려줌.</summary>
+        public static float At(float x, float cy, string[] icons, string[] labels, int cur, string[] badges, Color[] badgeColors, string[] tips, bool draw, Action<int> pick)
         {
-            var widths = new float[labels.Length];
-            float total = Pad * 2f;
-            for (int i = 0; i < labels.Length; i++)
+            int n = labels.Length;
+            var widths = new float[n];
+            float total = Pad * 2f + Gap * Mathf.Max(0, n - 1);
+            for (int i = 0; i < n; i++)
             {
-                widths[i] = 28f + Mathf.Ceil(Draw.TextWidth(labels[i], Font, true)) + (dots != null && dots[i].HasValue ? 14f : 0f);
-                total += widths[i] + (i > 0 ? Gap : 0f);
+                widths[i] = CellWidth(icons != null ? icons[i] : null, labels[i], badges != null ? badges[i] : null);
+                total += widths[i];
             }
-            if (!draw) return total;
-            var frame = new Rect(x, Mathf.Round(cy - (H + Pad * 2f) * 0.5f), total, H + Pad * 2f);
-            Groove(frame);
-            int skey = CSCommonAnim.Key(labels[0], labels[labels.Length - 1]) ^ labels.Length * 7919 ^ Mathf.RoundToInt(cy);
-            if (cur >= 0 && cur < labels.Length)
-            {
-                float cx0 = Pad;
-                for (int i = 0; i < cur; i++) cx0 += widths[i] + Gap;
-                float px = CSCommonAnim.Smooth(skey, cx0), pw = CSCommonAnim.Smooth(skey ^ 0x51ed270b, widths[cur]);
-                if (Draw.Repaint)
-                {
-                    var sel = new Rect(frame.x + px, frame.y + Pad, pw, H);
-                    Look.Raised(sel, 7f);
-                }
-            }
-            float ix = x + Pad;
-            for (int i = 0; i < labels.Length; i++)
+            if (!draw || n == 0) return total;
+            float fh = H + Pad * 2f;
+            var frame = new Rect(x, Mathf.Round(cy - fh * 0.5f), total, fh);
+            if (Draw.Repaint) Draw.Round(frame, Look.Pill, fh * 0.5f);
+            int skey = CSCommonAnim.Key(labels[0], labels[n - 1]) ^ n * 7919 ^ 0x7a3c1e5d;
+            float ix = frame.x + Pad;
+            for (int i = 0; i < n; i++)
             {
                 var r = new Rect(ix, frame.y + Pad, widths[i], H);
-                bool on = i == cur;
-                float hv = CSCommonAnim.Toward(skey ^ (i + 1) * 0x2f6b8d3, Draw.Hover(r) && !on ? 1f : 0f, 12f);
-                if (Draw.Repaint)
-                {
-                    if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Haze, 0.05f * hv), CSCommonDesign.RadiusTool);
-                    float tx = r.x + 14f;
-                    if (dots != null && dots[i].HasValue) { Draw.Dot(new Vector2(tx + 4f, r.center.y), 4f, dots[i].Value); tx += 14f; }
-                    Draw.Text(new Rect(tx, r.y, r.xMax - tx, r.height), labels[i], Font, on ? Pal.OnSelected : Color.Lerp(Pal.Sub, Pal.Txt, hv), on, TextAnchor.MiddleLeft);
-                }
-                if (tips != null) CSCommon.UI.CSCommonToolbar.Tip(r, tips[i]);
-                if (Draw.Button(r)) pick?.Invoke(i);
+                Color? bc = badgeColors != null && badgeColors[i] != Pal.Warn ? badgeColors[i] : null;
+                if (Cell(r, skey ^ (i + 1) * 0x2f6b8d3, i == cur, icons != null ? icons[i] : null, labels[i], Font, badges != null ? badges[i] : null, bc, tips != null ? tips[i] : null))
+                    pick?.Invoke(i);
                 ix += widths[i] + Gap;
             }
             return total;
         }
 
-        /// <summary>칸 폭을 똑같이 나눔(창 위 고르기 줄 · 에셋 자리 등).</summary>
-        /// <summary>subs = 이름 아래 작은 글(칸 높이 SegmentTwoH) · colors = 고른 칸 이름 색(팀 · 세션 색).</summary>
+        /// <summary>탭 칸 하나(그리기 + 누름): [아이콘 16 · 8 · 이름 · 8 · 수 알약] 을 칸 가운데(좁으면 왼쪽 8 부터 · 이름 줄임). 눌러 떼면 true.</summary>
+        internal static bool Cell(Rect c, int key, bool on, string icon, string label, float font, string badge = null, Color? badgeColor = null, string tip = null)
+        {
+            float onT = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / FadeSeconds);
+            int hk = key ^ 0x51ed270b;
+            float hv = Look.Hover(hk, c, !on), pr = Look.Press(hk, c);
+            if (Draw.Repaint)
+            {
+                float rad = c.height * 0.5f;
+                Draw.BeginScale(c.center, Look.PressScale(pr, PressScale));
+                float ha = hv * (1f - onT);
+                if (ha > 0.01f) Draw.Round(c, Draw.Alpha(Look.NeutralHover, ha), rad);
+                if (onT > 0.01f) Draw.Round(c, Draw.Alpha(Look.PastelFill, onT), rad);
+                Color ink = Color.Lerp(Look.BarOff, Look.PastelInk, onT);
+                bool hasIcon = !string.IsNullOrEmpty(icon), hasBadge = !string.IsNullOrEmpty(badge);
+                float tw = Mathf.Ceil(Draw.TextWidth(label ?? "", font, true));
+                float iw = hasIcon ? Icon + IconGap : 0f, bw = hasBadge ? CountGap + Badge.Count(0f, 0f, badge, false, false, CountH) : 0f;
+                float x = Mathf.Max(c.x + IconGap, Mathf.Round(c.center.x - (iw + tw + bw) * 0.5f));
+                float lw = Mathf.Max(0f, Mathf.Min(tw, c.xMax - IconGap - x - iw - bw));
+                if (hasIcon) Draw.Icon(icon, new Rect(x, Mathf.Round(c.center.y - Icon * 0.5f), Icon, Icon), ink, 24f, Stroke);
+                Draw.TextFit(new Rect(x + iw, c.y, lw, c.height), label ?? "", font, ink, on, TextAnchor.MiddleCenter);
+                if (hasBadge) Badge.Count(x + iw + lw + CountGap, c.center.y, badge, true, false, CountH, badgeColor);
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(c, tip);
+            return Draw.Button(c);
+        }
+    }
+
+    /// <summary>
+    /// CSCommonUX.Segmented — 여럿 중 하나(시안 'CSCommonUX.Segmented'): 홈 Look.Pill · 안쪽 3 · 칸 사이 2(홈 반지름 = 높이/2 · 최대 24, 칸 반지름 = 홈 − 3),
+    /// 칸 34 · 좌우 16 · 글 13.5. 고른 칸 = 떠오른 알약(Look.SegmentOn 면 + 1px Look.BarLine) · 굵은 Look.BarInk 글, 안 고른 칸 = Look.BarOff 글 · 호버 Look.NeutralHover.
+    /// 색 점 8(왼쪽 14 · 점 → 글 8) · 서브라벨(칸 50 · 최소 폭 104 · 이름 아래 3 · 12 Look.PillSub). 색 전환 0.2초 · 누르면 0.95배.
+    /// </summary>
+    public static class Segmented
+    {
+        public const float H = 34f, Pad = 3f, Gap = 2f, PadX = 16f, DotPadL = 14f, Dot = 8f, DotGap = 8f, Font = 13.5f;
+        public const float SubH = 50f, SubMinW = 104f, SubFont = 12f, SubGap = 3f, NameH = 18f, SubLineH = 16f, MaxRadius = 24f, PressScale = 0.95f, FadeSeconds = 0.2f;
+
+        static float Radius(float grooveH) => Mathf.Min(grooveH * 0.5f, MaxRadius);
+
+        static void Groove(Rect r)
+        {
+            if (Draw.Repaint) Draw.Round(r, Look.Pill, Radius(r.height));
+        }
+
+        /// <summary>칸 하나(그리기 + 누름): [점 · 이름] 칸 가운데(sub 가 있으면 이름 · 작은 글 두 줄). onInk = 고른 칸 글 색(없으면 Look.BarInk). 눌러 떼면 true.</summary>
+        static bool Cell(Rect c, float rad, int key, bool on, string label, Color? dot, string sub, Color? onInk, string tip)
+        {
+            float onT = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / FadeSeconds);
+            int hk = key ^ 0x51ed270b;
+            float hv = Look.Hover(hk, c, !on), pr = Look.Press(hk, c);
+            if (Draw.Repaint)
+            {
+                Draw.BeginScale(c.center, Look.PressScale(pr, PressScale));
+                float ha = hv * (1f - onT);
+                if (ha > 0.01f) Draw.Round(c, Draw.Alpha(Look.NeutralHover, ha), rad);
+                if (onT > 0.01f)
+                {
+                    Draw.Round(c, Draw.Alpha(Look.SegmentOn, onT), rad);
+                    Draw.RoundOutline(c, Draw.Alpha(Look.BarLine, onT), rad);
+                }
+                Color ink = Color.Lerp(Look.BarOff, onInk ?? Look.BarInk, onT);
+                if (string.IsNullOrEmpty(sub))
+                {
+                    float tw = Mathf.Ceil(Draw.TextWidth(label, Font, true)), dw = dot.HasValue ? Dot + DotGap : 0f;
+                    float x = Mathf.Max(c.x + DotGap, Mathf.Round(c.center.x - (dw + tw) * 0.5f));
+                    if (dot.HasValue) Draw.Dot(new Vector2(x + Dot * 0.5f, c.center.y), Dot * 0.5f, dot.Value);
+                    Draw.TextFit(new Rect(x + dw, c.y, Mathf.Max(0f, Mathf.Min(tw, c.xMax - DotGap - x - dw)), c.height), label, Font, ink, on, TextAnchor.MiddleCenter);
+                }
+                else
+                {
+                    // 이름 18 + 3 + 작은 글 16 을 가운데로
+                    float top = Mathf.Round(c.center.y - (NameH + SubGap + SubLineH) * 0.5f);
+                    Draw.TextFit(new Rect(c.x + Pad, top, c.width - Pad * 2f, NameH), label, Font, ink, on, TextAnchor.MiddleCenter);
+                    Draw.TextFit(new Rect(c.x + Pad, top + NameH + SubGap, c.width - Pad * 2f, SubLineH), sub, SubFont, Look.PillSub, false, TextAnchor.MiddleCenter);
+                }
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(c, tip);
+            return Draw.Button(c);
+        }
+
+        /// <summary>줄 가운데 cy · 왼쪽 x 에 글에 맞춘 칸들(draw = false 면 재기만). dots[i] 가 있으면 글 앞 색 점. 그린 폭을 돌려줌.</summary>
+        public static float At(float x, float cy, string[] labels, int cur, string[] tips, Color?[] dots, bool draw, Action<int> pick)
+        {
+            int n = labels.Length;
+            var widths = new float[n];
+            float total = Pad * 2f + Gap * Mathf.Max(0, n - 1);
+            for (int i = 0; i < n; i++)
+            {
+                // 점 칸: 왼쪽 14 + 점 8 + 8 + 글 + 오른쪽 16
+                widths[i] = PadX * 2f + Mathf.Ceil(Draw.TextWidth(labels[i], Font, true)) + (dots != null && dots[i].HasValue ? Dot + DotGap - (PadX - DotPadL) : 0f);
+                total += widths[i];
+            }
+            if (!draw || n == 0) return total;
+            var frame = new Rect(x, Mathf.Round(cy - (H + Pad * 2f) * 0.5f), total, H + Pad * 2f);
+            Groove(frame);
+            float rad = Radius(frame.height) - Pad;
+            int skey = CSCommonAnim.Key(labels[0], labels[n - 1]) ^ n * 7919 ^ Mathf.RoundToInt(cy);
+            float ix = frame.x + Pad;
+            for (int i = 0; i < n; i++)
+            {
+                var r = new Rect(ix, frame.y + Pad, widths[i], H);
+                if (Cell(r, rad, skey ^ (i + 1) * 0x2f6b8d3, i == cur, labels[i], dots != null ? dots[i] : null, null, null, tips != null ? tips[i] : null)) pick?.Invoke(i);
+                ix += widths[i] + Gap;
+            }
+            return total;
+        }
+
+        /// <summary>칸 폭을 똑같이 나눔(창 위 고르기 줄 · 에셋 자리 등). subs = 이름 아래 작은 글(칸 높이 SubH) · colors = 고른 칸 이름 색(팀 · 세션 색).</summary>
         public static void In(Rect r, string[] labels, int cur, Action<int> pick, string[] tips = null, string[] subs = null, Color?[] colors = null)
         {
+            int n = labels.Length;
+            if (n == 0) return;
             Groove(r);
-            float w = (r.width - Pad * 2f - Gap * (labels.Length - 1)) / labels.Length, h = r.height - Pad * 2f;
-            int skey = CSCommonAnim.Key(labels[0], labels[labels.Length - 1]) ^ 0x3c6ef372 ^ Mathf.RoundToInt(r.y);
-            if (cur >= 0 && cur < labels.Length && Draw.Repaint)
-            {
-                float px = CSCommonAnim.Smooth(skey, cur * (w + Gap));
-                var sel = new Rect(r.x + Pad + px, r.y + Pad, w, h);
-                Look.Raised(sel, 7f);
-            }
-            for (int i = 0; i < labels.Length; i++)
+            float rad = Radius(r.height) - Pad;
+            float w = (r.width - Pad * 2f - Gap * (n - 1)) / n, h = r.height - Pad * 2f;
+            int skey = CSCommonAnim.Key(labels[0], labels[n - 1]) ^ 0x3c6ef372 ^ Mathf.RoundToInt(r.y);
+            for (int i = 0; i < n; i++)
             {
                 var c = new Rect(r.x + Pad + i * (w + Gap), r.y + Pad, w, h);
                 bool on = i == cur;
-                if (Draw.Repaint)
-                {
-                    if (!on && Draw.Hover(c)) Draw.Round(c, Draw.Alpha(Pal.Haze, 0.05f), CSCommonDesign.RadiusTool);
-                    Color fg = on ? (colors != null && i < colors.Length && colors[i].HasValue ? colors[i].Value : Pal.OnSelected) : Draw.Hover(c) ? Pal.Txt : Pal.Sub;
-                    string sub = subs != null && i < subs.Length ? subs[i] : null;
-                    if (string.IsNullOrEmpty(sub)) Draw.TextFit(c, labels[i], Font, fg, on, TextAnchor.MiddleCenter);
-                    else
-                    {
-                        // 이름 18 + 사이 2 + 작은 글 16 을 가운데로
-                        float top = Mathf.Round(c.center.y - 18f);
-                        Draw.TextFit(new Rect(c.x + 4f, top, c.width - 8f, 18f), labels[i], Font, fg, on, TextAnchor.MiddleCenter);
-                        Draw.TextFit(new Rect(c.x + 4f, top + 20f, c.width - 8f, 16f), sub, CSCommonDesign.FontMin, Pal.Dim, false, TextAnchor.MiddleCenter);
-                    }
-                }
-                if (tips != null) CSCommon.UI.CSCommonToolbar.Tip(c, tips[i]);
-                if (Draw.Button(c) && !on) pick?.Invoke(i);
+                if (Cell(c, rad, skey ^ (i + 1) * 0x2f6b8d3, on, labels[i], null, subs != null && i < subs.Length ? subs[i] : null,
+                    colors != null && i < colors.Length ? colors[i] : null, tips != null ? tips[i] : null) && !on) pick?.Invoke(i);
             }
         }
     }
 
     /// <summary>
-    /// CSCommon.Textfield — 글 칸: 바탕 #1B1F26, 초점 = 청록 테두리, 잘못 = 빨강 테두리, 자리 글 · 앞 아이콘,
-    /// 앞뒤 단위(값이 있을 때만 · 굵은 회색) · 지우기 ✕(초점 · 값이 있을 때). 꺼진 칸은 오류 테두리를 안 보임.
+    /// CSCommonUX.Textfield — 알약 글 칸(시안 'CSCommonUX.Textfield'): 높이 40 · 반지름 = 높이 절반 · 안쪽 왼쪽 16 · 오른쪽 8 · 요소 사이 4 · 그림자 없음.
+    /// 바탕 Look.Pill, 호버 = 안쪽 1px Look.PillHoverLine, 초점 = 바탕 Look.FieldFocus + 안쪽 1.5px 파스텔 테두리(Look.PastelRing, 커서도 같은 색),
+    /// 잘못 = 안쪽 1.5px 빨강(초점이어도 유지), 꺼짐 = Look.Off 바탕 · 글 · 단위 OffText · 호버 · 오류 테두리 없음. 호버 · 초점 전환 0.12초.
+    /// 앞 아이콘 16(Dim, 오른쪽 4) · 앞뒤 단위(값이 있을 때만 · 굵은 Sub) · 지우기 ✕(지름 28 원 · 아이콘 14 · 초점이고 값이 있을 때만 · 누름 영역은 칸 오른쪽 끝).
     /// </summary>
     public static class Textfield
     {
+        /// <summary>안쪽 왼쪽 · 오른쪽 · 요소 사이 · 앞 아이콘 · 지우기 원 · 지우기 아이콘 · 호버 선 · 초점/오류 선 · 전환 초 · Draw.Field 안쪽 여백(글 시작 맞춤) · 도움말 줄 높이.</summary>
+        public const float PadL = 16f, PadR = 8f, Gap = 4f, Icon = 16f, ClearD = 28f, ClearIcon = 14f, HoverW = 1f, RingW = 1.5f, FadeSeconds = 0.12f, FieldInset = 10f, HelpH = 18f;
+
         /// <summary>글 칸(name = 초점 이름, 없으면 칸 자리로). 바뀐 글을 돌려줌.</summary>
         public static string In(Rect r, string value, int maxLength, string placeholder = null, string icon = null, bool error = false, bool enabled = true, string name = null, float font = 14.5f,
             string prefix = null, string suffix = null, bool clearable = false)
@@ -487,78 +633,97 @@ namespace CSCommon
             value ??= "";
             bool focus = GUI.GetNameOfFocusedControl() == name;
             bool has = value.Length > 0;
+            int key = CSCommonAnim.Key("textfield", name);
+            float hv = CSCommonAnim.Toward(key, enabled && !error && Draw.Hover(r) ? 1f : 0f, 1f / FadeSeconds);
+            float fo = CSCommonAnim.Toward(key ^ 0x3b9ac9ff, enabled && focus ? 1f : 0f, 1f / FadeSeconds);
+            float rad = r.height * 0.5f;
             if (Draw.Repaint)
             {
-                Draw.Round(r, !enabled ? Look.Off : focus ? Look.FieldFocus : Look.Field, CSCommonDesign.ActionRadius);
+                Draw.Round(r, !enabled ? Look.Off : Color.Lerp(Look.Pill, Look.FieldFocus, fo), rad);
                 if (!enabled) { }
-                else if (error) Draw.RoundOutline(r, Pal.Red, CSCommonDesign.ActionRadius, CSCommonDesign.FieldFocusW);
-                else if (focus) Draw.RoundOutline(r, Pal.Primary, CSCommonDesign.ActionRadius, CSCommonDesign.FieldFocusW);
-                // UX 1.1: 입력 칸은 늘 테두리(FieldLine 3:1 이상 · 상하좌우 같은 두께), 호버는 한 단 진하게
-                else Draw.RoundOutline(r, Draw.Hover(r) ? Pal.Sub : Look.FieldLine, CSCommonDesign.ActionRadius, CSCommonDesign.FieldLineW);
+                else if (error) Draw.RoundOutline(r, Pal.Red, rad, RingW);
+                else
+                {
+                    if (hv * (1f - fo) > 0.01f) Draw.RoundOutline(r, Draw.Alpha(Look.PillHoverLine, hv * (1f - fo)), rad, HoverW);
+                    if (fo > 0.01f) Draw.RoundOutline(r, Draw.Alpha(Look.PastelRing, fo), rad, RingW);
+                }
             }
-            float lead = 0f;
+            // 글 시작 x(Draw.Field 는 안쪽 FieldInset 만큼 띄워 씀)
+            float tx = r.x + PadL;
             if (!string.IsNullOrEmpty(icon))
             {
-                if (Draw.Repaint) Draw.Icon(icon, new Rect(r.x + 12f, r.center.y - 8f, 16f, 16f), Pal.Dim, 24f, 2f);
-                lead = 24f;
+                if (Draw.Repaint) Draw.Icon(icon, new Rect(tx, Mathf.Round(r.center.y - Icon * 0.5f), Icon, Icon), Pal.Dim, 24f, 2f);
+                tx += Icon + Gap + Gap;
             }
             Color unit = enabled ? Pal.Sub : Look.OffText;
             // 앞 단위: 값 앞(값이 비면 숨겨 자리 글과 붙어 읽히지 않게)
             if (has && !string.IsNullOrEmpty(prefix))
             {
                 float pw = Mathf.Ceil(Draw.TextWidth(prefix, font, true));
-                if (Draw.Repaint) Draw.Text(new Rect(r.x + lead + 10f, r.y, pw + 2f, r.height), prefix, font, unit, true);
-                lead += pw + CSCommonDesign.FieldAffixGap;
+                if (Draw.Repaint) Draw.Text(new Rect(tx, r.y, pw + 2f, r.height), prefix, font, unit, true);
+                tx += pw + Gap;
             }
-            // 지우기 ✕: 오른쪽 끝(초점 · 값이 있을 때)
-            float trail = 0f;
+            // 지우기 ✕: 오른쪽 끝 원(초점 · 값이 있을 때)
             bool clear = clearable && enabled && focus && has;
-            var clearR = new Rect(r.xMax - 12f - CSCommonDesign.FieldClear, r.center.y - CSCommonDesign.FieldClear * 0.5f, CSCommonDesign.FieldClear, CSCommonDesign.FieldClear);
-            if (clear) trail = CSCommonDesign.FieldClear + 8f;
+            var clearR = new Rect(r.xMax - PadR - ClearD, Mathf.Round(r.center.y - ClearD * 0.5f), ClearD, ClearD);
+            float right = r.xMax - PadR - (clear ? ClearD + Gap : 0f);
             // 뒤 단위: 값 바로 뒤(넘치면 오른쪽 끝에 붙음)
             float sw = has && !string.IsNullOrEmpty(suffix) ? Mathf.Ceil(Draw.TextWidth(suffix, font, true)) : 0f;
-            if (sw > 0f) trail += sw + CSCommonDesign.FieldAffixGap;
-            var fr = new Rect(r.x + lead, r.y, r.width - lead - trail, r.height);
+            if (sw > 0f) right -= sw + Gap;
+            var fr = new Rect(tx - FieldInset, r.y, Mathf.Max(0f, right - tx + FieldInset * 2f), r.height);
             if (sw > 0f && Draw.Repaint)
             {
-                float vx = fr.x + 10f + Mathf.Ceil(Draw.TextWidth(value, font)) + CSCommonDesign.FieldAffixGap;
-                Draw.Text(new Rect(Mathf.Min(vx, fr.xMax - 8f + CSCommonDesign.FieldAffixGap), r.y, sw + 2f, r.height), suffix, font, unit, true);
+                float vx = tx + Mathf.Ceil(Draw.TextWidth(value, font)) + Gap;
+                Draw.Text(new Rect(Mathf.Min(vx, right + Gap), r.y, sw + 2f, r.height), suffix, font, unit, true);
             }
             if (!enabled)
             {
-                if (Draw.Repaint) Draw.TextFit(new Rect(fr.x + 12f, fr.y, fr.width - 24f, fr.height), value, font, Look.OffText);
+                if (Draw.Repaint) Draw.TextFit(new Rect(tx, r.y, Mathf.Max(0f, right - tx), r.height), value, font, Look.OffText);
                 return value;
             }
             if (clear)
             {
-                if (Draw.Repaint) Draw.Icon(Icons.Close, clearR, Look.OffText, 24f, 2f);
-                // 누름 영역은 그림보다 넓게(28), 눌림 표시 없음
-                if (Draw.Button(new Rect(clearR.x - 6f, r.y, clearR.width + 12f, r.height))) return "";
+                if (Draw.Repaint) Draw.Icon(Icons.Close, new Rect(Mathf.Round(clearR.center.x - ClearIcon * 0.5f), Mathf.Round(clearR.center.y - ClearIcon * 0.5f), ClearIcon, ClearIcon), Pal.Dim, 24f, 2.2f);
+                // 누름 영역 = 원부터 칸 오른쪽 끝까지(칸 높이 전체), 눌림 표시 없음
+                if (Draw.Button(new Rect(clearR.x, r.y, r.xMax - clearR.x, r.height))) return "";
             }
             if (!has && !string.IsNullOrEmpty(placeholder) && Draw.Repaint)
-                Draw.TextFit(new Rect(fr.x + 12f, fr.y, fr.width - 24f, fr.height), placeholder, font, Look.OffText);
+                Draw.TextFit(new Rect(tx, r.y, Mathf.Max(0f, right - tx), r.height), placeholder, font, Look.OffText);
+            // 커서 색 = 초점 테두리 색(파스텔)
+            var cursor = GUI.skin.settings.cursorColor;
+            GUI.skin.settings.cursorColor = Look.PastelRing;
             GUI.SetNextControlName(name);
-            return Draw.Field(fr, value, font, maxLength);
+            string v = Draw.Field(fr, value, font, maxLength);
+            GUI.skin.settings.cursorColor = cursor;
+            return v;
         }
 
-        /// <summary>이름(위) · 칸 · 도움말(아래, 잘못이면 빨강). 칸 높이 40 + 위 18 + 아래 18.</summary>
+        /// <summary>이름(위, 12 보조색) · 칸(40) · 도움말(아래 12 · 높이 18 고정, 잘못이면 빨강).</summary>
         public static string Labeled(Rect r, string label, string value, int maxLength, string help = null, string placeholder = null, bool error = false, bool enabled = true, string name = null)
         {
-            if (Draw.Repaint) Draw.Text(new Rect(r.x, r.y, r.width, 16f), label, 12f, Pal.Sub);
+            if (Draw.Repaint) Draw.Text(new Rect(r.x, r.y, r.width, 16f), label, CSCommonDesign.FontMin, Pal.Sub);
             var box = new Rect(r.x, r.y + 20f, r.width, CSCommonDesign.ActionHeight);
             string v = In(box, value, maxLength, placeholder, null, error, enabled, name);
-            if (!string.IsNullOrEmpty(help) && Draw.Repaint) Draw.TextFit(new Rect(r.x, box.yMax + 4f, r.width, 16f), help, CSCommonDesign.FontMin, error ? Pal.Red : Pal.Dim);
+            if (!string.IsNullOrEmpty(help) && Draw.Repaint) Draw.TextFit(new Rect(r.x, box.yMax + Gap, r.width, HelpH), help, CSCommonDesign.FontMin, error ? Pal.Red : Pal.Dim);
             return v;
         }
     }
 
     /// <summary>
-    /// CSCommon.Select — 목록에서 고르기: 칸(색 점 · 글 · ▾) · 누르면 칸 아래로 목록(왼쪽 표시 ○ 하나 · □ 여럿, 고른 줄 굵은 흰 글 · 호버 톤).
-    /// 펼칠 때 칸 쪽에서 0.92 → 1배 + 페이드. 하나 고르기는 고르면 닫힘 · 여럿 고르기(Many)는 열어 둠 · 밖을 누르면 닫힘.
+    /// CSCommonUX.Select — 목록에서 고르기(시안 'CSCommonUX.Select'): 알약 칸(bg 없으면 Look.Pill · 반지름 = 높이/2 · 왼쪽 16 · 오른쪽 12 · 색 점 8 + 8 · 글 14.5 Look.BarInk · ▾ 16 Section.SubInk).
+    /// 누르면 칸 아래 6 에 둥근 목록(반지름 24 · 안쪽 6 · Look.MenuSurface + 1px Look.MenuLine, 그림자 없음 — 다크에서도 바탕에 안 묻힘): 줄 40 · 반지름 20 · 좌우 14 · 사이 10 ·
+    /// 왼쪽 표시 18(하나 ○ 고리 1.5 + 점 8 · 여럿 □ 반지름 6 + ✓ 12) · 글 14, 고른 줄 = 모드 파스텔 + 굵은 파스텔 글 · 호버 Look.MenuHover · 누르면 0.95배.
+    /// 열린 칸 = 안쪽 1.5px Look.PastelRing + ▾ 180° 돌기(0.22초). 목록은 칸 쪽에서 펼쳐짐(0.24초 Modal.Ease) + 투명 0.16초, 닫을 때 거꾸로(그동안 목록 자리 클릭은 먹음).
+    /// 하나 고르기는 고르면 닫힘 · 여럿 고르기(Many)는 열어 둠 · 밖을 누르면 닫힘. Close() 는 움직임 없이 바로 닫음(창을 닫거나 탭 · 스크롤이 바뀔 때).
     /// 목록은 다른 칸보다 위에 그려야 하므로 그 프레임 끝 Flush() 에서 그림(창 · 판 OnGUI 끝에서 부름).
     /// </summary>
     public static class Select
     {
+        /// <summary>칸: 왼쪽 · 오른쪽 · 점 · 점 → 글 · 글 · ▾ · ▾ 선 · 열림 테두리 · 누름 배율 · ▾ 도는 초.</summary>
+        public const float PadL = 16f, PadR = 12f, Dot = 8f, DotGap = 8f, Font = 14.5f, Chevron = 16f, ChevronStroke = 2.2f, RingW = 1.5f, PressScale = 0.95f, TurnSeconds = 0.22f;
+        /// <summary>목록: 칸과 사이 · 반지름 · 최소 폭 · 줄 좌우 · 줄 안 사이 · 줄 글 · 고른 점 · 상자 반지름 · ✓ · ✓ 선.</summary>
+        public const float MenuGap = 6f, MenuRadius = 24f, MenuMinW = 200f, RowPadX = 14f, RowGap = 10f, RowFont = 14f, MarkDot = 8f, BoxRadius = 6f, Check = 12f, CheckStroke = 3f;
+
         static int openKey;
         static Rect openRect;
         static string[] openItems;
@@ -576,11 +741,32 @@ namespace CSCommon
         static readonly List<Rect> itemRects = new();
         static int pressed = -1;
 
+        /// <summary>닫히는 중: 닫기 시작한 때(없으면 −1) · 그때 펼친 정도 · 투명도 · 닫히는 칸 · 그 칸을 마지막으로 그린 프레임.</summary>
+        static float closeAt = -1f, closeFrom, closeFade;
+        static int closingKey, closingSeen;
+
         public static bool AnyOpen => openKey != 0;
 
-        /// <summary>열린 목록을 닫음(탭을 바꾸거나 스크롤할 때).</summary>
+        static bool Closing => closeAt >= 0f && Time.unscaledTime - closeAt < CSCommonDesign.MenuOpenSeconds;
+
+        /// <summary>열린 목록을 바로 닫음(탭을 바꾸거나 스크롤할 때 — 움직임 없음).</summary>
         public static void Close()
         {
+            openKey = 0;
+            closeAt = -1f;
+            itemRects.Clear();
+            pressed = -1;
+        }
+
+        /// <summary>사용자가 닫음(고름 · 밖 누름 · 칸 다시 누름): 지금 펼친 정도에서 거꾸로 접히며 사라짐.</summary>
+        static void BeginClose()
+        {
+            float now = Time.unscaledTime, el = now - openAt;
+            closeFrom = Modal.Ease(el / CSCommonDesign.MenuOpenSeconds);
+            closeFade = Mathf.Clamp01(el / CSCommonDesign.MenuFadeSeconds);
+            closeAt = now;
+            closingKey = openKey;
+            closingSeen = Time.frameCount;
             openKey = 0;
             itemRects.Clear();
             pressed = -1;
@@ -593,10 +779,16 @@ namespace CSCommon
         /// </summary>
         internal static void PreInput()
         {
-            if (openKey == 0 || itemRects.Count == 0) return;
             var e = Event.current;
             if (e == null) return;
             Vector2 m = e.mousePosition / Draw.S;
+            if (openKey == 0)
+            {
+                // 접히는 동안 목록 자리 누름 · 끌기 · 뗌은 여기서 먹음(아래 창 · 지도로 새지 않게, 위로 열린 목록도 같은 자리)
+                if (Closing && menuRect.Contains(m) && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag || e.rawType == EventType.MouseUp)) e.Use();
+                return;
+            }
+            if (itemRects.Count == 0) return;
             if (e.type == EventType.MouseDown && e.button == 0)
             {
                 if (menuRect.Contains(m))
@@ -605,7 +797,7 @@ namespace CSCommon
                     if (pressed < 0) pressed = -2; // 판 여백 — 쓰기만
                     e.Use();
                 }
-                else if (!openRect.Contains(m)) Close();
+                else if (!openRect.Contains(m)) BeginClose();
             }
             else if (e.type == EventType.MouseDrag && pressed != -1) e.Use();
             else if (e.rawType == EventType.MouseUp && pressed != -1)
@@ -616,13 +808,13 @@ namespace CSCommon
                 if (i >= 0 && i < itemRects.Count && itemRects[i].Contains(m))
                 {
                     var pick = openPick;
-                    if (openOn == null) Close();
+                    if (openOn == null) BeginClose();
                     pick?.Invoke(i);
                 }
             }
         }
 
-        /// <summary>하나 고르기 칸(bg = 닫힌 칸 바탕, 없으면 Field). heads[i] = 줄 i 위에 둘 묶음 머리(없으면 null).</summary>
+        /// <summary>하나 고르기 칸(bg = 닫힌 칸 바탕, 없으면 Look.Pill). heads[i] = 줄 i 위에 둘 묶음 머리(없으면 null).</summary>
         public static void In(Rect r, string text, Color? dot, string[] items, Color?[] dots, int cur, Action<int> pick, bool enabled = true, string tip = null, Color? bg = null, string[] heads = null)
             => Field(r, text, dot, items, dots, cur, null, pick, enabled, tip, bg, heads);
 
@@ -635,26 +827,38 @@ namespace CSCommon
             int key = Look.Key(r, "select", on != null ? "many" : text) | 1;
             bool open = openKey == key;
             if (open) openSeenFrame = Time.frameCount;
+            if (key == closingKey) closingSeen = Time.frameCount;
+            float turn = CSCommonAnim.Toward(key ^ 0x6a09e667, open ? 1f : 0f, 1f / TurnSeconds);
+            float pr = Look.Press(key, r, enabled);
             if (Draw.Repaint)
             {
-                Draw.Round(r, !enabled ? Look.Off : open ? Look.FieldFocus : bg ?? Look.Field, CSCommonDesign.ActionRadius);
-                if (open) Draw.RoundOutline(r, Pal.Primary, CSCommonDesign.ActionRadius, CSCommonDesign.FieldFocusW);
-                else if (enabled) Draw.RoundOutline(r, Draw.Hover(r) ? Pal.Sub : Look.FieldLine, CSCommonDesign.ActionRadius, CSCommonDesign.FieldLineW);
-                float tx = r.x + 12f;
-                if (dot.HasValue) { Draw.Dot(new Vector2(tx + 4f, r.center.y), 4f, enabled ? dot.Value : Look.OffInk); tx += 16f; }
-                Draw.TextFit(new Rect(tx, r.y, r.xMax - tx - 34f, r.height), text, 14.5f, enabled ? Pal.Txt : Look.OffText);
-                Draw.Icon(Icons.Chevron, new Rect(r.xMax - 28f, r.center.y - 8f, 16f, 16f), enabled ? Pal.Sub : Look.OffInk, 24f, 2f);
+                float rad = r.height * 0.5f;
+                Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
+                Draw.Round(r, !enabled ? Look.BtnOff : bg ?? Look.Pill, rad);
+                if (turn > 0.01f) Draw.RoundOutline(r, Draw.Alpha(Look.PastelRing, turn), rad, RingW);
+                float tx = r.x + PadL;
+                if (dot.HasValue) { Draw.Dot(new Vector2(tx + Dot * 0.5f, r.center.y), Dot * 0.5f, enabled ? dot.Value : Look.IconOffInk); tx += Dot + DotGap; }
+                var cr = new Rect(r.xMax - PadR - Chevron, Mathf.Round(r.center.y - Chevron * 0.5f), Chevron, Chevron);
+                Draw.TextFit(new Rect(tx, r.y, Mathf.Max(0f, cr.x - DotGap - tx), r.height), text, Font, enabled ? Look.BarInk : Look.BtnOffInk);
+                // ▾ 돌기: 시안 곡선(열 때 Ease, 닫을 때 거꾸로)
+                float deg = 180f * (open ? Modal.Ease(turn) : 1f - Modal.Ease(1f - turn));
+                var m = GUI.matrix;
+                if (deg > 0.5f) GUIUtility.RotateAroundPivot(deg, Draw.ToScreen(cr).center);
+                Draw.Icon(Icons.Chevron, cr, enabled ? Section.SubInk : Look.BtnOffInk, 24f, ChevronStroke);
+                GUI.matrix = m;
+                Draw.EndScale();
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             if (!enabled) return;
             bool hit = Draw.Button(r);
             if (hit && open)
             {
-                openKey = 0;
+                BeginClose();
                 return;
             }
             if (hit)
             {
+                closeAt = -1f;
                 openKey = key;
                 openSeenFrame = Time.frameCount;
                 itemRects.Clear();
@@ -675,30 +879,51 @@ namespace CSCommon
             }
         }
 
-        /// <summary>열린 목록을 맨 위에 그림 · 하나 고르기는 고르면 닫음 · 밖을 누르면 닫음.</summary>
+        /// <summary>열린 목록을 맨 위에 그림 · 하나 고르기는 고르면 닫음 · 밖을 누르면 닫음. 닫히는 중이면 접히는 목록만(누름 없음).</summary>
         public static void Flush()
         {
-            if (openKey == 0 || openItems == null) return;
-            // 목록을 연 칸이 이번(또는 바로 앞) 프레임에 안 그려졌으면 그 창이 닫힌 것 — 목록만 남아 잔상으로 보이던 것(열린 채 X 로 닫기)
-            if (Time.frameCount - openSeenFrame > 1) { Close(); return; }
+            if (openItems == null) return;
+            bool live = openKey != 0;
+            float now = Time.unscaledTime, shown, fade;
+            if (live)
+            {
+                // 목록을 연 칸이 이번(또는 바로 앞) 프레임에 안 그려졌으면 그 창이 닫힌 것 — 목록만 남아 잔상으로 보이던 것(열린 채 X 로 닫기)
+                if (Time.frameCount - openSeenFrame > 1) { Close(); return; }
+                float el = now - openAt;
+                shown = Modal.Ease(el / CSCommonDesign.MenuOpenSeconds);
+                fade = Mathf.Clamp01(el / CSCommonDesign.MenuFadeSeconds);
+            }
+            else
+            {
+                // 닫히는 중: 연 칸이 안 그려지면(창이 닫힘) 접힘도 그만
+                if (!Closing || Time.frameCount - closingSeen > 1) { closeAt = -1f; return; }
+                float el = now - closeAt;
+                shown = closeFrom * (1f - Modal.Ease(el / CSCommonDesign.MenuOpenSeconds));
+                fade = closeFade * (1f - Mathf.Clamp01(el / CSCommonDesign.MenuFadeSeconds));
+            }
             float row = CSCommonDesign.MenuRowH, pad = CSCommonDesign.MenuPad, mark = CSCommonDesign.MenuMark;
             bool many = openOn != null;
             // 묶음 머리: 첫 묶음은 머리 줄만, 다음 묶음부터 위 구분선 + 4
             float HeadAt(int i) => openHeads != null && i < openHeads.Length && !string.IsNullOrEmpty(openHeads[i]) ? CSCommonDesign.MenuHeadH + (i > 0 ? 4f : 0f) : 0f;
             float body = 0f;
             for (int i = 0; i < openItems.Length; i++) body += HeadAt(i) + row;
-            var menu = new Rect(openRect.x, openRect.yMax + 6f, Mathf.Max(openRect.width, 200f), pad * 2f + body);
+            var menu = new Rect(openRect.x, openRect.yMax + MenuGap, Mathf.Max(openRect.width, MenuMinW), pad * 2f + body);
             bool above = menu.yMax > Draw.Height - 8f;
-            if (above) menu.y = openRect.y - 6f - menu.height;
+            if (above) menu.y = openRect.y - MenuGap - menu.height;
             menuRect = menu;
-            itemRects.Clear();
-            float t = CSCommonAnim.EaseOut((Time.unscaledTime - openAt) / CSCommonDesign.MenuOpenSeconds);
+            if (live) itemRects.Clear();
+            // 칸 쪽에서 펼쳐짐(아래로 열면 위부터, 위로 열면 아래부터 보임) — 1px 선이 잘리지 않게 바깥 1 을 더 둠
+            float sh = Mathf.Round((menu.height + 2f) * shown);
+            var clip = new Rect(menu.x - 1f, above ? menu.yMax + 1f - sh : menu.y - 1f, menu.width + 2f, sh);
             float opacity = Draw.Opacity;
-            Draw.Opacity *= t;
-            Draw.BeginScale(new Vector2(menu.x, above ? menu.yMax : menu.y), Mathf.Lerp(CSCommonDesign.MenuOpenScale, 1f, t));
-            Look.Elevated(menu, 10f, Look.FieldFocus);
-            // 펼친 목록도 칸과 같은 테두리(떠 있는 판 선은 옅어 목록 끝이 안 보였음)
-            Draw.RoundOutline(menu, Look.FieldLine, 10f, CSCommonDesign.FieldLineW);
+            Draw.Opacity *= fade;
+            // 안쪽 좌표를 바깥과 같게(scroll = 자른 칸 자리) — 줄 자리(itemRects)는 그대로 바탕 좌표
+            Draw.BeginClip(clip, clip.position);
+            if (Draw.Repaint)
+            {
+                Draw.Round(menu, Look.MenuSurface, MenuRadius);
+                Draw.RoundOutline(menu, Look.MenuLine, MenuRadius);
+            }
             int picked = -1;
             float iy = menu.y + pad;
             for (int i = 0; i < openItems.Length; i++)
@@ -706,102 +931,138 @@ namespace CSCommon
                 float hh = HeadAt(i);
                 if (hh > 0f && Draw.Repaint)
                 {
-                    if (i > 0) Draw.Fill(new Rect(menu.x + pad, iy + 2f, menu.width - pad * 2f, 1f), Look.Divider);
-                    Draw.TextFit(new Rect(menu.x + pad + 10f, iy + hh - CSCommonDesign.MenuHeadH, menu.width - pad * 2f - 20f, CSCommonDesign.MenuHeadH), openHeads[i], CSCommonDesign.FontMin, Pal.Sub, true);
+                    if (i > 0) Draw.Fill(new Rect(menu.x + pad + RowPadX, iy + 2f, menu.width - (pad + RowPadX) * 2f, 1f), Look.Divider);
+                    Draw.TextFit(new Rect(menu.x + pad + RowPadX, iy + hh - CSCommonDesign.MenuHeadH, menu.width - (pad + RowPadX) * 2f, CSCommonDesign.MenuHeadH), openHeads[i], CSCommonDesign.FontMin, Section.SubInk, true);
                 }
                 iy += hh;
                 var it = new Rect(menu.x + pad, iy, menu.width - pad * 2f, row);
-                itemRects.Add(it);
+                if (live) itemRects.Add(it);
                 iy += row;
-                bool on = many ? i < openOn.Length && openOn[i] : i == openCur, hov = Draw.Hover(it);
+                bool on = many ? i < openOn.Length && openOn[i] : i == openCur;
+                int k = Look.Key(it, "select.row", openItems[i]);
+                float onT = CSCommonAnim.Toward(k, on ? 1f : 0f, 1f / Tabs.FadeSeconds);
+                float hv = Look.Hover(k ^ 0x51ed270b, it, live && !on), pr = Look.Press(k ^ 0x51ed270b, it, live);
                 if (Draw.Repaint)
                 {
-                    if (hov) Draw.Round(it, Look.Tone0, CSCommonDesign.RadiusTool);
-                    var m = new Rect(it.x + 10f, Mathf.Round(it.center.y - mark * 0.5f), mark, mark);
-                    if (many) Box(m, on);
-                    else Radio(m, on);
-                    float tx = m.xMax + 10f;
-                    if (openDots != null && i < openDots.Length && openDots[i].HasValue) { Draw.Dot(new Vector2(tx + 4f, it.center.y), 4f, openDots[i].Value); tx += 16f; }
-                    Draw.TextFit(new Rect(tx, it.y, it.xMax - tx - 10f, it.height), openItems[i], 14f, on || hov ? Pal.Strong : Pal.Light, on);
+                    float rad = row * 0.5f;
+                    Draw.BeginScale(it.center, Look.PressScale(pr, PressScale));
+                    float ha = hv * (1f - onT);
+                    if (ha > 0.01f) Draw.Round(it, Draw.Alpha(Look.MenuHover, ha), rad);
+                    if (onT > 0.01f) Draw.Round(it, Draw.Alpha(Look.PastelFill, onT), rad);
+                    var m = new Rect(it.x + RowPadX, Mathf.Round(it.center.y - mark * 0.5f), mark, mark);
+                    if (many) Box(m, onT);
+                    else Radio(m, onT);
+                    float tx = m.xMax + RowGap;
+                    if (openDots != null && i < openDots.Length && openDots[i].HasValue) { Draw.Dot(new Vector2(tx + Dot * 0.5f, it.center.y), Dot * 0.5f, openDots[i].Value); tx += Dot + RowGap; }
+                    Draw.TextFit(new Rect(tx, it.y, it.xMax - tx - RowPadX, it.height), openItems[i], RowFont, Color.Lerp(Look.BarInk, Look.PastelInk, onT), on);
+                    Draw.EndScale();
                 }
-                if (picked < 0 && Draw.Button(it)) picked = i;
+                if (live && picked < 0 && Draw.Button(it)) picked = i;
             }
-            Draw.EndScale();
+            Draw.EndClip();
             Draw.Opacity = opacity;
+            if (!live) return;
             if (picked >= 0)
             {
                 var pick = openPick;
-                if (!many) openKey = 0;
+                if (!many) BeginClose();
                 pick?.Invoke(picked);
                 return;
             }
             var e = Event.current;
-            if (e.type == EventType.MouseDown && !menu.Contains(Draw.Mouse) && !openRect.Contains(Draw.Mouse)) openKey = 0;
+            if (e.type == EventType.MouseDown && !menu.Contains(Draw.Mouse) && !openRect.Contains(Draw.Mouse)) BeginClose();
         }
 
-        /// <summary>하나 고르기 표시: 안 고름 = 회색 고리 · 고름 = 청록 원 + 바탕색 점.</summary>
-        static void Radio(Rect m, bool on)
+        /// <summary>하나 고르기 표시(t = 고름 0 ~ 1): 1.5 고리(안 고름 Look.BtnOffInk → 고름 Look.PastelInk) + 가운데 점 8.</summary>
+        static void Radio(Rect m, float t)
         {
-            if (on)
-            {
-                Draw.Dot(m.center, m.width * 0.5f, Pal.Primary);
-                Draw.Dot(m.center, 3.5f, Pal.OnPrimary);
-            }
-            else Draw.Ring(m.center, m.width * 0.5f - 0.75f, 1.5f, Pal.Dim);
+            Draw.Ring(m.center, m.width * 0.5f - RingW * 0.5f, RingW, Color.Lerp(Look.BtnOffInk, Look.PastelInk, t));
+            if (t > 0.01f) Draw.Dot(m.center, MarkDot * 0.5f, Draw.Alpha(Look.PastelInk, t));
         }
 
-        /// <summary>여럿 고르기 표시: 안 고름 = 회색 테두리 상자 · 고름 = 청록 상자 + 바탕색 체크.</summary>
-        static void Box(Rect m, bool on)
+        /// <summary>여럿 고르기 표시(t = 고름 0 ~ 1): 반지름 6 상자 1.5 선 + ✓ 12.</summary>
+        static void Box(Rect m, float t)
         {
-            if (on)
-            {
-                Draw.Round(m, Pal.Primary, CSCommonDesign.RadiusChip);
-                Draw.Icon(Icons.Check, new Rect(m.x + 2.5f, m.y + 2.5f, m.width - 5f, m.height - 5f), Pal.OnPrimary, 24f, 2.6f);
-            }
-            else Draw.RoundOutline(m, Pal.Dim, CSCommonDesign.RadiusChip, 1.5f);
+            Draw.RoundOutline(m, Color.Lerp(Look.BtnOffInk, Look.PastelInk, t), BoxRadius, RingW);
+            if (t > 0.01f) Draw.Icon(Icons.Done, new Rect(Mathf.Round(m.center.x - Check * 0.5f), Mathf.Round(m.center.y - Check * 0.5f), Check, Check), Draw.Alpha(Look.PastelInk, t), 24f, CheckStroke);
         }
     }
 
-    /// <summary>CSCommon.Stepper — − 값 +: 홈 안에 네모 단추 둘 · 가운데 고정폭 숫자, 끝이면 그쪽 단추 꺼짐(동작 null).</summary>
+    /// <summary>
+    /// CSCommonUX.Stepper — − 값 +(시안 'CSCommonUX.Stepper'): 알약 홈(Look.Pill · 안쪽 4 · 사이 4 · 반지름 = 높이/2) 안에 원 단추 둘(Look.PillNeutral 면 · Look.PillNeutralInk − + 18)
+    /// · 가운데 값(14 굵게 Look.BarInk). 끝이면 그쪽 단추 꺼짐(동작 null — 면 없이 Look.IconOffInk). 누르면 0.95배. 시안 값 칸 최소 폭 76.
+    /// </summary>
     public static class Stepper
     {
+        public const float Pad = 4f, Gap = 4f, Icon = 18f, Stroke = 2f, Font = 14f, ValueMinW = 76f, PressScale = 0.95f;
+
         public static void In(Rect r, string value, Action minus, Action plus, string minusTip = null, string plusTip = null)
         {
-            if (Draw.Repaint) Draw.Round(r, Look.Field, CSCommonDesign.RadiusField);
-            float s = r.height - 6f;
-            if (Button.Square(new Rect(r.x + 3f, r.y + 3f, s, s), Icons.Minus, minusTip, Tone.Neutral, minus != null)) minus?.Invoke();
-            if (Draw.Repaint) Draw.TextFit(new Rect(r.x + 3f + s, r.y, r.width - 6f - s * 2f, r.height), value, 14f, Pal.Txt, true, TextAnchor.MiddleCenter);
-            if (Button.Square(new Rect(r.xMax - 3f - s, r.y + 3f, s, s), Icons.Plus, plusTip, Tone.Neutral, plus != null)) plus?.Invoke();
+            if (Draw.Repaint) Draw.Round(r, Look.Pill, r.height * 0.5f);
+            float s = r.height - Pad * 2f;
+            if (Round(new Rect(r.x + Pad, r.y + Pad, s, s), Icons.Minus, minusTip, minus != null)) minus?.Invoke();
+            if (Draw.Repaint) Draw.TextFit(new Rect(r.x + Pad + s + Gap, r.y, Mathf.Max(0f, r.width - (Pad + s + Gap) * 2f), r.height), value, Font, Look.BarInk, true, TextAnchor.MiddleCenter);
+            if (Round(new Rect(r.xMax - Pad - s, r.y + Pad, s, s), Icons.Plus, plusTip, plus != null)) plus?.Invoke();
+        }
+
+        /// <summary>원 단추(켜짐 = 회색 원 · 꺼짐 = 면 없이 흐린 아이콘). 누르면 true.</summary>
+        static bool Round(Rect b, string icon, string tip, bool enabled)
+        {
+            int key = Look.Key(b, "stepper", icon);
+            float pr = Look.Press(key, b, enabled);
+            if (Draw.Repaint)
+            {
+                Draw.BeginScale(b.center, Look.PressScale(pr, PressScale));
+                if (enabled) Draw.Round(b, Look.PillNeutral, b.height * 0.5f);
+                Draw.Icon(icon, new Rect(Mathf.Round(b.center.x - Icon * 0.5f), Mathf.Round(b.center.y - Icon * 0.5f), Icon, Icon), enabled ? Look.PillNeutralInk : Look.IconOffInk, 24f, Stroke);
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(b, tip);
+            return enabled && Draw.Button(b);
         }
     }
 
-    /// <summary>CSCommon.Switch — 켜고 끄기(46 × 26): 켜짐 청록, 꺼짐(쓸 수 없음) 흐리게. 누르면 true.</summary>
+    /// <summary>
+    /// CSCommonUX.Switch — 켜고 끄기(시안 'CSCommonUX.Switch', 48 × 28 알약 = CSCommonDesign.SwitchW · SwitchH): 꺼짐 = Look.PillNeutral 홈 + Look.KnobOff 손잡이,
+    /// 켜짐 = 모드 파스텔 홈 + Look.PastelInk 손잡이, 쓸 수 없음 = Look.BtnOff 홈 + Look.IconOffInk 손잡이. 손잡이 22(안쪽 3)는 0.24초 cubic-bezier(.2,.9,.3,1.2)로
+    /// 살짝 넘쳤다 자리에 앉고 색은 0.22초, 누르면 0.95배. 누르면 true.
+    /// </summary>
     public static class Switch
     {
+        public const float Inset = 3f, MoveSeconds = 0.24f, FadeSeconds = 0.22f, PressScale = 0.95f;
+        /// <summary>손잡이 곡선 cubic-bezier(.2, .9, .3, 1.2).</summary>
+        const float X1 = 0.2f, Y1 = 0.9f, X2 = 0.3f, Y2 = 1.2f;
+
         public static bool In(Rect r, bool on, bool enabled = true)
         {
             int key = Look.Key(r, "switch");
-            float t = CSCommonAnim.Toward(key, on ? 1f : 0f, 14f);
+            float c = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / FadeSeconds);
+            float mv = CSCommonAnim.Toward(key ^ 0x3c6ef372, on ? 1f : 0f, 1f / MoveSeconds);
+            float pr = Look.Press(key ^ 0x1b873593, r, enabled);
             if (Draw.Repaint)
             {
-                Color track = !enabled ? new Color(1f, 1f, 1f, 0.05f) : Color.Lerp(Look.Tone1, Draw.Alpha(Pal.Primary, 0.35f), t);
-                Draw.Round(r, track, r.height * 0.5f);
-                float k = r.height - 6f;
-                float cx = Mathf.Lerp(r.x + 3f + k * 0.5f, r.xMax - 3f - k * 0.5f, t);
-                Draw.Dot(new Vector2(cx, r.center.y), k * 0.5f, !enabled ? Look.OffInk : Color.Lerp(Pal.Sub, Pal.Primary, t));
+                float k = r.height - Inset * 2f;
+                // 켤 때 곡선 그대로, 끌 때 거꾸로(왼쪽에서도 살짝 넘침)
+                float t = on ? Modal.Ease(mv, X1, Y1, X2, Y2) : 1f - Modal.Ease(1f - mv, X1, Y1, X2, Y2);
+                Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
+                Draw.Round(r, !enabled ? Look.BtnOff : Color.Lerp(Look.PillNeutral, Look.PastelFill, c), r.height * 0.5f);
+                float cx = Mathf.LerpUnclamped(r.x + Inset + k * 0.5f, r.xMax - Inset - k * 0.5f, t);
+                Draw.Dot(new Vector2(cx, r.center.y), k * 0.5f, !enabled ? Look.IconOffInk : Color.Lerp(Look.KnobOff, Look.PastelInk, c));
+                Draw.EndScale();
             }
             return enabled && Draw.Button(r);
         }
     }
 
     /// <summary>
-    /// CSCommon.Slider — 끌기 막대(가이드 · F1 보드 'CSCommon 컴포넌트 · 입력'): 막대 4 · 채움 = 뜻 색 · 손잡이 16 흰 원 + 채움 색 테두리 2(그림자 없음 — 다크 · 라이트 같은 모양).
-    /// 호버 18 + 옅은 고리 6, 끄는 중 고리 8 + 값 말풍선(bubble), 12단계 이하는 점 눈금(손잡이가 눈금에 붙음), 꺼짐 40%.
-    /// 호버 중 ← → 키로 한 단계. 손을 떼면 released.
+    /// CSCommonUX.Slider — 끌기 막대(시안 'CSCommonUX.Slider'): 막대 4(반지름 2 · 빈 쪽 Look.PillLine · 채운 쪽 fill — 보통 Look.PastelStrong) · 손잡이 16 Look.Knob 원 + fill 2px 테두리(그림자 없음),
+    /// 호버 18 + fill 18% 고리 6, 끄는 중 고리 8(28%) + 값 말풍선(bubble). 12단계 이하는 2 × 2 눈금(채운 쪽 Look.Knob · 빈 쪽 Look.KnobOff), 꺼짐 40%.
+    /// 손잡이 크기는 0.1초로 바뀜. 호버 중 ← → 키로 한 단계. 손을 떼면 released.
     /// </summary>
     public static class Slider
     {
-        const float TrackH = 4f, Knob = 8f, KnobHover = 9f, Border = 2f, RingHover = 6f, RingDrag = 8f, MaxTicks = 12f;
+        const float TrackH = 4f, Knob = 8f, KnobHover = 9f, Border = 2f, RingHover = 6f, RingDrag = 8f, Tick = 2f, MaxTicks = 12f;
+        const float OffAlpha = 0.4f, HoverAlpha = 0.18f, DragAlpha = 0.28f, GrowSeconds = 0.1f;
 
         static bool sliding;
         static int slideKey;
@@ -858,36 +1119,38 @@ namespace CSCommon
                         break;
                 }
             }
+            bool drag = sliding && slideKey == key;
+            float grow = CSCommonAnim.Toward(key ^ 0x2545f491, hover || drag ? 1f : 0f, 1f / GrowSeconds);
             if (!Draw.Repaint) return value;
 
-            bool drag = sliding && slideKey == key;
             float old = Draw.Opacity;
-            if (!enabled) Draw.Opacity = old * 0.4f;
+            if (!enabled) Draw.Opacity = old * OffAlpha;
             float t = max > min ? Mathf.Clamp01((value - min) / (max - min)) : 0f;
             var track = new Rect(r.x, Mathf.Round(r.center.y - TrackH * 0.5f), r.width, TrackH);
-            Draw.Round(track, Look.Tone1, TrackH * 0.5f);
+            Draw.Round(track, Look.PillLine, TrackH * 0.5f);
             if (t > 0f) Draw.Round(new Rect(track.x, track.y, Mathf.Max(TrackH, track.width * t), TrackH), fill, TrackH * 0.5f);
-            // 단계 눈금(12단계 이하): 채운 쪽은 흰빛, 빈 쪽은 흐린 점
+            // 단계 눈금(12단계 이하): 2 × 2, 채운 쪽은 손잡이 색 · 빈 쪽은 흐린 회색
             if (step > 0f && max > min && (max - min) / step <= MaxTicks)
             {
                 int n = Mathf.RoundToInt((max - min) / step);
                 for (int i = 0; i <= n; i++)
                 {
                     float tt = i / (float)n;
-                    Draw.Dot(new Vector2(track.x + track.width * tt, track.center.y), 1f, tt <= t + 0.001f ? Draw.Alpha(Color.white, 0.75f) : Look.OffText);
+                    var c = new Rect(Mathf.Round(track.x + track.width * tt - Tick * 0.5f), Mathf.Round(track.center.y - Tick * 0.5f), Tick, Tick);
+                    Draw.Fill(c, tt <= t + 0.001f ? Look.Knob : Look.KnobOff);
                 }
             }
             var knob = new Vector2(Mathf.Round(track.x + track.width * t), track.center.y);
-            float rad = hover || drag ? KnobHover : Knob;
-            if (drag) Draw.Dot(knob, rad + RingDrag, Draw.Alpha(fill, 0.26f));
-            else if (hover) Draw.Dot(knob, rad + RingHover, Draw.Alpha(fill, 0.16f));
+            float rad = Mathf.Lerp(Knob, KnobHover, grow);
+            if (drag) Draw.Dot(knob, rad + RingDrag, Draw.Alpha(fill, DragAlpha));
+            else if (grow > 0.01f) Draw.Dot(knob, rad + RingHover, Draw.Alpha(fill, HoverAlpha * grow));
             Draw.Dot(knob, rad, fill);
-            Draw.Dot(knob, rad - Border, Color.white);
+            Draw.Dot(knob, rad - Border, Look.Knob);
             if (drag && !string.IsNullOrEmpty(bubble))
             {
                 float bw = Draw.TextWidth(bubble, 12f, true) + 16f;
                 var b = new Rect(Mathf.Round(knob.x - bw * 0.5f), Mathf.Round(knob.y - rad - RingDrag - 22f), bw, 20f);
-                Draw.Round(b, fill, 6f);
+                Draw.Round(b, fill, b.height * 0.5f);
                 Draw.Text(b, bubble, 12f, Draw.On(fill), true, TextAnchor.MiddleCenter);
             }
             Draw.Opacity = old;
@@ -895,49 +1158,66 @@ namespace CSCommon
         }
     }
 
-    /// <summary>CSCommon.Swatch — 색 칸 28: 고른 색은 Strong 고리(다크 흰 · 라이트 검정). 누르면 true.</summary>
+    /// <summary>
+    /// CSCommonUX.Swatch — 색 칸(시안 'CSCommonUX.Swatch', 원 30): 평소 안쪽 1px Look.SwatchLine, 고르면 이중 고리(판 바탕 Pal.Win 2px + Look.BarInk 2px, 0.16초) ·
+    /// 누르면 0.95배. 누르면 true.
+    /// </summary>
     public static class Swatch
     {
+        public const float Ring = 2f, FadeSeconds = 0.16f, PressScale = 0.95f;
+
         public static bool In(Rect r, Color color, bool on, string tip = null)
         {
+            int key = Look.Key(r, "swatch");
+            float onT = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / FadeSeconds);
+            float pr = Look.Press(key, r);
             if (Draw.Repaint)
             {
-                if (on)
+                float rad = Mathf.Min(r.width, r.height) * 0.5f;
+                Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
+                if (onT > 0.01f)
                 {
-                    // 고리 = 가장 진한 글 색(다크 흰색 · 라이트 거의 검정 — 라이트 흰 바탕에 흰 고리가 안 보였음)
-                    Draw.Round(new Rect(r.x - 4f, r.y - 4f, r.width + 8f, r.height + 8f), Pal.Strong, CSCommonDesign.IconBtnRadius);
-                    Draw.Round(new Rect(r.x - 2f, r.y - 2f, r.width + 4f, r.height + 4f), Look.FieldFocus, 8.5f);
+                    Draw.Round(new Rect(r.x - Ring * 2f, r.y - Ring * 2f, r.width + Ring * 4f, r.height + Ring * 4f), Draw.Alpha(Look.BarInk, onT), rad + Ring * 2f);
+                    Draw.Round(new Rect(r.x - Ring, r.y - Ring, r.width + Ring * 2f, r.height + Ring * 2f), Draw.Alpha(Pal.Win, onT), rad + Ring);
                 }
-                else if (Draw.Hover(r)) Draw.Round(new Rect(r.x - 2f, r.y - 2f, r.width + 4f, r.height + 4f), Look.Tone1, 8.5f);
-                Draw.Round(r, color, CSCommonDesign.RadiusTool);
+                Draw.Round(r, color, rad);
+                if (onT < 0.99f) Draw.RoundOutline(r, Draw.Alpha(Look.SwatchLine, 1f - onT), rad);
+                Draw.EndScale();
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             return Draw.Button(r);
         }
     }
 
-    /// <summary>CSCommon.Stat — 숫자 칸(이름 · 큰 숫자 · 설명) · 숫자 줄(이름 왼쪽 · 값 오른쪽).</summary>
+    /// <summary>
+    /// CSCommonUX.Stat — 숫자 칸(시안: 이름 12 Look.PillSub · 큰 숫자 24 굵게(줄 30) · 설명 12 Look.PillSub, 들임 없음 · 칸 세로 가운데) ·
+    /// 숫자 줄 Line(시안 높이 26: 이름 12.5 Section.SubInk 왼쪽 · 값 굵게 Look.BarInk 오른쪽).
+    /// </summary>
     public static class Stat
     {
+        public const float LabelH = 16f, ValueH = 30f, ValueFont = 24f, LineFont = 12.5f, LineH = 26f;
+
         public static void In(Rect r, string label, string value, string sub = null, Color? color = null)
         {
             if (!Draw.Repaint) return;
-            // Flatten: 회색 타일을 걷고 이름 · 값 · 설명만
-            Draw.TextFit(new Rect(r.x + 14f, r.y + 10f, r.width - 28f, 16f), label, 12f, Pal.Sub);
-            Draw.TextFit(new Rect(r.x + 14f, r.y + 28f, r.width - 28f, 30f), value, 24f, color ?? Pal.Txt, true);
-            if (!string.IsNullOrEmpty(sub)) Draw.TextFit(new Rect(r.x + 14f, r.y + 58f, r.width - 28f, 15f), sub, CSCommonDesign.FontMin, Pal.Dim);
+            // 세 줄(이름 16 · 숫자 30 · 설명 16)을 칸 세로 가운데로
+            bool hasSub = !string.IsNullOrEmpty(sub);
+            float y = r.y + Mathf.Max(0f, Mathf.Round((r.height - LabelH - ValueH - (hasSub ? LabelH : 0f)) * 0.5f));
+            Draw.TextFit(new Rect(r.x, y, r.width, LabelH), label, CSCommonDesign.FontMin, Look.PillSub);
+            Draw.TextFit(new Rect(r.x, y + LabelH, r.width, ValueH), value, ValueFont, color ?? Look.BarInk, true);
+            if (hasSub) Draw.TextFit(new Rect(r.x, y + LabelH + ValueH, r.width, LabelH), sub, CSCommonDesign.FontMin, Look.PillSub);
         }
 
         public static void Line(Rect r, string label, string value, Color? color = null)
         {
             if (!Draw.Repaint) return;
-            Draw.Text(new Rect(r.x, r.y, r.width * 0.5f, r.height), label, 12.5f, Pal.Sub, false, TextAnchor.MiddleLeft);
-            Draw.TextFit(new Rect(r.x + r.width * 0.4f, r.y, r.width * 0.6f, r.height), value, 12.5f, color ?? Pal.Txt, true, TextAnchor.MiddleRight);
+            Draw.Text(new Rect(r.x, r.y, r.width * 0.5f, r.height), label, LineFont, Section.SubInk, false, TextAnchor.MiddleLeft);
+            Draw.TextFit(new Rect(r.x + r.width * 0.4f, r.y, r.width * 0.6f, r.height), value, LineFont, color ?? Look.BarInk, true, TextAnchor.MiddleRight);
         }
     }
 
     /// <summary>
-    /// CSCommon.Metric — GLDS 2.1 지표 칸: 타일 면 없이 값 15 굵게 위 · 라벨 12 Sub 아래(설명은 그 아래 12 Dim), 왼쪽 정렬 · 들임 없음.
+    /// CSCommonUX.Metric — GLDS 2.1 지표 칸: 타일 면 없이 값 15 굵게 위 · 라벨 12 Sub 아래(설명은 그 아래 12 Dim), 왼쪽 정렬 · 들임 없음.
     /// 격자는 Grid: 3열(4개면 2열) · 행 간격 MetricRowGap.
     /// </summary>
     public static class Metric
@@ -967,49 +1247,57 @@ namespace CSCommon
     }
 
     /// <summary>
-    /// CSCommon.ShareRow — 비중 줄(GLDS): 이름 14 · 값 15 굵게 · 비율 12 Sub(폭 40 오른쪽), 아래 막대 6(Tone1 홈 · 기본 팔레트, color 를 주면 그 색 + 이름 앞 점 8).
-    /// r 높이 = ShareRowH. share = 0 ~ 1, ratio 를 주면 비율 글 대신 그 글.
+    /// CSCommonUX.ShareRow — 비중 줄(시안): 색 점 8 + 8 · 이름 14 Look.BarInk · 값 15 굵게 · 비율 12 Section.SubInk(폭 40 오른쪽) 사이 8,
+    /// 6 아래 막대 8(반지름 4 · Look.PillNeutral 홈 · 채움 color, 없으면 Look.PastelStrong). r 높이 = ShareRowH. share = 0 ~ 1, ratio 를 주면 비율 글 대신 그 글.
     /// </summary>
     public static class ShareRow
     {
+        public const float LineH = 20f, BarGap = 6f, Bar = 8f, Dot = 8f, Gap = 8f, RatioW = 40f, NameFont = 14f, ValueFont = 15f;
+
         public static void In(Rect r, string name, string value, float share, Color? color = null, string ratio = null)
         {
             if (!Draw.Repaint) return;
             share = Mathf.Clamp01(share);
-            const float lh = 20f, pw = 40f;
             float top = r.y + CSCommonDesign.ShareRowPad, tx = r.x;
             if (color.HasValue)
             {
-                Draw.Dot(new Vector2(tx + 4f, top + lh * 0.5f), 4f, color.Value);
-                tx += 16f;
+                Draw.Dot(new Vector2(tx + Dot * 0.5f, top + LineH * 0.5f), Dot * 0.5f, color.Value);
+                tx += Dot + Gap;
             }
-            float vw = Mathf.Ceil(Draw.TextWidth(value, 15f, true));
-            Draw.TextFit(new Rect(tx, top, r.xMax - tx - pw - vw - 12f, lh), name, 14f, Pal.Txt);
-            Draw.Text(new Rect(r.xMax - pw - vw - 4f, top, vw + 2f, lh), value, 15f, Pal.Txt, true, TextAnchor.MiddleLeft);
-            Draw.TextFit(new Rect(r.xMax - pw, top, pw, lh), ratio ?? Mathf.RoundToInt(share * 100f) + "%", CSCommonDesign.FontMin, Pal.Sub, false, TextAnchor.MiddleRight);
-            var bar = new Rect(r.x, top + lh + 6f, r.width, 6f);
-            Draw.Round(bar, Look.Tone1, 3f);
-            if (share > 0f) Draw.Round(new Rect(bar.x, bar.y, Mathf.Max(6f, bar.width * share), bar.height), color ?? Pal.Primary, 3f);
-        }
-    }
-
-    /// <summary>CSCommon.Progress — 막대 8: 목표 선(흰 2px), 넘으면 청록 · 못 미치면 주황(color 를 주면 그 색).</summary>
-    public static class Progress
-    {
-        public static void In(Rect r, float t, float goal = -1f, Color? color = null)
-        {
-            if (!Draw.Repaint) return;
-            t = Mathf.Clamp01(t);
-            var bar = new Rect(r.x, Mathf.Round(r.center.y - 4f), r.width, 8f);
-            Draw.Round(bar, Look.Tone0, 4f);
-            Color c = color ?? (goal < 0f || t >= goal ? Pal.Teal : Pal.Warn);
-            if (t > 0f) Draw.Round(new Rect(bar.x, bar.y, Mathf.Max(8f, bar.width * t), bar.height), c, 4f);
-            if (goal >= 0f) Draw.Round(new Rect(bar.x + bar.width * Mathf.Clamp01(goal) - 1f, bar.y - 4f, 2f, bar.height + 8f), Pal.Strong, 1f);
+            float vw = Mathf.Ceil(Draw.TextWidth(value, ValueFont, true)), vx = r.xMax - RatioW - Gap - vw;
+            Draw.TextFit(new Rect(tx, top, Mathf.Max(0f, vx - Gap - tx), LineH), name, NameFont, Look.BarInk);
+            Draw.Text(new Rect(vx, top, vw + 2f, LineH), value, ValueFont, Look.BarInk, true, TextAnchor.MiddleLeft);
+            Draw.TextFit(new Rect(r.xMax - RatioW, top, RatioW, LineH), ratio ?? Mathf.RoundToInt(share * 100f) + "%", CSCommonDesign.FontMin, Section.SubInk, false, TextAnchor.MiddleRight);
+            var bar = new Rect(r.x, top + LineH + BarGap, r.width, Bar);
+            Draw.Round(bar, Look.PillNeutral, Bar * 0.5f);
+            if (share > 0f) Draw.Round(new Rect(bar.x, bar.y, Mathf.Max(Bar, bar.width * share), Bar), color ?? Look.PastelStrong, Bar * 0.5f);
         }
     }
 
     /// <summary>
-    /// CSCommon.Spinner — 구글 머티리얼 서클 인디케이터(Google Circular Progress Indicator):
+    /// CSCommonUX.Progress — 막대 8(시안): 반지름 4 · Look.PillNeutral 홈, 목표 선(2 × 16 · Look.BarInk), 넘으면 Look.PastelStrong · 못 미치면 Look.ProgressLow(color 를 주면 그 색).
+    /// 채움 폭은 값이 바뀌면 부드럽게 따라감(시안 0.4초 cubic-bezier(.2,.8,.2,1) 어림 — CSCommonAnim.Smooth).
+    /// </summary>
+    public static class Progress
+    {
+        public const float Bar = 8f, GoalW = 2f, GoalH = 16f, Rate = 8f;
+
+        public static void In(Rect r, float t, float goal = -1f, Color? color = null)
+        {
+            t = Mathf.Clamp01(t);
+            var bar = new Rect(r.x, Mathf.Round(r.center.y - Bar * 0.5f), r.width, Bar);
+            float w = CSCommonAnim.Smooth(Look.Key(r, "progress"), bar.width * t, Rate);
+            if (!Draw.Repaint) return;
+            Draw.Round(bar, Look.PillNeutral, Bar * 0.5f);
+            Color c = color ?? (goal < 0f || t >= goal ? Look.PastelStrong : Look.ProgressLow);
+            if (w > 0.5f) Draw.Round(new Rect(bar.x, bar.y, Mathf.Max(Bar, w), Bar), c, Bar * 0.5f);
+            if (goal >= 0f)
+                Draw.Round(new Rect(Mathf.Round(bar.x + bar.width * Mathf.Clamp01(goal) - GoalW * 0.5f), Mathf.Round(bar.center.y - GoalH * 0.5f), GoalW, GoalH), Look.BarInk, GoalW * 0.5f);
+        }
+    }
+
+    /// <summary>
+    /// CSCommonUX.Spinner — 구글 머티리얼 서클 인디케이터(Google Circular Progress Indicator):
     /// 호가 16° ↔ 286° 로 늘었다 줄어들며 회전하는 둥근 끝(round cap) 원형 로딩 인디케이터.
     /// </summary>
     public static class Spinner
@@ -1026,49 +1314,55 @@ namespace CSCommon
         }
     }
 
-    /// <summary>CSCommon.Tooltip — 말풍선: 짙은 바탕 #0B0D11 · 그림자 · 꼬리, 글 12.5 · 줄바꿈 최대 280.</summary>
+    /// <summary>
+    /// CSCommonUX.Tooltip — 짙은 알약 말풍선(시안): Look.TipFill 면 · 반지름 14 · 안쪽 위 10 · 아래 11 · 좌우 14 · 글 12.5 Look.TipInk · 줄바꿈 최대 폭 300,
+    /// 가리키는 칸과 10 떨어짐 · 꼬리 높이 5(왼쪽 끝에서 24 안) · 그림자 없음. 0.4초 머물면 뜸(Delay — CSCommonToolbar.DrawTip).
+    /// </summary>
     public static class Tooltip
     {
+        public const float MaxW = 300f, PadX = 14f, PadTop = 10f, PadBottom = 11f, Radius = 14f, Font = 12.5f, Gap = 10f, Tail = 5f, TailInset = 24f, Delay = 0.4f;
+
         /// <summary>anchor(가리키는 칸) 아래에(화면 밖이면 위로) 말풍선을 그림.</summary>
         public static void Draw(Rect anchor, string text)
         {
-            if (!CSCommon.Draw.Repaint || string.IsNullOrEmpty(text)) return;
-            const float maxW = 280f, padX = 12f, padY = 8f;
-            float tw = Mathf.Min(maxW, CSCommon.Draw.TextWidth(text, 12.5f) + 2f);
-            float th = CSCommon.Draw.TextHeight(text, 12.5f, tw);
-            float w = tw + padX * 2f, h = th + padY * 2f;
-            float x = Mathf.Clamp(anchor.center.x - w * 0.5f, 8f, CSCommon.Draw.Width - w - 8f);
-            bool above = anchor.yMax + 10f + h > CSCommon.Draw.Height - 8f;
-            float y = above ? anchor.y - 10f - h : anchor.yMax + 10f;
+            if (!CSCommonUX.Draw.Repaint || string.IsNullOrEmpty(text)) return;
+            float tw = Mathf.Min(MaxW - PadX * 2f, CSCommonUX.Draw.TextWidth(text, Font) + 2f);
+            float th = CSCommonUX.Draw.TextHeight(text, Font, tw);
+            float w = tw + PadX * 2f, h = th + PadTop + PadBottom;
+            float x = Mathf.Clamp(anchor.center.x - w * 0.5f, 8f, CSCommonUX.Draw.Width - w - 8f);
+            bool above = anchor.yMax + Gap + h > CSCommonUX.Draw.Height - 8f;
+            float y = above ? anchor.y - Gap - h : anchor.yMax + Gap;
             var r = new Rect(x, y, w, h);
-            CSCommon.Draw.Round(new Rect(r.x - 1f, r.y + 3f, r.width + 2f, r.height + 2f), CSCommon.Draw.Alpha(Color.black, 0.35f), CSCommonDesign.RadiusField);
-            CSCommon.Draw.Round(r, Look.Ink, CSCommonDesign.RadiusTile);
-            float tx = Mathf.Clamp(anchor.center.x, r.x + 12f, r.xMax - 12f);
+            CSCommonUX.Draw.Round(r, Look.TipFill, Mathf.Min(Radius, h * 0.5f));
+            float tx = Mathf.Clamp(anchor.center.x, r.x + TailInset, r.xMax - TailInset);
             // 꼬리: 가리키는 쪽을 향한 세모(1px 줄을 쌓아 그림)
-            for (int i = 0; i < 6; i++)
-                CSCommon.Draw.Fill(new Rect(tx - (i + 1), above ? r.yMax + 5f - i : r.y - 6f + i, 2f * (i + 1), 1f), Look.Ink);
-            CSCommon.Draw.Text(new Rect(r.x + padX, r.y + padY, tw, th), text, 12.5f, Color.white, false, TextAnchor.UpperLeft, true);
+            for (int i = 0; i < Tail; i++)
+                CSCommonUX.Draw.Fill(new Rect(tx - (i + 1), above ? r.yMax + Tail - 1f - i : r.y - Tail + i, 2f * (i + 1), 1f), Look.TipFill);
+            CSCommonUX.Draw.Text(new Rect(r.x + PadX, r.y + PadTop, tw, th), text, Font, Look.TipInk, false, TextAnchor.UpperLeft, true);
         }
     }
 
-    /// <summary>CSCommon.Hint — 안내 한 줄(34 알약): 굵은 머리(도구 이름) + 할 일.</summary>
-    public static class Hint
+    /// <summary>
+    /// 독 안내 알약(Dockbar 내부 부품 — 이름 미정, 후보 DockHint): 높이 34 · 반지름 17 · 좌우 16 · 글 13, 굵은 머리(문구의 첫 세 칸 띄움 앞, Look.BarInk) + 6 + 설명(Look.BarOff).
+    /// 판은 PillBar.Plate(불투명 + 1px 선, 그림자 없음).
+    /// </summary>
+    internal static class DockHint
     {
-        public static Rect At(float centerX, float y, string text, Color? color = null)
+        public const float Height = 34f, PadX = 16f, HeadGap = 6f, Font = 13f;
+
+        public static Rect At(float centerX, float y, string text)
         {
-            const float h = 34f;
             string head = null, rest = text ?? "";
             int cut = rest.IndexOf("   ", StringComparison.Ordinal);
             if (cut > 0) { head = rest.Substring(0, cut); rest = rest.Substring(cut + 3); }
-            float hw = head != null ? Draw.TextWidth(head, 13f, true) + 10f : 0f;
-            float w = Mathf.Min(Draw.Width - 64f, hw + Draw.TextWidth(rest, 13f) + 32f);
-            var r = new Rect(Mathf.Round(centerX - w * 0.5f), y, w, h);
+            float hw = head != null ? Mathf.Ceil(Draw.TextWidth(head, Font, true)) + HeadGap : 0f;
+            float w = Mathf.Min(Draw.Width - 64f, hw + Mathf.Ceil(Draw.TextWidth(rest, Font)) + PadX * 2f);
+            var r = new Rect(PillBar.Left(centerX, w), y, w, Height);
             if (!Draw.Repaint) return r;
-            Draw.Round(r, Draw.Alpha(Pal.Win, 0.94f), h * 0.5f);
-            Draw.RoundOutline(r, Look.PanelLine, h * 0.5f);
-            float tx = r.x + 16f;
-            if (head != null) { Draw.Text(new Rect(tx, r.y, hw, h), head, 13f, Pal.Strong, true, TextAnchor.MiddleLeft); tx += hw; }
-            Draw.TextFit(new Rect(tx, r.y, r.xMax - tx - 16f, h), rest, 13f, color ?? Pal.Light);
+            PillBar.Plate(r);
+            float tx = r.x + PadX;
+            if (head != null) { Draw.Text(new Rect(tx, r.y, hw, Height), head, Font, Look.BarInk, true, TextAnchor.MiddleLeft); tx += hw; }
+            Draw.TextFit(new Rect(tx, r.y, r.xMax - tx - PadX, Height), rest, Font, Look.BarOff);
             return r;
         }
     }
@@ -1082,8 +1376,10 @@ namespace CSCommon
     }
 
     /// <summary>
-    /// CSCommon.Toast — 작업 알림 60(GLDS 토스트 D): 상태 원 36 · 제목 14 굵게 + 설명 12 한 줄(문구의 첫 ' — ' 뒤) · 오른쪽 작은 주 단추(되돌리기 등).
-    /// 8 아래에서 올라오며 0.26초 페이드인 · 끝나기 0.18초 전부터 페이드아웃(age · life 를 넘기면).
+    /// CSCommonUX.Toast — 작업 알림(시안 'CSCommonUX.Toast'): 알약 60(반지름 30 · Section.Plate 면 + 1px Look.PillLine, 그림자 없음) · 왼쪽 12 ·
+    /// 상태 원 36(완료 = 모드 파스텔 · 안내 = Look.PillNeutral · 오류 = Look.FabCancel*) · 12 · 제목 14 굵게 Look.BarInk + 3 + 설명 12 Section.SubInk(문구의 첫 ' — ' 뒤) ·
+    /// 오른쪽 작은 주 단추 34(되돌리기 등, 앞 18) · 오른쪽 안쪽 단추 있으면 12 · 없으면 28.
+    /// 8 아래에서 올라오며 0.26초(Modal.Ease) 나타남 · 끝나기 0.18초 전부터 사라짐(age · life 를 넘기면).
     /// </summary>
     public static class Toast
     {
@@ -1102,10 +1398,13 @@ namespace CSCommon
         {
             Split(text, out string title, out string desc);
             float tw = Mathf.Max(Mathf.Ceil(Draw.TextWidth(title, 14f, true)), desc != null ? Mathf.Ceil(Draw.TextWidth(desc, 12f)) : 0f);
-            float w = CSCommonDesign.ToastPadL + CSCommonDesign.ToastCircle + CSCommonDesign.ToastGap + tw + CSCommonDesign.ToastPadR;
-            if (!string.IsNullOrEmpty(action)) w += CSCommonDesign.ToastGap + Button.Width(actionIcon, action, true);
+            float w = CSCommonDesign.ToastPadL + CSCommonDesign.ToastCircle + CSCommonDesign.ToastGap + tw + PadR(action);
+            if (!string.IsNullOrEmpty(action)) w += CSCommonDesign.ToastGap + CSCommonDesign.ToastActionGap + Button.Width(actionIcon, action, true);
             return Mathf.Min(w, CSCommonDesign.ToastMaxW);
         }
+
+        /// <summary>오른쪽 안쪽 여백: 단추가 있으면 12 · 없으면 28(시안 — 글만 있는 토스트가 오른쪽에 붙어 보이지 않게).</summary>
+        static float PadR(string action) => string.IsNullOrEmpty(action) ? CSCommonDesign.ToastPadR : CSCommonDesign.ToastPadRAction;
 
         // ---- 한 번에 하나(GLDS 토스트 자리): Show 로 띄우면 바꿔 끼우고 시간을 다시 잼, Flush 가 화면 아래 16 · 겹치는 떠 있는 것(Avoid) 위 8 에 그림
         static string showText;
@@ -1176,7 +1475,7 @@ namespace CSCommon
         /// <summary>r 높이 = ToastHeight. age = 뜬 뒤 초 · life = 보일 초(넘기지 않으면 움직임 없이 그대로).</summary>
         public static void In(Rect r, string text, ToastKind kind, string action = null, string actionIcon = null, Action click = null, float age = float.MaxValue, float life = float.MaxValue)
         {
-            float show = CSCommonAnim.EaseOut(age / CSCommonDesign.ToastInSeconds);
+            float show = Modal.Ease(age / CSCommonDesign.ToastInSeconds);
             float fade = life < float.MaxValue ? Mathf.Min(show, Mathf.Clamp01((life - age) / CSCommonDesign.ToastOutSeconds)) : show;
             if (fade <= 0f) return;
             float opacity = Draw.Opacity;
@@ -1184,249 +1483,549 @@ namespace CSCommon
             Draw.Opacity *= fade;
             Draw.Shift(shift);
             Split(text, out string title, out string desc);
-            Look.Elevated(r, CSCommonDesign.CardRadius, Look.FieldFocus);
-            float bw = string.IsNullOrEmpty(action) ? 0f : Button.Width(actionIcon, action, true);
+            float bw = string.IsNullOrEmpty(action) ? 0f : Button.Width(actionIcon, action, true), padR = PadR(action);
             if (Draw.Repaint)
             {
+                float rad = r.height * 0.5f;
+                Draw.Round(r, Section.Plate, rad);
+                Draw.RoundOutline(r, Look.PillLine, rad);
                 float d = CSCommonDesign.ToastCircle, isz = CSCommonDesign.ToastIcon;
                 var c = new Vector2(r.x + CSCommonDesign.ToastPadL + d * 0.5f, r.center.y);
-                Color ring = kind == ToastKind.Success ? Draw.Alpha(Pal.Teal, 0.14f) : kind == ToastKind.Error ? Draw.Alpha(Pal.Red, 0.16f) : Look.Tone0;
-                Color ink = kind == ToastKind.Success ? Pal.Teal : kind == ToastKind.Error ? Pal.Red : Pal.Txt;
-                Draw.Dot(c, d * 0.5f, ring);
+                Color fill = kind == ToastKind.Success ? Look.PastelFill : kind == ToastKind.Error ? Look.FabCancelFill : Look.PillNeutral;
+                Color ink = kind == ToastKind.Success ? Look.PastelInk : kind == ToastKind.Error ? Look.FabCancelInk : Look.PillNeutralInk;
+                Draw.Dot(c, d * 0.5f, fill);
                 Draw.Icon(kind == ToastKind.Success ? SuccessPath : kind == ToastKind.Error ? ErrorPath : InfoPath, new Rect(c.x - isz * 0.5f, c.y - isz * 0.5f, isz, isz), ink, 24f, 2.4f);
                 float tx = r.x + CSCommonDesign.ToastPadL + d + CSCommonDesign.ToastGap;
-                float tw = r.xMax - tx - CSCommonDesign.ToastPadR - (bw > 0f ? bw + CSCommonDesign.ToastGap : 0f);
-                if (desc == null) Draw.TextFit(new Rect(tx, r.y, tw, r.height), title, 14f, Pal.Strong, true);
+                float tw = r.xMax - tx - padR - (bw > 0f ? bw + CSCommonDesign.ToastGap + CSCommonDesign.ToastActionGap : 0f);
+                if (desc == null) Draw.TextFit(new Rect(tx, r.y, tw, r.height), title, 14f, Look.BarInk, true);
                 else
                 {
                     // 제목 18 + 사이 3 + 설명 16 을 가운데로
                     float top = Mathf.Round(r.center.y - 18.5f);
-                    Draw.TextFit(new Rect(tx, top, tw, 18f), title, 14f, Pal.Strong, true);
-                    Draw.TextFit(new Rect(tx, top + 21f, tw, 16f), desc, 12f, Pal.Sub);
+                    Draw.TextFit(new Rect(tx, top, tw, 18f), title, 14f, Look.BarInk, true);
+                    Draw.TextFit(new Rect(tx, top + 21f, tw, 16f), desc, 12f, Section.SubInk);
                 }
             }
             if (bw > 0f)
-                Button.In(new Rect(r.xMax - CSCommonDesign.ToastPadR - bw, r.center.y - CSCommonDesign.ActionHeightSmall * 0.5f, bw, CSCommonDesign.ActionHeightSmall), actionIcon, action, null, Tone.Primary, null, true, click, false);
+                Button.In(new Rect(r.xMax - padR - bw, Mathf.Round(r.center.y - CSCommonDesign.ToastActionH * 0.5f), bw, CSCommonDesign.ToastActionH), actionIcon, action, null, Tone.Primary, null, true, click);
             Draw.Shift(-shift);
             Draw.Opacity = opacity;
         }
     }
 
     /// <summary>
-    /// CSCommon.Section — Flatten 섹션(GLDS 2.1): Win 바탕 · 모서리 0 · 테두리 없음, 제목 17 굵게 · 오른쪽 보조 12 Sub.
-    /// 섹션 사이 · 두 열 사이는 Band(Pal.Band 띠 BandH 10), 섹션 안 줄 사이는 Hairline(Divider 1).
-    /// 면은 뜻이 있을 때만(히어로 fill · 위 색 띠 stripe · 타일 · 차트 · 지도 판 · 창).
+    /// CSCommonUX.Card — 선 카드(시안 'CSCommonUX.Card', 떠 있는 판 안에서만): 반지름 20 · Pal.Card 면 + 안쪽 1px Look.PillLine, 그림자 없음.
+    /// 제목 16 굵게 Look.BarInk · 오른쪽 보조 12 Section.SubInk. 안 여백은 CSCommonDesign.Card*. 창 띠 안 묶음은 Section.Frame(플레이트 24) — 카드는 떠 있는 판 안 묶음.
     /// </summary>
-    public static class Section
-    {
-        public static void Frame(Rect r, Color? fill = null, Color? stripe = null)
-        {
-            if (!Draw.Repaint) return;
-            Draw.Fill(r, fill ?? Pal.Win);
-            if (stripe.HasValue) Draw.Fill(new Rect(r.x, r.y, r.width, 3f), stripe.Value);
-        }
-
-        public static void Title(Rect r, string title, string sub = null)
-        {
-            if (!Draw.Repaint) return;
-            float sw = string.IsNullOrEmpty(sub) ? 0f : Mathf.Min(r.width * 0.45f, Draw.TextWidth(sub, CSCommonDesign.FontMin) + 8f);
-            Draw.TextFit(new Rect(r.x, r.y, r.width - sw, r.height), title, CSCommonDesign.SectionTitleFont, Pal.Txt, true);
-            if (sw > 0f) Draw.TextFit(new Rect(r.xMax - sw, r.y, sw, r.height), sub, CSCommonDesign.FontMin, Pal.Sub, false, TextAnchor.MiddleRight);
-        }
-
-        /// <summary>줄 사이 헤어라인(들임 inset — 글 시작선에 맞춤).</summary>
-        public static void Hairline(Rect r, float inset = 0f)
-        {
-            if (Draw.Repaint) Draw.Fill(new Rect(r.x + inset, r.y, r.width - inset, 1f), Look.Divider);
-        }
-    }
-
-    /// <summary>CSCommon.Card — 선 카드(시안 A): 바탕 #1B1F26 + 1px 선 #3A404B, 그림자 · 제목 앞 막대 없음 · 오른쪽 보조 글. 여백은 CSCommonDesign.Card*.</summary>
     public static class Card
     {
+        public const float Radius = 20f, TitleFont = 16f, SubFont = 12f;
+
         public static void Frame(Rect r, Color? fill = null)
         {
             if (!Draw.Repaint) return;
-            Draw.Round(r, fill ?? Pal.Card, CSCommonDesign.CardRadius);
-            Draw.RoundOutline(r, Pal.Line2, CSCommonDesign.CardRadius);
+            Draw.Round(r, fill ?? Pal.Card, Radius);
+            Draw.RoundOutline(r, Look.PillLine, Radius);
         }
 
-        /// <summary>제목 줄(bar 는 예전 호출 모양만 지킴 — 선 카드엔 막대 없음).</summary>
-        public static void Title(Rect r, string title, string sub = null, Color? bar = null)
+        /// <summary>제목 줄: 제목 왼쪽 · 보조 글 오른쪽(r 의 45% 까지).</summary>
+        public static void Title(Rect r, string title, string sub = null)
         {
             if (!Draw.Repaint) return;
-            float tx = r.x;
-            float sw = string.IsNullOrEmpty(sub) ? 0f : Mathf.Min(r.width * 0.45f, Draw.TextWidth(sub, 12f) + 8f);
-            Draw.TextFit(new Rect(tx, r.y, r.xMax - tx - sw, r.height), title, 16f, Pal.Txt, true);
-            if (sw > 0f) Draw.TextFit(new Rect(r.xMax - sw, r.y, sw, r.height), sub, 12f, Pal.Sub, false, TextAnchor.MiddleRight);
+            float sw = string.IsNullOrEmpty(sub) ? 0f : Mathf.Min(r.width * 0.45f, Draw.TextWidth(sub, SubFont) + 8f);
+            Draw.TextFit(new Rect(r.x, r.y, r.width - sw, r.height), title, TitleFont, Look.BarInk, true);
+            if (sw > 0f) Draw.TextFit(new Rect(r.xMax - sw, r.y, sw, r.height), sub, SubFont, Section.SubInk, false, TextAnchor.MiddleRight);
         }
     }
 
     /// <summary>
-    /// CSCommon.Tile — 고를 수 있는 타일(설정 타일 · 대시 타일 · 주말 형식 · 에셋 카드 · 필터 칩): 바탕 Field · 호버 Tone0 · 고르면 떠오른 면(Look.Raised) ·
-    /// 꺼짐 Off. 모서리 RadiusField. 안쪽 글 · 아이콘은 부르는 쪽이 그림.
+    /// CSCommonUX.Tile — 고를 수 있는 타일(시안 'CSCommonUX.Tile' · 모달 4열 격자 타일도 이것): 반지름 20(낮은 타일은 높이/2) · 평소 Look.Pill · 호버 Look.NeutralHover ·
+    /// 고르면 모드 파스텔(0.2초) · 잠김 Look.BtnOff, 누르면 0.95배. 안 글은 부르는 쪽이 Ink(이름 14 굵게) · Sub(보조 12) 색으로 — 시안 왼쪽 18 · 이름 → 보조 3.
     /// </summary>
     public static class Tile
     {
+        public const float Radius = 20f, PadX = 18f, NameFont = 14f, SubFont = 12f, LineGap = 3f, PressScale = 0.95f, FadeSeconds = 0.2f;
+
         /// <summary>바탕만 그림(안에 단추가 있는 타일 — 타일 자체는 누르지 않음).</summary>
         public static void Frame(Rect r, bool on, bool enabled = true, bool hoverable = true)
         {
             int key = Look.Key(r, "tile");
-            float hv = Look.Hover(key, r, enabled && hoverable && !on);
-            float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 12f);
-            if (!Draw.Repaint) return;
-            Draw.Round(r, !enabled ? Look.Off : Color.Lerp(Look.Field, Look.Tone0, hv), CSCommonDesign.RadiusField);
-            // UX 1.1: 고른 타일 = 주 색 옅은 면 + 주 색 2px 테두리(떠오른 면은 라이트에서 거의 안 보였음)
-            if (onT > 0.01f)
-            {
-                Draw.Round(r, Draw.Alpha(Pal.Primary, 0.12f * onT), CSCommonDesign.RadiusField);
-                Draw.RoundOutline(r, Draw.Alpha(Pal.Primary, onT), CSCommonDesign.RadiusField, 2f);
-            }
+            Back(r, key, on, enabled, Look.Hover(key, r, enabled && hoverable && !on));
         }
 
-        /// <summary>바탕 + 누르기. 누르면 true(꺼짐이면 늘 false).</summary>
-        public static bool In(Rect r, bool on, bool enabled = true, string tip = null)
+        static void Back(Rect r, int key, bool on, bool enabled, float hv)
         {
-            Frame(r, on, enabled);
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
+            if (!Draw.Repaint) return;
+            Color bg = !enabled ? Look.BtnOff : Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), Look.PastelFill, onT);
+            Draw.Round(r, bg, Mathf.Min(Radius, r.height * 0.5f));
+        }
+
+        /// <summary>바탕 + 누르기. content = 타일 안 그림(눌림 배율 안에서 부름). 누르면 true(잠김이면 늘 false).</summary>
+        public static bool In(Rect r, bool on, bool enabled = true, string tip = null, Action content = null)
+        {
+            int key = Look.Key(r, "tile");
+            float hv = Look.Hover(key, r, enabled && !on), pr = Look.Press(key, r, enabled);
+            bool paint = Draw.Repaint;
+            if (paint) Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
+            Back(r, key, on, enabled, hv);
+            content?.Invoke();
+            if (paint) Draw.EndScale();
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
+
+        /// <summary>타일 이름 글 색(고르면 파스텔 글 · 잠김 흐린 글).</summary>
+        public static Color Ink(bool on, bool enabled = true) => !enabled ? Look.BtnOffInk : on ? Look.PastelInk : Look.BarInk;
+
+        /// <summary>타일 보조 글 색(고르면 파스텔 보조 글 · 잠김 더 흐린 글).</summary>
+        public static Color Sub(bool on, bool enabled = true) => !enabled ? Look.IconOffInk : on ? Look.PastelNote : Look.PillSub;
     }
 
-    /// <summary>CSCommon.ListRow — 목록 한 줄 바탕: 평소 투명 · 호버 Tone0 · 고르면 떠오른 면. 모서리 RadiusTool. 누르면 true.</summary>
+    /// <summary>
+    /// CSCommonUX.ListRow — 목록 한 줄 바탕(시안 'CSCommonUX.ListRow'): 알약(반지름 = 높이/2, 시안 높이 44 · 좌우 18), 평소 투명 · 호버 Look.NeutralHover · 고르면 모드 파스텔(0.2초).
+    /// 안 글은 부르는 쪽이 Ink(14, 고르면 굵게) · Note(오른쪽 메모 12) 색으로. 누르면 true.
+    /// </summary>
     public static class ListRow
     {
+        public const float H = 44f, PadX = 18f, Font = 14f, NoteFont = 12f, FadeSeconds = 0.2f;
+
         public static bool In(Rect r, bool on, bool enabled = true, string tip = null)
         {
             int key = Look.Key(r, "listrow");
             float hv = Look.Hover(key, r, enabled && !on);
-            float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 12f);
+            float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {
-                if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Look.Tone0, hv), CSCommonDesign.RadiusTool);
-                Look.Raised(r, CSCommonDesign.RadiusTool, onT);
+                float rad = r.height * 0.5f, ha = hv * (1f - onT);
+                if (ha > 0.01f) Draw.Round(r, Draw.Alpha(Look.NeutralHover, ha), rad);
+                if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Look.PastelFill, onT), rad);
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
+
+        /// <summary>줄 글 색(고르면 파스텔 글).</summary>
+        public static Color Ink(bool on) => on ? Look.PastelInk : Look.BarInk;
+
+        /// <summary>줄 메모 · 보조 글 색(고르면 파스텔 보조 글).</summary>
+        public static Color Note(bool on) => on ? Look.PastelNote : Look.PillSub;
     }
 
-    /// <summary>CSCommon.Well — 안쪽 우물판(지도 · 미니맵 · 그림 바탕): 판 바탕 #14171C + 1px 선 #2A2F38, 모서리 RadiusTile.</summary>
+    /// <summary>CSCommonUX.Well — 안쪽 우물판(시안: 지도 · 미니맵 · 그림이 올라감): 반지름 24(작은 칸은 짧은 변/2) · Section.Plate 면 + 안쪽 1px Look.PillLine(line 을 주면 그 색).</summary>
     public static class Well
     {
+        public const float Radius = 24f;
+
         public static void Frame(Rect r, Color? line = null)
         {
             if (!Draw.Repaint) return;
-            Draw.Round(r, Pal.Win, CSCommonDesign.RadiusTile);
-            Draw.RoundOutline(r, line ?? Look.PanelLine, CSCommonDesign.RadiusTile);
+            float rad = Mathf.Min(Radius, Mathf.Min(r.width, r.height) * 0.5f);
+            Draw.Round(r, Section.Plate, rad);
+            Draw.RoundOutline(r, line ?? Look.PillLine, rad);
         }
     }
 
-    /// <summary>CSCommon.Panel — 위 판 · 아래 독 · 펼침 메뉴 바탕: #14171C · 그림자 두 겹 · 1px 선 · 모서리 14(메뉴 12).</summary>
+    /// <summary>CSCommonUX.Panel — 위 판 · 아래 독 · 펼침 메뉴 바탕: #14171C · 그림자 두 겹 · 1px 선 · 모서리 14(메뉴 12).</summary>
     public static class Panel
     {
         public static void Frame(Rect r, float radius = 14f) => Look.Elevated(r, radius, Pal.Win);
     }
 
-    /// <summary>CSCommon.Popover — 떠 있는 카드: 판 바탕 · 그림자 · 가리키는 꼬리(tailX, 아래쪽).</summary>
-    public static class Popover
-    {
-        public static void Frame(Rect r, float tailX, bool tailBelow = true)
-        {
-            Look.Elevated(r, 12f, Look.FieldFocus);
-            if (!Draw.Repaint) return;
-            float tx = Mathf.Clamp(tailX, r.x + 18f, r.xMax - 18f);
-            var tail = tailBelow ? new Rect(tx - 6f, r.yMax - 6f, 12f, 12f) : new Rect(tx - 6f, r.y - 6f, 12f, 12f);
-            Draw.Round(tail, Look.FieldFocus, 2f);
-            Draw.Fill(new Rect(tx - 7f, tailBelow ? r.yMax - 7f : r.y + 1f, 14f, 6f), Look.FieldFocus);
-        }
-
-        /// <summary>머리 줄: 이름 굵게 · 옆 작은 글 · 아래 구분선.</summary>
-        public static void Head(Rect r, string title, string sub = null)
-        {
-            if (!Draw.Repaint) return;
-            float tw = Draw.TextWidth(title, 14f, true);
-            Draw.Text(new Rect(r.x, r.y, tw + 4f, r.height), title, 14f, Pal.Txt, true, TextAnchor.MiddleLeft);
-            if (!string.IsNullOrEmpty(sub)) Draw.Text(new Rect(r.x + tw + 10f, r.y, r.width, r.height), sub, CSCommonDesign.FontMin, Pal.Sub, false, TextAnchor.MiddleLeft);
-            Draw.Fill(new Rect(r.x - 2f, r.yMax + 3f, r.width + 4f, 1f), Look.Divider);
-        }
-    }
-
-    /// <summary>CSCommon.Dialog — 확인 창 420: 뜻 아이콘 칸 · 제목 · 설명, 아래 오른쪽 [취소(보통) · 실행(주 / 지움)].</summary>
-    public static class Dialog
-    {
-        public const float Width = 420f, Pad = 20f;
-
-        public static float Height(string text, float width = Width)
-        {
-            float th = string.IsNullOrEmpty(text) ? 0f : Draw.TextHeight(text, 13.5f, width - Pad * 2f);
-            return Pad + 40f + 12f + 26f + (th > 0f ? 8f + th : 0f) + 18f + CSCommonDesign.ActionHeight + Pad;
-        }
-
-        /// <summary>판을 그리고 누른 단추를 돌려줌: 1 = 실행 · 0 = 취소 · -1 = 없음.</summary>
-        public static int In(Rect box, string title, string text, string ok, string cancel, bool danger, float appear = 1f)
-        {
-            Look.Elevated(box, 14f, Look.FieldFocus, appear);
-            float x = box.x + Pad, y = box.y + Pad, inner = box.width - Pad * 2f;
-            if (Draw.Repaint)
-            {
-                var ic = new Rect(x, y, 40f, 40f);
-                Color c = danger ? Pal.Red : Pal.Primary;
-                Draw.Round(ic, Draw.Alpha(c, 0.14f), CSCommonDesign.IconBtnRadius);
-                Draw.Icon(danger ? Icons.Warn : Icons.Info, new Rect(ic.x + 10f, ic.y + 10f, 20f, 20f), c, 24f, 2f);
-                Draw.TextFit(new Rect(x, y + 52f, inner, 26f), title, 17f, Pal.Txt, true);
-                if (!string.IsNullOrEmpty(text))
-                    Draw.Text(new Rect(x, y + 52f + 34f, inner, Draw.TextHeight(text, 13.5f, inner)), text, 13.5f, Pal.Sub, false, TextAnchor.UpperLeft, true);
-            }
-            float by = box.yMax - Pad - CSCommonDesign.ActionHeight;
-            float okW = Button.Width(danger ? Icons.Trash : Icons.Check, ok), cancelW = Button.Width(null, cancel);
-            var okR = new Rect(box.xMax - Pad - okW, by, okW, CSCommonDesign.ActionHeight);
-            var cancelR = new Rect(okR.x - 8f - cancelW, by, cancelW, CSCommonDesign.ActionHeight);
-            int hit = -1;
-            // 두 단추를 늘 불러 컨트롤 순서를 지킴
-            Button.In(cancelR, null, cancel, null, Tone.Neutral, null, true, () => hit = 0, false);
-            Button.In(okR, danger ? Icons.Trash : Icons.Check, ok, null, danger ? Tone.Danger : Tone.Primary, null, true, () => hit = 1, false);
-            return hit;
-        }
-    }
-
     /// <summary>
-    /// CSCommon.Modal — 큰 창: 화면을 어둡게 덮고(scrim) 가운데 판, 머리(제목 · 설명 · 닫기) · 몸 · 발(단추 줄, #171A20 · 위 구분선).
-    /// Frame 이 몸 칸을 돌려주고, 발이 있으면 Footer 칸에 단추를 그림. 열림 · 닫힘 움직임은 CSCommonAnim.Modal.
+    /// CSCommonUX.Modal — 큰 창(시안 'CSCommonUX.Modal · 라이트 / 다크'): 화면 덮개 Look.Scrim · 가운데 판(폭 최대 560 · 모서리 14 · Look.FieldFocus 면 · 1px Look.BarLine · 모달 그림자 Look.ModalShadow*),
+    /// 머리 56(제목 17 굵게 · 설명 12.5 Sub · 지름 32 원 닫기) · 몸(좌우 20 · 위 4 · 아래 16 · 요소 사이 12) · 발 64(Look.Foot + 위 1px Look.FootLine, 오른쪽부터 알약 단추 40 · 사이 8 · 좌우 16).
+    /// 몸 부품: Tabs(알약 홈 + 고른 칸 파스텔 알약 36, 칸은 CSCommonUX.Tabs.Cell) · Textfield(알약 40) · 타일 격자(4열 · 높이 72 · 사이 8 — 칸은 CSCommonUX.Tile).
+    /// 움직임: CSCommonAnim.Modal(열기 0.18초 · 닫기 0.14초) + BeginModal(10 아래에서 떠오름 · Ease). 단추 눌림 0.96배(PillBar.PressScale).
+    /// 캘린더형(시안 'CSCommonUX.Modal · 캘린더형'): Sheet(머리 띠 44 · 6점 손잡이 · 원 닫기) · SheetTitle(밑줄 제목) · SheetTabs · SheetRow · More · Save,
+    /// Expand(폭 448 → 640 · 추가 영역 0 → 230 을 0.44초 cubic-bezier(.2,.8,.2,1) · 투명도 0.28초, 열 때만 0.14초 지연).
     /// </summary>
     public static class Modal
     {
         public const float HeadH = 56f, FootH = 64f;
+        /// <summary>판 최대 폭 · 모서리 · 몸 좌우 · 몸 위 · 몸 아래 · 요소 사이 · 화면 가장자리 여백.</summary>
+        public const float Width = 560f, Radius = 14f, PadX = 20f, BodyTop = 4f, BodyBottom = 16f, Gap = 12f, Margin = 24f;
+        /// <summary>머리: 제목 글 · 설명 글 · 제목 → 설명 · 닫기 원 지름 · 닫기 아이콘 · 닫기 오른쪽.</summary>
+        public const float TitleFont = 17f, SubFont = 12.5f, TitleGap = 12f, CloseD = 32f, CloseIcon = 16f, CloseRight = 16f;
+        /// <summary>알약 단추: 높이 · 사이 · 발 좌우 · 주 단추 좌우 · 보통 단추 좌우 · 글 · 아이콘 · 아이콘 → 글.</summary>
+        public const float BtnH = 40f, BtnGap = 8f, FootPad = 16f, BtnPadPrimary = 20f, BtnPadNeutral = 18f, BtnFont = 14.5f, BtnIcon = 18f, BtnIconGap = 8f;
+        /// <summary>몸 부품: 탭 높이 · 홈 안쪽 · 탭 사이 · 탭 좌우 · 탭 글 · 글 칸 높이 · 타일 높이 · 타일 사이 · 타일 열 수.</summary>
+        public const float TabH = 36f, TabPad = 4f, TabGap = 4f, TabPadX = 18f, TabFont = 13.5f, FieldH = 40f, TileH = 72f, TileGap = 8f;
+        public const int TileCols = 4;
+        /// <summary>움직임: 떠오르는 거리 · 열기 · 닫기 · 고른 칸 색 전환 · 줄 호버 · 밑줄 초점 초.</summary>
+        public const float Rise = 10f, OpenSeconds = 0.18f, CloseSeconds = 0.14f, PickSeconds = 0.2f, HoverSeconds = 0.12f, TitleSeconds = 0.14f;
 
-        /// <summary>판 · 머리를 그리고 몸 칸을 돌려줌. closed = 닫기를 누름.</summary>
+        /// <summary>캘린더형 판: 접힌 폭 · 펼친 폭 · 머리 띠 · 몸 좌우 · 몸 위 · 들임 · 제목 칸 · 제목 글 · 밑줄 · 초점 밑줄.</summary>
+        public const float SheetW = 448f, SheetWideW = 640f, SheetHeadH = 44f, SheetPadX = 24f, SheetTop = 8f, SheetIndent = 40f, SheetTitleH = 56f, SheetTitleFont = 22f, SheetLine = 1f, SheetLineFocus = 2f;
+        /// <summary>캘린더형 탭(홈 없음): 높이 · 좌우 · 글 · 위 · 아래.</summary>
+        public const float SheetTabH = 32f, SheetTabPadX = 16f, SheetTabFont = 13f, SheetTabTop = 12f, SheetTabBottom = 4f;
+        /// <summary>캘린더형 줄: 높이 · 아이콘 칸 · 아이콘 · 아이콘 → 글 · 모서리 · 글 · 보조 글 · 보조 오른쪽 · 색 점 지름.</summary>
+        public const float SheetRowH = 48f, SheetRowIconW = 24f, SheetRowIcon = 20f, SheetRowGap = 16f, SheetRowRadius = 10f, SheetRowFont = 14f, SheetRowSubFont = 12.5f, SheetRowSubPad = 8f, SheetDot = 14f;
+        /// <summary>캘린더형 머리 · 발: 손잡이 점 · 점 사이 · 닫기 오른쪽 · 위 · 발 위 여백 · 발 왼쪽 · 쉐브론 · 글 단추 글 · 글 단추 왼쪽 · 오른쪽 · 글 → 쉐브론 · 저장 좌우 · 추가 영역 최대 높이.</summary>
+        public const float GripDot = 3f, GripGap = 3f, SheetCloseRight = 8f, SheetCloseTop = 6f, SheetFootTop = 8f, SheetFootPadL = 20f, Chevron = 16f, LinkFont = 14f, LinkPadL = 16f, LinkPadR = 14f, LinkGap = 6f, SavePadX = 22f, ExtraH = 230f;
+        /// <summary>Expand: 펼침 · 투명도 · 투명도 지연(열 때만) · 저장됨 표시 초.</summary>
+        public const float ExpandSeconds = 0.44f, FadeSeconds = 0.28f, FadeDelay = 0.14f, SavedSeconds = 1.6f;
+        /// <summary>시안 곡선 cubic-bezier(x1, y1, x2, y2).</summary>
+        public const float EaseX1 = 0.2f, EaseY1 = 0.8f, EaseX2 = 0.2f, EaseY2 = 1f;
+
+        static Rect Screen => new(-Draw.Width, -Draw.Height, Draw.Width * 3f, Draw.Height * 3f);
+
+        /// <summary>화면 가운데 판 자리: 폭 = min(width, 화면 − 여백 2) · 높이도 화면 안(높이가 바뀌어도 매번 다시 가운데).</summary>
+        public static Rect Place(float height, float width = Width)
+        {
+            float w = Mathf.Min(width, Draw.Width - Margin * 2f), h = Mathf.Min(height, Draw.Height - Margin * 2f);
+            return new Rect(Mathf.Round((Draw.Width - w) * 0.5f), Mathf.Round((Draw.Height - h) * 0.5f), w, h);
+        }
+
+        /// <summary>덮개: area 를 Look.Scrim 으로 덮음(k = 나타난 정도, radius = 창 모서리).</summary>
+        public static void Scrim(Rect area, float k = 1f, float radius = 0f)
+        {
+            if (!Draw.Repaint) return;
+            var c = Draw.Alpha(Look.Scrim, k);
+            if (radius > 0f) Draw.Round(area, c, radius);
+            else Draw.Fill(area, c);
+        }
+
+        /// <summary>판: 모달 그림자 + 불투명 면(Look.FieldFocus) + 1px 선(Look.BarLine).</summary>
+        public static void Panel(Rect r, float radius = Radius)
+        {
+            Surface(r, radius);
+            Outline(r, radius);
+        }
+
+        static void Surface(Rect r, float radius)
+        {
+            if (!Draw.Repaint) return;
+            // 그림자: 판 가장자리 기준 −흐림/2 ~ +흐림/2 로 퍼지는 겹 — 가운데로 갈수록 쌓여 Look.ModalShadow 에 닿음(CSS 0 y blur 흉내)
+            const int layers = 10;
+            float blur = Look.ModalShadowBlur, a = 1f - Mathf.Pow(1f - Look.ModalShadow, 1f / layers);
+            for (int i = 0; i < layers; i++)
+            {
+                float e = blur * ((i + 0.5f) / layers - 0.5f);
+                Draw.Round(new Rect(r.x - e, r.y + Look.ModalShadowY - e, r.width + e * 2f, r.height + e * 2f), Draw.Alpha(Color.black, a), Mathf.Max(0f, radius + e));
+            }
+            Draw.Round(r, Look.FieldFocus, radius);
+        }
+
+        static void Outline(Rect r, float radius)
+        {
+            if (Draw.Repaint) Draw.RoundOutline(r, Look.BarLine, radius);
+        }
+
+        /// <summary>판 위(top) 또는 아래 띠(Look.Foot) — 바깥 모서리만 둥글게. 아래 띠는 위에 1px Look.FootLine.</summary>
+        static void Band(Rect f, bool top)
+        {
+            if (!Draw.Repaint) return;
+            Draw.Round(f, Look.Foot, Radius);
+            Draw.Fill(top ? new Rect(f.x, f.yMax - Radius, f.width, Radius) : new Rect(f.x, f.y, f.width, Radius), Look.Foot);
+            if (!top) Draw.Fill(new Rect(f.x, f.y, f.width, 1f), Look.FootLine);
+        }
+
+        /// <summary>판 · 머리를 그리고 몸 칸을 돌려줌. closed = 닫기를 누름. footer = 발 띠(단추는 FootButton).</summary>
         public static Rect Frame(Rect r, string title, string sub, out bool closed, bool footer = false, bool scrim = true)
         {
-            closed = false;
-            if (scrim && Draw.Repaint) Draw.Fill(new Rect(-Draw.Width, -Draw.Height, Draw.Width * 3f, Draw.Height * 3f), new Color(5f / 255f, 6f / 255f, 8f / 255f, 0.55f));
-            Look.Elevated(r, 14f, Look.FieldFocus);
+            if (scrim) Scrim(Screen);
+            Surface(r, Radius);
+            if (footer) Band(new Rect(r.x, r.yMax - FootH, r.width, FootH), false);
+            Outline(r, Radius);
+            var close = new Rect(r.xMax - CloseRight - CloseD, r.y + (HeadH - CloseD) * 0.5f, CloseD, CloseD);
             if (Draw.Repaint)
             {
-                float tw = Draw.TextWidth(title, 17f, true);
-                Draw.Text(new Rect(r.x + 20f, r.y, tw + 4f, HeadH), title, 17f, Pal.Txt, true, TextAnchor.MiddleLeft);
-                if (!string.IsNullOrEmpty(sub)) Draw.TextFit(new Rect(r.x + 20f + tw + 12f, r.y, r.width - tw - 100f, HeadH), sub, 12.5f, Pal.Sub);
+                float x = r.x + PadX, room = close.x - TitleGap - x;
+                float tw = Mathf.Min(Mathf.Ceil(Draw.TextWidth(title, TitleFont, true)), room);
+                Draw.TextFit(new Rect(x, r.y, tw + 2f, HeadH), title, TitleFont, Pal.Txt, true);
+                float sx = x + tw + TitleGap;
+                if (!string.IsNullOrEmpty(sub) && close.x - TitleGap - sx > 0f) Draw.TextFit(new Rect(sx, r.y, close.x - TitleGap - sx, HeadH), sub, SubFont, Pal.Sub);
             }
-            if (Button.Square(new Rect(r.xMax - 16f - 32f, r.y + (HeadH - 32f) * 0.5f, 32f, 32f), Icons.Close, "닫기(Esc)")) closed = true;
-            if (footer && Draw.Repaint)
-            {
-                var f = new Rect(r.x, r.yMax - FootH, r.width, FootH);
-                Draw.Round(f, Draw.Hex("#171A20"), CSCommonDesign.RadiusWindow);
-                Draw.Fill(new Rect(f.x, f.y, f.width, 14f), Draw.Hex("#171A20"));
-                Draw.Fill(new Rect(f.x, f.y, f.width, 1f), Look.Divider);
-            }
-            return new Rect(r.x + 20f, r.y + HeadH, r.width - 40f, r.height - HeadH - (footer ? FootH : 0f) - 12f);
+            closed = CloseButton(close);
+            return new Rect(r.x + PadX, r.y + HeadH + BodyTop, r.width - PadX * 2f, r.height - HeadH - BodyTop - BodyBottom - (footer ? FootH : 0f));
         }
 
         /// <summary>발 칸(단추 줄 가운데 y) — 오른쪽부터 단추를 놓을 때 씀.</summary>
         public static float FooterCy(Rect r) => r.yMax - FootH * 0.5f;
+
+        /// <summary>지름 32 원 닫기: 회색 알약 면(filled = false 면 면 없이) + X 16 가운데 · 호버 옅은 덮개 · 눌림 0.96배. 누르면 true.</summary>
+        public static bool CloseButton(Rect c, bool filled = true)
+        {
+            int key = CSCommonAnim.Key("modal.close", filled ? "f" : "b");
+            float hv = Look.Hover(key, c), pr = Look.Press(key, c);
+            if (Draw.Repaint)
+            {
+                float rad = c.height * 0.5f;
+                Draw.BeginScale(c.center, Look.PressScale(pr, PillBar.PressScale));
+                if (filled) Draw.Round(c, Look.PillNeutral, rad);
+                if (hv > 0.01f) Draw.Round(c, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), rad);
+                Draw.Icon(Icons.Close, new Rect(Mathf.Round(c.center.x - CloseIcon * 0.5f), Mathf.Round(c.center.y - CloseIcon * 0.5f), CloseIcon, CloseIcon), Look.BarOff, 24f, 2f);
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(c, "닫기(Esc)");
+            return Draw.Button(c);
+        }
+
+        /// <summary>알약 단추 폭(좌우 여백 대칭 + 아이콘 + 글). padX 를 안 주면 주 20 · 보통 18.</summary>
+        public static float ButtonWidth(string icon, string label, bool primary, float padX = -1f)
+        {
+            float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, BtnFont, primary));
+            float iw = string.IsNullOrEmpty(icon) ? 0f : BtnIcon + (tw > 0f ? BtnIconGap : 0f);
+            if (padX < 0f) padX = primary ? BtnPadPrimary : BtnPadNeutral;
+            return padX * 2f + iw + tw;
+        }
+
+        /// <summary>알약 단추 40: 주 = 모드 파스텔(굵은 글) · 보통 = 회색 알약(Dim 아이콘). 아이콘 + 글 한 덩어리 칸 가운데 · 호버 옅은 덮개 · 눌림 0.96배. 누르면 true.</summary>
+        public static bool Button(Rect b, string icon, string label, bool primary, bool enabled = true, string tip = null)
+        {
+            int key = Look.Key(b, "modal.btn", label);
+            float hv = Look.Hover(key, b, enabled), pr = Look.Press(key, b, enabled);
+            if (Draw.Repaint)
+            {
+                float rad = b.height * 0.5f;
+                Draw.BeginScale(b.center, Look.PressScale(pr, PillBar.PressScale));
+                Draw.Round(b, !enabled ? Look.Off : primary ? Look.PastelFill : Look.PillNeutral, rad);
+                if (enabled && hv > 0.01f) Draw.Round(b, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), rad);
+                Color ink = !enabled ? Look.OffText : primary ? Look.PastelInk : Look.PillNeutralInk;
+                Color iconInk = !enabled ? Look.OffInk : primary ? Look.PastelInk : Pal.Dim;
+                float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, BtnFont, primary));
+                float iw = string.IsNullOrEmpty(icon) ? 0f : BtnIcon + (tw > 0f ? BtnIconGap : 0f);
+                float x = Mathf.Max(b.x, Mathf.Round(b.center.x - (iw + tw) * 0.5f));
+                if (iw > 0f) Draw.Icon(icon, new Rect(x, Mathf.Round(b.center.y - BtnIcon * 0.5f), BtnIcon, BtnIcon), iconInk, 24f, 2f);
+                if (tw > 0f) Draw.TextFit(new Rect(x + iw, b.y, Mathf.Max(0f, b.xMax - x - iw), b.height), label, BtnFont, ink, primary);
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(b, tip);
+            return enabled && Draw.Button(b);
+        }
+
+        /// <summary>발 단추를 오른쪽부터 놓음(주 단추 먼저): right = 다음 단추 오른쪽 끝(처음엔 0 → 판 오른쪽 − 16), 놓을 때마다 왼쪽으로 옮겨 줌. 누르면 true.</summary>
+        public static bool FootButton(Rect frame, ref float right, string icon, string label, bool primary = false, bool enabled = true, string tip = null)
+        {
+            if (right <= 0f) right = frame.xMax - FootPad;
+            float w = ButtonWidth(icon, label, primary);
+            var b = new Rect(right - w, Mathf.Round(FooterCy(frame) - BtnH * 0.5f), w, BtnH);
+            right = b.x - BtnGap;
+            return Button(b, icon, label, primary, enabled, tip);
+        }
+
+        /// <summary>탭 묶음(알약 홈 Look.Pill + 고른 칸 파스텔 알약 36 · 글 13.5, 고른 칸 굵게 · 색 0.2초): 왼쪽 위 (x, y) 에 내용 폭, maxW 를 넘으면 칸을 똑같이 나눔. 그린 폭을 돌려줌(높이 = TabH + TabPad × 2).</summary>
+        public static float Tabs(float x, float y, float maxW, string[] labels, int cur, Action<int> pick)
+            => PillTabs(x, y, maxW, labels, cur, pick, true, TabH, TabPadX, TabFont);
+
+        static float PillTabs(float x, float y, float maxW, string[] labels, int cur, Action<int> pick, bool groove, float h, float padX, float font)
+        {
+            int n = labels?.Length ?? 0;
+            if (n == 0) return 0f;
+            float pad = groove ? TabPad : 0f;
+            var widths = new float[n];
+            float total = pad * 2f + TabGap * (n - 1);
+            for (int i = 0; i < n; i++)
+            {
+                widths[i] = CSCommonUX.Tabs.CellWidth(null, labels[i], null, font, padX);
+                total += widths[i];
+            }
+            if (total > maxW)
+            {
+                float each = (maxW - pad * 2f - TabGap * (n - 1)) / n;
+                for (int i = 0; i < n; i++) widths[i] = each;
+                total = maxW;
+            }
+            if (groove && Draw.Repaint) Draw.Round(new Rect(x, y, total, h + pad * 2f), Look.Pill, (h + pad * 2f) * 0.5f);
+            int skey = CSCommonAnim.Key(labels[0], labels[n - 1]) ^ n * 7919 ^ (groove ? 0x6d2b79f5 : 0x1b873593);
+            float cx = x + pad;
+            for (int i = 0; i < n; i++)
+            {
+                var c = new Rect(cx, y + pad, widths[i], h);
+                bool on = i == cur;
+                if (CSCommonUX.Tabs.Cell(c, skey ^ (i + 1) * 0x2f6b8d3, on, null, labels[i], font) && !on) pick?.Invoke(i);
+                cx += widths[i] + TabGap;
+            }
+            return total;
+        }
+
+        // ---------------- 캘린더형(Sheet) · 펼침(Expand)
+        // 공용 API 이름 Sheet · Expand 는 시안 제안(확정 아님) — 바꾸면 F1 Board 모달 · README 도 같이.
+
+        /// <summary>
+        /// 캘린더형 틀: 덮개 · 판(Panel 과 같은 면 · 선 · 그림자) · 머리 띠 44(Look.Foot · 가운데 6점 손잡이 · 오른쪽 원 닫기, 면 없음).
+        /// 몸 칸(좌우 24 · 위 8 · 아래는 발 위 여백 8 + 발 64)을 돌려줌. 폭은 Expand 로 448 ↔ 640, 자리는 Place 로 매번 가운데.
+        /// </summary>
+        public static Rect Sheet(Rect r, out bool closed, bool scrim = true)
+        {
+            if (scrim) Scrim(Screen);
+            Surface(r, Radius);
+            var head = new Rect(r.x, r.y, r.width, SheetHeadH);
+            Band(head, true);
+            if (Draw.Repaint)
+            {
+                float gw = GripDot * 6f + GripGap * 5f, gx = Mathf.Round(head.center.x - gw * 0.5f), gy = Mathf.Round(head.center.y - GripDot * 0.5f);
+                for (int i = 0; i < 6; i++) Draw.Round(new Rect(gx + i * (GripDot + GripGap), gy, GripDot, GripDot), Draw.Alpha(Pal.Sub, Look.GripAlpha), GripDot * 0.5f);
+            }
+            Outline(r, Radius);
+            closed = CloseButton(new Rect(r.xMax - SheetCloseRight - CloseD, r.y + SheetCloseTop, CloseD, CloseD), false);
+            return new Rect(r.x + SheetPadX, r.y + SheetHeadH + SheetTop, r.width - SheetPadX * 2f, r.height - SheetHeadH - SheetTop - SheetFootTop - FootH);
+        }
+
+        /// <summary>밑줄 제목 칸(알약 아님): body 왼쪽 40 들임 · 높이 56 · 글 22 · 평소 1px Look.TitleLine · 초점 2px Look.PastelRing(0.14초) · 자리 글 OffText · 커서 파스텔.</summary>
+        public static string SheetTitle(Rect body, float y, string value, int maxLength, string placeholder = "제목 추가", string name = null)
+        {
+            var r = new Rect(body.x + SheetIndent, y, body.width - SheetIndent, SheetTitleH);
+            name ??= "csm" + CSCommonAnim.Key("sheet.title", placeholder);
+            value ??= "";
+            bool focus = GUI.GetNameOfFocusedControl() == name;
+            float fo = CSCommonAnim.Toward(CSCommonAnim.Key("sheet.title", name), focus ? 1f : 0f, 1f / TitleSeconds);
+            if (Draw.Repaint)
+            {
+                Draw.Fill(new Rect(r.x, r.yMax - SheetLine, r.width, SheetLine), Look.TitleLine);
+                if (fo > 0.01f) Draw.Fill(new Rect(r.x, r.yMax - SheetLineFocus, r.width, SheetLineFocus), Draw.Alpha(Look.PastelRing, fo));
+                if (value.Length == 0 && !string.IsNullOrEmpty(placeholder)) Draw.TextFit(new Rect(r.x, r.y, r.width, r.height - SheetLineFocus), placeholder, SheetTitleFont, Look.OffText);
+            }
+            var cursor = GUI.skin.settings.cursorColor;
+            GUI.skin.settings.cursorColor = Look.PastelRing;
+            GUI.SetNextControlName(name);
+            string v = Draw.Field(new Rect(r.x - Textfield.FieldInset, r.y, r.width + Textfield.FieldInset, r.height - SheetLineFocus), value, SheetTitleFont, maxLength);
+            GUI.skin.settings.cursorColor = cursor;
+            return v;
+        }
+
+        /// <summary>캘린더형 탭(홈 없음 · 높이 32 · 좌우 16 · 글 13 · 고른 칸 파스텔 알약): body 왼쪽 40 들임, y = 위. 그린 폭을 돌려줌.</summary>
+        public static float SheetTabs(Rect body, float y, string[] labels, int cur, Action<int> pick)
+            => PillTabs(body.x + SheetIndent, y, body.width - SheetIndent, labels, cur, pick, false, SheetTabH, SheetTabPadX, SheetTabFont);
+
+        /// <summary>캘린더형 줄 48: 왼쪽 24 칸에 아이콘 20(Sub) 또는 색 점 14 · 사이 16 · 글 14 · 오른쪽 보조 글 12.5(Dim, 오른쪽 8) · 모서리 10 · 호버 Look.Pill(0.12초). 누르면 true.</summary>
+        public static bool SheetRow(Rect r, string icon, string text, string sub = null, Color? dot = null, bool enabled = true)
+        {
+            int key = CSCommonAnim.Key("sheet.row", text) ^ Mathf.RoundToInt(r.y) * 31;
+            float hv = CSCommonAnim.Toward(key, enabled && Draw.Hover(r) ? 1f : 0f, 1f / HoverSeconds);
+            if (Draw.Repaint)
+            {
+                if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Look.Pill, hv), SheetRowRadius);
+                var col = new Rect(r.x, r.y, SheetRowIconW, r.height);
+                if (dot.HasValue) Draw.Dot(col.center, SheetDot * 0.5f, dot.Value);
+                else if (!string.IsNullOrEmpty(icon)) Draw.Icon(icon, new Rect(Mathf.Round(col.center.x - SheetRowIcon * 0.5f), Mathf.Round(col.center.y - SheetRowIcon * 0.5f), SheetRowIcon, SheetRowIcon), Pal.Sub, 24f, 1.8f);
+                float sw = string.IsNullOrEmpty(sub) ? 0f : Mathf.Ceil(Draw.TextWidth(sub, SheetRowSubFont));
+                float tx = col.xMax + SheetRowGap, right = r.xMax - (sw > 0f ? sw + SheetRowSubPad + SheetRowGap : 0f);
+                Draw.TextFit(new Rect(tx, r.y, Mathf.Max(0f, right - tx), r.height), text, SheetRowFont, enabled ? Pal.Txt : Look.OffText);
+                if (sw > 0f) Draw.Text(new Rect(r.xMax - SheetRowSubPad - sw - 2f, r.y, sw + 2f, r.height), sub, SheetRowSubFont, Pal.Dim, false, TextAnchor.MiddleRight);
+            }
+            return enabled && Draw.Button(r);
+        }
+
+        /// <summary>발 왼쪽 글 단추 "옵션 더보기" ↔ "간단히 보기"(Look.PastelLink 글 14 · 높이 40 알약 호버 · 오른쪽 쉐브론 16 이 t(Expand 진행도)에 따라 0 → 180°). 누르면 true.</summary>
+        public static bool More(Rect sheet, bool open, float t)
+        {
+            string label = open ? "간단히 보기" : "옵션 더보기";
+            float tw = Mathf.Ceil(Draw.TextWidth(label, LinkFont));
+            var b = new Rect(sheet.x + SheetFootPadL, Mathf.Round(FooterCy(sheet) - BtnH * 0.5f), LinkPadL + tw + LinkGap + Chevron + LinkPadR, BtnH);
+            // 폭이 움직이는 동안에도 같은 열쇠(자리로 만들면 호버가 끊김)
+            int key = CSCommonAnim.Key("sheet.more", "link");
+            float hv = Look.Hover(key, b), pr = Look.Press(key, b);
+            if (Draw.Repaint)
+            {
+                Draw.BeginScale(b.center, Look.PressScale(pr, PillBar.PressScale));
+                if (hv > 0.01f) Draw.Round(b, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), BtnH * 0.5f);
+                Draw.Text(new Rect(b.x + LinkPadL, b.y, tw + 2f, b.height), label, LinkFont, Look.PastelLink);
+                var cr = new Rect(b.x + LinkPadL + tw + LinkGap, Mathf.Round(b.center.y - Chevron * 0.5f), Chevron, Chevron);
+                var m = GUI.matrix;
+                if (t > 0.001f) GUIUtility.RotateAroundPivot(180f * t, Draw.ToScreen(cr).center);
+                Draw.Icon(Icons.Chevron, cr, Look.PastelLink, 24f, 2.2f);
+                GUI.matrix = m;
+                Draw.EndScale();
+            }
+            return Draw.Button(b);
+        }
+
+        static int savedKey;
+        static float savedAt = -100f;
+
+        /// <summary>발 오른쪽 저장(파스텔 알약 40 · 좌우 22 대칭) — 누르면 1.6초 동안 ✓ + done 글. 누르면 true.</summary>
+        public static bool Save(Rect sheet, string label = "저장", string done = "저장됨", bool enabled = true, string tip = null)
+        {
+            int key = CSCommonAnim.Key("sheet.save", label);
+            bool shown = savedKey == key && Time.unscaledTime - savedAt < SavedSeconds;
+            string text = shown ? done : label, icon = shown ? Icons.Check : null;
+            float w = ButtonWidth(icon, text, true, SavePadX);
+            var b = new Rect(sheet.xMax - FootPad - w, Mathf.Round(FooterCy(sheet) - BtnH * 0.5f), w, BtnH);
+            bool hit = Button(b, icon, text, true, enabled, tip);
+            if (hit)
+            {
+                savedKey = key;
+                savedAt = Time.unscaledTime;
+            }
+            return hit;
+        }
+
+        struct Run
+        {
+            public bool Open;
+            public float From, FadeFrom, At;
+        }
+
+        static readonly Dictionary<int, Run> runs = new();
+
+        /// <summary>
+        /// Modal.Expand — 펼침 진행도 0 ~ 1 을 돌려줌: 방향이 바뀐 때부터 0.44초 동안 지금 값 → 목표를 cubic-bezier(.2,.8,.2,1) 로(CSS transition 과 같음).
+        /// fade = 추가 영역 투명도(열 때 0.14초 기다렸다 0.28초 · 닫을 때 바로 0.28초, 선형). 폭 = Mathf.Lerp(SheetW, SheetWideW, t) · 추가 영역 높이 = ExtraH × t · 쉐브론 180° × t.
+        /// 처음 보는 열쇠는 open 상태로 멈춰 있음(열자마자 그 상태로 보임). 추가 영역은 BeginExtra · EndExtra 로 자르고 흐리게.
+        /// </summary>
+        public static float Expand(int key, bool open, out float fade)
+        {
+            float now = Time.unscaledTime;
+            if (!runs.TryGetValue(key, out var s)) s = new Run { Open = open, From = open ? 1f : 0f, FadeFrom = open ? 1f : 0f, At = now - ExpandSeconds - FadeDelay - FadeSeconds };
+            if (s.Open != open)
+            {
+                s.From = RunValue(s, now, out s.FadeFrom);
+                s.Open = open;
+                s.At = now;
+            }
+            runs[key] = s;
+            return RunValue(s, now, out fade);
+        }
+
+        static float RunValue(Run s, float now, out float fade)
+        {
+            float el = now - s.At, to = s.Open ? 1f : 0f;
+            fade = Mathf.Lerp(s.FadeFrom, to, Mathf.Clamp01((el - (s.Open ? FadeDelay : 0f)) / FadeSeconds));
+            return Mathf.Lerp(s.From, to, Ease(el / ExpandSeconds));
+        }
+
+        static float extraOpacity;
+
+        /// <summary>펼친 추가 영역 그리기 시작: r 위쪽부터 ExtraH × t 만 보이게 자르고 투명도 fade. EndExtra 와 짝. 안쪽 좌표는 r 왼쪽 위 기준.</summary>
+        public static void BeginExtra(Rect r, float t, float fade)
+        {
+            extraOpacity = Draw.Opacity;
+            Draw.Opacity *= fade;
+            Draw.BeginClip(new Rect(r.x, r.y, r.width, Mathf.Round(ExtraH * t)), Vector2.zero);
+        }
+
+        public static void EndExtra()
+        {
+            Draw.EndClip();
+            Draw.Opacity = extraOpacity;
+        }
+
+        /// <summary>시안 곡선 cubic-bezier(.2, .8, .2, 1): 진행 x(0 ~ 1)에 맞는 값.</summary>
+        public static float Ease(float x) => Ease(x, EaseX1, EaseY1, EaseX2, EaseY2);
+
+        /// <summary>cubic-bezier(x1, y1, x2, y2): 진행 x(0 ~ 1)에 맞는 값(뉴턴법으로 곡선 t 를 찾음, y 가 1 을 넘으면 살짝 넘침).</summary>
+        public static float Ease(float x, float x1, float y1, float x2, float y2)
+        {
+            x = Mathf.Clamp01(x);
+            if (x <= 0f || x >= 1f) return x;
+            float t = x;
+            for (int i = 0; i < 8; i++)
+            {
+                float u = 1f - t;
+                float bx = 3f * u * u * t * x1 + 3f * u * t * t * x2 + t * t * t - x;
+                float dx = 3f * u * u * x1 + 6f * u * t * (x2 - x1) + 3f * t * t * (1f - x2);
+                if (Mathf.Abs(bx) < 1e-5f || Mathf.Abs(dx) < 1e-6f) break;
+                t = Mathf.Clamp01(t - bx / dx);
+            }
+            float w = 1f - t;
+            return 3f * w * w * t * y1 + 3f * w * t * t * y2 + t * t * t;
+        }
     }
 
     /// <summary>
-    /// CSCommon.Phone — 휴대폰(아이폰 프로 맥스 440×956 · 다이나믹 아일랜드 · 리퀴드 글라스 면). 크기는 고정(CSCommonDesign.PhoneW · PhoneH).
+    /// CSCommonUX.Phone — 휴대폰(아이폰 프로 맥스 440×956 · 다이나믹 아일랜드 · 리퀴드 글라스 면). 크기는 고정(CSCommonDesign.PhoneW · PhoneH).
     /// Frame 이 틀(티타늄 테두리 · 화면 바탕 · 상태 줄 · 아일랜드 · 홈 막대)을 그리고 안쪽 쓸 자리를 돌려줌. 그 안은 Glass · GlassButton 으로 채움.
     /// 게임 화면은 흐려 비출 수 없어, 반투명 면 + 위 반짝임 + 가는 테두리로 유리 느낌을 냄.
     /// </summary>
@@ -1519,17 +2118,429 @@ namespace CSCommon
                 if (on) Draw.Round(r, Pal.Accent, CSCommonDesign.GlassRadius - 6f);
                 Draw.TextFit(new Rect(r.x + 12f, r.y, r.width - 24f, r.height), label, 15f, on ? Color.white : enabled ? Pal.PhoneInk : Draw.Alpha(Pal.PhoneInk, 0.4f), true, TextAnchor.MiddleCenter);
             }
-            CSCommon.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
 
-        /// <summary>하단 툴바(탭 바): 홈 막대 위에 뜬 유리 알약. 칸마다 아이콘 + 이름, 고른 칸은 강조색으로 물든 알약. content = Frame 이 돌려준 쓸 자리.</summary>
+        /// <summary>하단 툴바(탭 바): CSCommonUX.Toolbar 와 같은 알약(설정 FAB 없음). content = Frame 이 돌려준 쓸 자리.</summary>
         public static void TabBar(Rect content, string[] icons, string[] labels, int cur, Action<int> pick)
         {
-            // .GlassToolBar(iOS 27 리퀴드 글래스) — 모드 창 하단 툴바와 같은 부품
-            int hit = GlassToolBar.Bar(content, labels.Length, cur, (i, cell, sel, hover) =>
-                GlassToolBar.Cell(cell, icons != null && i < icons.Length ? icons[i] : null, labels[i], sel, hover));
+            int hit = Toolbar.Bar(content, labels.Length, cur, i => icons != null && i < icons.Length ? icons[i] : null, i => labels[i], null, null, false, out _);
             if (hit >= 0) pick(hit);
+        }
+    }
+
+    /// <summary>
+    /// CSCommonUX.PillBar — 툴바 C안 알약 공용(하단 Toolbar · SubToolBar · Dockbar 도구 줄 · SubDockBar): 치수 · 순수 계산 · 판 · 칸 · 뜯어져 나오기.
+    /// 글래스 · 그림자 없음: 불투명 Look.BarSurface + 1px Look.BarLine 만. 고른 칸 = 파스텔 채움 + [아이콘 24 · 8 · 이름 14 굵게] 한 덩어리 가운데,
+    /// 안 고른 칸 = 아이콘만(폭 44). 칸 폭은 부르는 쪽이 CSCommonAnim.Smooth 로 늘리고 줄이며 글은 폭이 열린 만큼 나타남.
+    /// </summary>
+    public static class PillBar
+    {
+        /// <summary>판 높이 · 안쪽 여백 · 칸 높이 · 칸 사이 · 아이콘 · 아이콘→이름 · 이름 글 · 고른 칸 좌우 · 안 고른 칸 폭 · 누름 배율.</summary>
+        public const float Height = 64f, Pad = 8f, CellH = 48f, Gap = 2f, IconSize = 24f, IconGap = 8f, Font = 14f, CellPadX = 14f, IdleW = 44f, PressScale = 0.96f;
+        /// <summary>서브 알약 · 독 옵션 막대: 높이 · 안쪽 · 칸 높이 · 칸 좌우 · 칸 최소 폭 · 칸 사이 · 글 · 메인 알약과 간격(독은 옵션 막대와 안내 알약 사이도 같음).</summary>
+        public const float SubH = 48f, SubPad = 8f, SubCellH = 32f, SubCellPadX = 14f, SubCellMinW = 64f, SubCellGap = 4f, SubFont = 13f, SubGap = 12f;
+        /// <summary>둥근 FAB 지름 · 알약과 FAB · FAB 끼리 간격.</summary>
+        public const float FabSize = 64f, FabGap = 12f;
+        /// <summary>서브 막대 이름 글 · 구분선: 글 크기 · 좌우 여백 · 구분선 높이.</summary>
+        public const float SubTextFont = 12f, SubTextPadX = 6f, SubSepH = 18f;
+        /// <summary>뜯어져 나오기: 걸리는 초 · 투명도 0→1 초 · 숨은 가로 · 세로 배율.</summary>
+        public const float TearSeconds = 0.46f, TearFade = 0.22f, TearSx = 0.62f, TearSy = 0.55f;
+        /// <summary>안 고른 칸 호버 바탕 알파(Pal.Haze) · 아이콘 선 두께.</summary>
+        public const float HoverAlpha = 0.06f, Stroke = 1.7f;
+
+        // ---- 순수 계산(SelfCheck)
+
+        /// <summary>고른 칸 폭 = 아이콘 24 + 8 + 글폭 + 좌우 14씩.</summary>
+        public static float CellW(float labelW) => IconSize + IconGap + labelW + CellPadX * 2f;
+
+        /// <summary>서브 칸 폭 = 글폭 + 좌우 14씩 + 뱃지 폭(최소 64).</summary>
+        public static float SubCellW(float textW, float extraW = 0f) => Mathf.Max(SubCellMinW, textW + SubCellPadX * 2f + extraW);
+
+        /// <summary>판 폭 = 칸 폭 합 + 칸 사이 + 좌우 여백.</summary>
+        public static float Width(float cellsW, int count, float gap, float pad) => cellsW + gap * Mathf.Max(0, count - 1) + pad * 2f;
+
+        /// <summary>가운데 정렬 왼쪽 x(화소 맞춤).</summary>
+        public static float Left(float centerX, float w) => Mathf.Round(centerX - w * 0.5f);
+
+        /// <summary>칸이 열린 정도 0 ~ 1: 지금 폭 w 가 안 고른 폭(44) ~ 고른 폭 selW 사이 어디인가.</summary>
+        public static float Open(float w, float selW) => selW > IdleW ? Mathf.Clamp01((w - IdleW) / (selW - IdleW)) : 1f;
+
+        /// <summary>끝에서 살짝(약 7%) 넘쳤다 돌아오는 이징(ease-out back — 시안 cubic-bezier(.3,1.35,.45,1) 어림). 0 → 0, 1 → 1.</summary>
+        public static float Overshoot(float t)
+        {
+            const float c = 1.4f;
+            t = Mathf.Clamp01(t) - 1f;
+            return 1f + (c + 1f) * t * t * t + c * t * t;
+        }
+
+        /// <summary>뜯어져 나오기 진행도 t(0 숨음 ~ 1 다 나옴, 시간 비례) → 가로 · 세로 배율 · 아래로 밀린 거리(숨으면 hideDy) · 투명도.</summary>
+        public static void Tear(float t, float hideDy, out float sx, out float sy, out float dy, out float alpha)
+        {
+            float e = Overshoot(t);
+            sx = Mathf.LerpUnclamped(TearSx, 1f, e);
+            sy = Mathf.LerpUnclamped(TearSy, 1f, e);
+            dy = hideDy * (1f - e);
+            alpha = Mathf.Clamp01(t * TearSeconds / TearFade);
+        }
+
+        /// <summary>순수 계산 점검: check(맞나, 이름).</summary>
+        public static void SelfCheck(Action<bool, string> check)
+        {
+            static bool Near(float a, float b) => Mathf.Abs(a - b) < 0.001f;
+            check(Near(CellW(30f), 90f), "pill cell width 24+8+30+28");
+            check(Near(Width(IdleW * 3f + 90f, 4, Gap, Pad), IdleW * 3f + 90f + 6f + 16f), "pill bar width");
+            check(Near(SubCellW(10f), SubCellMinW) && Near(SubCellW(50f, 20f), 98f), "sub cell width min 64");
+            check(Near(Left(500f, 100f), 450f), "center left");
+            check(Near(Open(IdleW, 90f), 0f) && Near(Open(90f, 90f), 1f) && Near(Open(67f, 90f), 0.5f), "open");
+            Tear(0f, 76f, out float sx, out float sy, out float dy, out float a);
+            check(Near(sx, TearSx) && Near(sy, TearSy) && Near(dy, 76f) && Near(a, 0f), "tear hidden");
+            Tear(1f, 76f, out sx, out sy, out dy, out a);
+            check(Near(sx, 1f) && Near(sy, 1f) && Near(dy, 0f) && Near(a, 1f), "tear shown");
+            float peak = 0f;
+            for (int i = 1; i < 40; i++) peak = Mathf.Max(peak, Overshoot(i / 40f));
+            check(peak > 1.02f && peak < 1.12f, "tear overshoot");
+        }
+
+        // ---- 움직임
+
+        struct TearState
+        {
+            public float T, At, Seen;
+        }
+
+        static readonly Dictionary<int, TearState> tears = new();
+
+        /// <summary>
+        /// 뜯어져 나오기 진행도(0 ~ 1): show 쪽으로 TearSeconds 동안 시간 비례로 감(그리기 때만). 0.25초 넘게 안 불렸으면 0 에서 다시 — 다시 생기면 또 뜯어져 나옴.
+        /// </summary>
+        public static float TearProgress(int key, bool show)
+        {
+            float now = Time.unscaledTime;
+            if (!tears.TryGetValue(key, out var s) || now - s.Seen > 0.25f) s = new TearState { At = now };
+            s.Seen = now;
+            if (Event.current == null || Event.current.type == EventType.Repaint)
+            {
+                s.T = Mathf.MoveTowards(s.T, show ? 1f : 0f, Mathf.Clamp(now - s.At, 0f, 0.1f) / TearSeconds);
+                s.At = now;
+            }
+            tears[key] = s;
+            return s.T;
+        }
+
+        static readonly Stack<Matrix4x4> tearMatrix = new();
+        static readonly Stack<Vector2> tearSaved = new(); // x = 투명도, y = 아래로 민 거리
+
+        /// <summary>
+        /// 뒤에 그리는 것을 t 만큼 뜯어져 나오게: 숨으면 hideDy 만큼 밀림 · 가로 62% · 세로 55% · 투명. 판정 칸은 그대로(숨은 동안 클릭은 부르는 쪽이 막음).
+        /// hideDy &gt; 0 = 메인 알약 위로 나옴(r 아래 가운데 기준 — 하단 툴바 서브), &lt; 0 = 메인 알약 아래로 나옴(r 위 가운데 기준 — 독 옵션 막대).
+        /// EndTear 와 짝.
+        /// </summary>
+        public static void BeginTear(Rect r, float t, float hideDy)
+        {
+            Tear(t, hideDy, out float sx, out float sy, out float dy, out float a);
+            tearMatrix.Push(GUI.matrix);
+            tearSaved.Push(new Vector2(Draw.Opacity, dy));
+            Draw.Opacity *= a;
+            Draw.Shift(new Vector2(0f, dy));
+            if (t < 1f) GUIUtility.ScaleAroundPivot(new Vector2(sx, sy), Draw.ToScreen(new Vector2(r.center.x, hideDy < 0f ? r.yMin : r.yMax)));
+        }
+
+        public static void EndTear()
+        {
+            if (tearMatrix.Count == 0) return;
+            GUI.matrix = tearMatrix.Pop();
+            var s = tearSaved.Pop();
+            Draw.Shift(new Vector2(0f, -s.y));
+            Draw.Opacity = s.x;
+        }
+
+        // ---- 그리기
+
+        /// <summary>판: 불투명 바탕 + 1px 선. 반지름 = 짧은 변 / 2(radius 를 주면 그것).</summary>
+        public static void Plate(Rect r, float radius = -1f)
+        {
+            if (!Draw.Repaint || r.width <= 0f || r.height <= 0f) return;
+            float rad = radius >= 0f ? radius : Mathf.Min(r.width, r.height) * 0.5f;
+            Draw.Round(r, Look.BarSurface, rad);
+            Draw.RoundOutline(r, Look.BarLine, rad);
+        }
+
+        /// <summary>
+        /// 알약 칸(그리기만): open = 열린 정도(Open) — 열린 만큼 파스텔 채움 · 아이콘 색 · 이름이 나타남. 안 고른 칸은 hover 때 옅은 알약 바탕.
+        /// [아이콘 + 8 + 이름] 한 덩어리를 칸 가운데(아이콘이 없으면 이름만 가운데), 누르면(press 0 ~ 1) 0.96배.
+        /// </summary>
+        public static void Cell(Rect cell, string icon, string label, float labelW, float open, float hover, float press)
+        {
+            if (!Draw.Repaint) return;
+            float rad = cell.height * 0.5f;
+            Draw.BeginScale(cell.center, Look.PressScale(press, PressScale));
+            if (open > 0.01f) Draw.Round(cell, Draw.Alpha(Look.PastelFill, open), rad);
+            if (hover > 0.01f) Draw.Round(cell, Draw.Alpha(Pal.Haze, HoverAlpha * hover), rad);
+            bool hasIcon = !string.IsNullOrEmpty(icon);
+            Color ink = Color.Lerp(Look.BarOff, Look.PastelInk, open);
+            // 이름이 없는 칸(독 설정 막대)은 아이콘만 가운데
+            float gap = hasIcon && !string.IsNullOrEmpty(label) ? IconGap * open : 0f, iw = hasIcon ? IconSize : 0f;
+            float x = cell.center.x - (hasIcon ? iw + gap + labelW * open : labelW) * 0.5f;
+            if (hasIcon) Draw.Icon(icon, new Rect(Mathf.Round(x), Mathf.Round(cell.center.y - IconSize * 0.5f), IconSize, IconSize), ink, 24f, Stroke);
+            float a = hasIcon ? Mathf.Clamp01(open * 2f - 1f) : 1f;
+            if (a > 0.01f && !string.IsNullOrEmpty(label))
+                Draw.Text(new Rect(Mathf.Round(x + iw + gap), cell.y, labelW + 2f, cell.height), label, Font, Draw.Alpha(ink, a), true, TextAnchor.MiddleLeft);
+            Draw.EndScale();
+        }
+
+        /// <summary>
+        /// 서브 칸(그리기만): 고름 = 서브 파스텔 채움 + 서브 파스텔 글(굵게), 안 고름 = 보조 글(dim 이면 흐린 글) · hover 때 옅은 바탕. 누르면 0.96배.
+        /// 글은 (칸 − 오른쪽 뱃지 extraW) 가운데.
+        /// </summary>
+        public static void SubCell(Rect cell, string label, bool sel, bool dim, float hover, float press, float extraW = 0f)
+        {
+            if (!Draw.Repaint) return;
+            float rad = cell.height * 0.5f;
+            Draw.BeginScale(cell.center, Look.PressScale(press, PressScale));
+            if (sel) Draw.Round(cell, Look.PastelSubFill, rad);
+            else if (hover > 0.01f) Draw.Round(cell, Draw.Alpha(Pal.Haze, HoverAlpha * hover), rad);
+            Draw.Text(new Rect(cell.x, cell.y, cell.width - extraW, cell.height), label, SubFont, sel ? Look.PastelSubInk : dim ? Pal.Dim : Look.BarOff, sel, TextAnchor.MiddleCenter);
+            Draw.EndScale();
+        }
+
+        /// <summary>
+        /// 서브 칸 단추(독 옵션 막대 안 — 독 콜백과 같은 꼴 x 왼쪽 · cy 가운데 · draw = false 면 폭만): 폭을 돌려주고 눌러 떼면 click.
+        /// on = 고름(서브 파스텔), enabled = false 면 흐린 글 · 클릭 안 받음.
+        /// </summary>
+        public static float SubChip(float x, float cy, string label, bool on, string tip, bool draw, Action click, bool enabled = true)
+        {
+            float w = SubCellW(Mathf.Ceil(Draw.TextWidth(label ?? "", SubFont, true)));
+            if (!draw) return w;
+            var r = new Rect(x, Mathf.Round(cy - SubCellH * 0.5f), w, SubCellH);
+            int key = Look.Key(r, "pillbar.subchip", label);
+            SubCell(r, label, on, !enabled, Look.Hover(key, r, enabled && !on), Look.Press(key, r, enabled));
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            if (Draw.Button(r) && enabled) click?.Invoke();
+            return w;
+        }
+
+        /// <summary>서브 막대 이름 글(SubDockBar 안 — x 왼쪽 · cy 가운데 · draw = false 면 폭만): 좌우 6 · 글 12 굵게 · Look.BarOff. 폭을 돌려줌.</summary>
+        public static float SubText(float x, float cy, string label, bool draw)
+        {
+            float tw = Mathf.Ceil(Draw.TextWidth(label ?? "", SubTextFont, true)), w = tw + SubTextPadX * 2f;
+            if (draw && Draw.Repaint) Draw.Text(new Rect(x + SubTextPadX, Mathf.Round(cy - SubCellH * 0.5f), tw + 2f, SubCellH), label, SubTextFont, Look.BarOff, true, TextAnchor.MiddleLeft);
+            return w;
+        }
+
+        /// <summary>서브 막대 세로 구분선: 1 × 18 · 좌우 6 · Look.BarLine. 폭을 돌려줌.</summary>
+        public static float SubSep(float x, float cy, bool draw)
+        {
+            if (draw && Draw.Repaint) Draw.Fill(new Rect(x + SubTextPadX, Mathf.Round(cy - SubSepH * 0.5f), 1f, SubSepH), Look.BarLine);
+            return SubTextPadX * 2f + 1f;
+        }
+
+        /// <summary>
+        /// 독 설정 막대(Dockbar FAB 줄 안 — fabs 콜백과 같은 꼴 x 왼쪽 · cy 가운데 · draw = false 면 폭만): 판 높이 64 · 안쪽 8 · 아이콘만 칸 48 원 · 칸 사이 2.
+        /// 고른 칸(cur, 없으면 -1) = 파스텔 채움 · 파스텔 아이콘. 폭을 돌려주고 눌러 떼면 pick(칸 번호).
+        /// </summary>
+        public static float IconGroup(float x, float cy, string[] icons, string[] tips, int cur, bool draw, Action<int> pick)
+        {
+            int n = icons.Length;
+            float w = Width(CellH * n, n, Gap, Pad);
+            if (!draw) return w;
+            var bar = new Rect(x, Mathf.Round(cy - Height * 0.5f), w, Height);
+            Plate(bar);
+            for (int i = 0; i < n; i++)
+            {
+                var c = new Rect(bar.x + Pad + i * (CellH + Gap), bar.y + Pad, CellH, CellH);
+                int k = Look.Key(c, "pillbar.icongroup", icons[i]);
+                bool on = i == cur;
+                Cell(c, icons[i], null, 0f, on ? 1f : 0f, Look.Hover(k, c, !on), Look.Press(k, c));
+                CSCommonUX.UI.CSCommonToolbar.Tip(c, tips != null && i < tips.Length ? tips[i] : null);
+                if (Draw.Button(c)) pick?.Invoke(i);
+            }
+            return w;
+        }
+    }
+
+    /// <summary>FAB 색 종류: 판(설정 등 — 고르면 모드 파스텔) · 모드 파스텔(짓기 · 확인) · 되돌리기 파랑 파스텔 · 취소 빨강 파스텔 · 모드 나가기(판 면 + 빨강 아이콘).</summary>
+    public enum FabTone
+    {
+        Plain,
+        Primary,
+        Undo,
+        Cancel,
+        Exit,
+    }
+
+    /// <summary>CSCommonUX.Fab — C안 둥근 단추(지름 PillBar.FabSize 64): 아이콘 24 가운데 · 1px 선 · 호버 옅은 덮개 · 누르면 0.96배 · 툴팁(CSCommonToolbar.Tip).</summary>
+    public static class Fab
+    {
+        /// <summary>칸 r 에 그리고 눌러 떼면 true. on = 고름(Plain 이면 파스텔로 채움).</summary>
+        public static bool In(Rect r, string icon, FabTone tone = FabTone.Plain, bool on = false, string tip = null)
+        {
+            int key = Look.Key(r, "fab", icon);
+            float hover = Look.Hover(key, r), press = Look.Press(key, r);
+            if (Draw.Repaint)
+            {
+                Color fill = tone switch
+                {
+                    FabTone.Undo => Look.FabUndoFill,
+                    FabTone.Cancel => Look.FabCancelFill,
+                    FabTone.Exit => Look.BarSurface,
+                    FabTone.Primary => Look.PastelFill,
+                    _ => on ? Look.PastelFill : Look.BarSurface,
+                };
+                Color ink = tone switch
+                {
+                    FabTone.Undo => Look.FabUndoInk,
+                    FabTone.Cancel => Look.FabCancelInk,
+                    FabTone.Exit => Look.FabExitInk,
+                    FabTone.Primary => Look.PastelInk,
+                    _ => on ? Look.PastelInk : Look.BarOff,
+                };
+                float rad = Mathf.Min(r.width, r.height) * 0.5f, s = PillBar.IconSize;
+                Draw.BeginScale(r.center, Look.PressScale(press, PillBar.PressScale));
+                Draw.Round(r, fill, rad);
+                if (hover > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hover), rad);
+                Draw.RoundOutline(r, Look.BarLine, rad);
+                if (!string.IsNullOrEmpty(icon)) Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - s * 0.5f), Mathf.Round(r.center.y - s * 0.5f), s, s), ink, 24f, PillBar.Stroke);
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            return Draw.Button(r);
+        }
+
+        /// <summary>줄 배치(독 fabs 콜백 — x 왼쪽 · cy 가운데 · draw = false 면 폭만): 지름을 돌려주고 눌러 떼면 click.</summary>
+        public static float At(float x, float cy, string icon, FabTone tone, bool on, string tip, bool draw, Action click)
+        {
+            float d = PillBar.FabSize;
+            if (draw && In(new Rect(x, Mathf.Round(cy - d * 0.5f), d, d), icon, tone, on, tip)) click?.Invoke();
+            return d;
+        }
+    }
+
+    /// <summary>
+    /// CSCommonUX.DockBar_Panel — 독(Dockbar · SubDockBar · 안내 알약) 아래 12 에 붙는 설정 판(독 버튼으로 열고 닫음 — 열린 동안 그 버튼은 파스텔로 켬).
+    /// 판 반지름 28 · 안쪽 16 · 줄 사이 16 · 1px Look.BarLine · 그림자 없음, 면 Look.BarSurface. 열 때 위 가장자리 기준으로 높이 0 → 판 높이 0.44초 cubic-bezier(.2,.8,.2,1)
+    /// (Modal.Expand 재사용 — 투명도 0.28초) · 12 위에서 내려오며 0.98 → 1배, 닫을 때 거꾸로. 부품: 알약 탭 줄(Tabs, 36) · 5열 칸 격자(Cell — 위 이름 12 · 아래 입력 36).
+    /// 쓰는 법: if (DockBarPanel.Begin(id, open, width, height, out var body, out var frame)) { … body 안(안쪽 좌표)에 그림 …; DockBarPanel.End(); } — frame = 지도 클릭 막을 화면 칸.
+    /// </summary>
+    public static class DockBarPanel
+    {
+        /// <summary>반지름 · 안쪽 · 줄 사이 · 탭 높이 · 탭 좌우 · 탭 사이 · 탭 글 · 칸 열 수 · 칸 이름 글 · 이름 줄 높이 · 이름↔입력 · 입력 높이 · 열 때 내려오는 거리 · 시작 배율.</summary>
+        public const float Radius = 28f, Pad = 16f, Gap = 16f, TabH = 36f, TabPadX = 16f, TabGap = 8f, TabFont = 13.5f;
+        public const int Cols = 5;
+        public const float LabelFont = 12f, LabelH = 16f, LabelGap = 6f, CellH = 36f, Rise = 12f, ScaleFrom = 0.98f;
+
+        static float anchor = -1f;
+        static int anchorFrame = -1;
+
+        /// <summary>Dockbar 가 그릴 때마다 남기는 판 위 y(독 맨 아래 + 12).</summary>
+        internal static void Anchor(float y)
+        {
+            anchor = y;
+            anchorFrame = Time.frameCount;
+        }
+
+        /// <summary>판 위 y: 이번 · 지난 프레임 Dockbar 아래 + 12(독이 없으면 화면 위 CSCommonDesign.BarTop).</summary>
+        public static float Top => anchorFrame >= Time.frameCount - 1 && anchor >= 0f ? anchor : CSCommonDesign.BarTop;
+
+        static readonly Stack<Vector4> saved = new(); // x = 투명도, y = 내린 거리, z = 배율을 썼나
+        static readonly Stack<Matrix4x4> savedMatrix = new();
+
+        /// <summary>
+        /// 판 그리기 시작(화면 가운데 · 위 = Top): 펼친 정도만큼 잘라 보이고 흐리게 · 내려오며 커짐. 다 닫혔으면 false(End 부르지 말 것).
+        /// body = 안쪽 칸(잘라 그리기 안쪽 좌표), frame = 지금 보이는 판의 화면 칸(입력 막기).
+        /// </summary>
+        public static bool Begin(string id, bool open, float width, float height, out Rect body, out Rect frame)
+        {
+            float t = Modal.Expand(CSCommonAnim.Key("dockbarpanel", id), open, out float fade);
+            body = frame = default;
+            if (t <= 0.001f && !open) return false;
+            var r = new Rect(PillBar.Left(Draw.Width * 0.5f, width), Top, width, height);
+            float dy = Mathf.Round(-Rise * (1f - t)), s = Mathf.Lerp(ScaleFrom, 1f, t);
+            saved.Push(new Vector4(Draw.Opacity, dy, s < 1f ? 1f : 0f, 0f));
+            Draw.Opacity *= fade;
+            Draw.Shift(new Vector2(0f, dy));
+            if (s < 1f)
+            {
+                savedMatrix.Push(GUI.matrix);
+                GUIUtility.ScaleAroundPivot(new Vector2(s, s), Draw.ToScreen(new Vector2(r.center.x, r.y)));
+            }
+            // 1px 선이 잘리지 않게 바깥 1 을 더 둠
+            float shown = Mathf.Round((height + 2f) * t);
+            frame = new Rect(r.x, r.y + dy, r.width, Mathf.Max(0f, shown - 2f));
+            Draw.BeginClip(new Rect(r.x - 1f, r.y - 1f, r.width + 2f, shown), Vector2.zero);
+            var plate = new Rect(1f, 1f, width, height);
+            if (Draw.Repaint)
+            {
+                Draw.Round(plate, Look.BarSurface, Radius);
+                Draw.RoundOutline(plate, Look.BarLine, Radius);
+            }
+            body = new Rect(plate.x + Pad, plate.y + Pad, width - Pad * 2f, height - Pad * 2f);
+            return true;
+        }
+
+        public static void End()
+        {
+            if (saved.Count == 0) return;
+            Draw.EndClip();
+            var v = saved.Pop();
+            if (v.z > 0f && savedMatrix.Count > 0) GUI.matrix = savedMatrix.Pop();
+            Draw.Shift(new Vector2(0f, -v.y));
+            Draw.Opacity = v.x;
+        }
+
+        /// <summary>
+        /// 알약 탭 줄(높이 36 · 좌우 16 · 사이 8 · 글 13.5 굵게): 고른 칸 = 모드 파스텔 채움, 나머지 = 1px 선 알약(호버 옅은 면) · 누르면 0.96배.
+        /// x 왼쪽 · y 위. 눌러서 뗀 번호(없으면 -1), width = 줄 폭.
+        /// </summary>
+        public static int Tabs(float x, float y, string[] labels, int cur, out float width)
+        {
+            int hit = -1;
+            float x0 = x;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                float w = Mathf.Ceil(Draw.TextWidth(labels[i], TabFont, true)) + TabPadX * 2f;
+                var r = new Rect(x, y, w, TabH);
+                bool sel = i == cur;
+                int k = Look.Key(r, "dockbarpanel.tab", labels[i]);
+                float hv = Look.Hover(k, r, !sel), pr = Look.Press(k, r);
+                if (Draw.Repaint)
+                {
+                    float rad = TabH * 0.5f;
+                    Draw.BeginScale(r.center, Look.PressScale(pr, PillBar.PressScale));
+                    if (sel) Draw.Round(r, Look.PastelFill, rad);
+                    else
+                    {
+                        if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), rad);
+                        Draw.RoundOutline(r, Look.BarLine, rad);
+                    }
+                    Draw.Text(r, labels[i], TabFont, sel ? Look.PastelInk : Look.BarInk, true, TextAnchor.MiddleCenter);
+                    Draw.EndScale();
+                }
+                if (Draw.Button(r)) hit = i;
+                x += w + TabGap;
+            }
+            width = labels.Length > 0 ? x - x0 - TabGap : 0f;
+            return hit;
+        }
+
+        /// <summary>칸 격자 한 줄 높이(이름 + 사이 + 입력).</summary>
+        public const float RowH = LabelH + LabelGap + CellH;
+
+        /// <summary>칸 count 개 격자 높이(5열, 줄 사이 16).</summary>
+        public static float GridHeight(int count)
+        {
+            int rows = (count + Cols - 1) / Cols;
+            return rows <= 0 ? 0f : rows * RowH + (rows - 1) * Gap;
+        }
+
+        /// <summary>5열 칸 격자(사이 16)의 i 번째 칸: 위에 이름(12 · Pal.Dim)을 그리고 아래 입력 자리(높이 36, Textfield · Select · Stepper · Segmented · Switch · Button 이 씀)를 돌려줌.</summary>
+        public static Rect Cell(Rect grid, int i, string label)
+        {
+            float cw = Mathf.Floor((grid.width - Gap * (Cols - 1)) / Cols);
+            var c = new Rect(grid.x + (i % Cols) * (cw + Gap), grid.y + (i / Cols) * (RowH + Gap), cw, RowH);
+            if (Draw.Repaint && !string.IsNullOrEmpty(label)) Draw.TextFit(new Rect(c.x, c.y, cw, LabelH), label, LabelFont, Pal.Dim);
+            return new Rect(c.x, c.y + LabelH + LabelGap, cw, CellH);
         }
     }
 }

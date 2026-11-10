@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>F1 UX 색(설계 색). IMGUI(Draw)와 게임 UI 부품(CSCommonStyle)이 같이 씀.</summary>
     internal static class Pal
@@ -8,7 +8,7 @@ namespace CSCommon
         public static Color Win = Draw.Hex("#14171C");
         /// <summary>고른 칸(떠오른 면) 바탕 · 그 위 글 · 아이콘(다크 #3A404B · 흰 글 / 라이트 흰 바탕 · 짙은 글).</summary>
         public static Color Selected = Draw.Hex("#3A404B"), OnSelected = Color.white;
-        /// <summary>휴대폰 틀(CSCommon.Phone): 티타늄 테두리 · 화면 바탕 · 번지는 색, 리퀴드 글라스 면(바탕 · 위 반짝임 · 테두리 · 위 1px 빛).</summary>
+        /// <summary>휴대폰 틀(CSCommonUX.Phone): 티타늄 테두리 · 화면 바탕 · 번지는 색, 리퀴드 글라스 면(바탕 · 위 반짝임 · 테두리 · 위 1px 빛).</summary>
         public static Color PhoneBezel = Draw.Hex("#2E3035"), PhoneBezelEdge = Draw.Hex("#5A5E66"), PhoneWall = Color.white;
         public static Color PhoneGlowA = new(0.18f, 0.42f, 1f, 0.5f), PhoneGlowB = new(0.62f, 0.25f, 0.95f, 0.45f);
         public static Color GlassFill = new(0.93f, 0.95f, 0.98f, 0.85f), GlassSheen = new(1f, 1f, 1f, 0.6f), GlassEdge = new(0f, 0f, 0f, 0.10f), GlassShine = new(1f, 1f, 1f, 1f);
@@ -32,9 +32,15 @@ namespace CSCommon
         public static Color Ok = Draw.Hex("#5CC8FF");
         public static Color Warn = Draw.Hex("#FFA94D");
         public static Color Red = Draw.Hex("#FF6B5E");
+        /// <summary>강조로 쓰는 빨강 자리(값은 Red 와 같음 — 시리즈 테마가 시리즈 색으로 바꿈). 위험 · 오류 뜻은 Red.</summary>
+        public static Color RedAccent = Red;
+        /// <summary>시리즈 테마가 바꾸지 않는 로고 빨강(레드 플래그 띠 · 소프트 타이어 · 과열 · 나침반 북쪽 · 폴).</summary>
+        public static Color FixedRed = Draw.Hex("#E10600");
         public static Color Accent = Draw.Hex("#E10600");
-        /// <summary>시리즈 대표색(F1 창 제목줄 아래 띠 · F1 은 Accent): F2 파랑 · WEC 청록 · 모토GP 주황.</summary>
-        public static Color SeriesF2 = Draw.Hex("#1F6FEB"), SeriesWec = Draw.Hex("#12A594"), SeriesMoto = Draw.Hex("#F08A00");
+        /// <summary>시리즈 대표색(F1 은 Accent): F2 파랑 · WEC 청록 · 모토GP 주황. 바탕 위 글로도, 면으로도(그 위 글 = AccentInk) 4.5:1. 라이트 값은 CSCommonTheme.</summary>
+        public static Color SeriesF2 = Draw.Hex("#5294FA"), SeriesWec = Draw.Hex("#12A594"), SeriesMoto = Draw.Hex("#F08A00");
+        /// <summary>시리즈 옅은 글(Pink 자리) = 시리즈 색과 Strong 을 섞는 비율.</summary>
+        public const float SeriesTintMix = 0.5f;
         public static Color Yellow = Draw.Hex("#F5C400");
         public static Color Green = Draw.Hex("#22C55E");
         public static Color Teal = Draw.Hex("#2ED4BF");

@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using UnityEngine;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>
     /// output_log.txt에 남김. 머리는 모드가 정한 이름(예 "[F1]: ").

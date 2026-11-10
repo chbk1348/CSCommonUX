@@ -3,7 +3,7 @@ using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
-namespace CSCommon.UI
+namespace CSCommonUX.UI
 {
     /// <summary>
     /// 게임 설정 화면(OptionsPanel)의 이 모드 칸에 패널을 걸고 뗌.

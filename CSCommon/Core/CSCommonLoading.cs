@@ -1,8 +1,8 @@
 using System;
-using CSCommon.UI;
+using CSCommonUX.UI;
 using ICities;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>
     /// 도시를 불러오고 내릴 때(LoadingExtension 쪽). 게임 모드에서만 켬.

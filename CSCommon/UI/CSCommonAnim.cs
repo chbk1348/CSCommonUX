@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>
     /// IMGUI 부품 애니메이션: 열쇠(부품마다 고정된 정수)별 0 ~ 1 값을 목표 쪽으로 시간에 맞춰 다가가게 함(게임 일시 정지와 상관없이 실제 시간).
@@ -67,14 +67,15 @@ namespace CSCommon
         static float modalOpacity, modalShift;
 
         /// <summary>모달이 보일 정도 0 ~ 1: 열면 0 → 1(0.18초), 닫으면 1 → 0(0.14초). 0 이면 그리지 말 것.</summary>
-        public static float Modal(int key, bool open) => Toward(key, open ? 1f : 0f, open ? 5.5f : 7f, 0f);
+        public static float Modal(int key, bool open) => Toward(key, open ? 1f : 0f, 1f / (open ? CSCommonUX.Modal.OpenSeconds : CSCommonUX.Modal.CloseSeconds), 0f);
 
-        /// <summary>모달 그리기 시작: 투명도를 v 로, 10px 아래에서 떠오름(닫을 땐 가라앉음). EndModal 과 짝.</summary>
+        /// <summary>모달 그리기 시작: 투명도를 v 로, 10px 아래에서 떠오름(닫을 땐 가라앉음, 시안 곡선 Modal.Ease). EndModal 과 짝.</summary>
         public static void BeginModal(float v)
         {
+            float k = CSCommonUX.Modal.Ease(v);
             modalOpacity = Draw.Opacity;
-            modalShift = Mathf.Round((1f - EaseOut(v)) * 10f);
-            Draw.Opacity *= EaseOut(v);
+            modalShift = Mathf.Round((1f - k) * CSCommonUX.Modal.Rise);
+            Draw.Opacity *= k;
             Draw.Shift(new Vector2(0f, modalShift));
         }
 

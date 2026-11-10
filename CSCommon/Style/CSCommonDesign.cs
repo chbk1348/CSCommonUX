@@ -1,4 +1,4 @@
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>
     /// 세 모드(기상청 · 주차장 · F1)가 같이 쓰는 디자인 시스템 치수.
@@ -10,11 +10,10 @@ namespace CSCommon
         /// <summary>디자인 규격 이름 · 판(공개 저장소 CSCommonUX 와 같음).</summary>
         public const string Ux = "CSCommon UX 1.1";
 
-        // 휴대폰 틀(CSCommon.Phone — 아이폰 프로 맥스 440×956, 다이나믹 아일랜드, 리퀴드 글라스): 크기 고정
+        // 휴대폰 틀(CSCommonUX.Phone — 아이폰 프로 맥스 440×956, 다이나믹 아일랜드, 리퀴드 글라스): 크기 고정
         public const float PhoneW = 440f, PhoneH = 956f, PhoneMargin = 24f, PhoneBezel = 10f, PhoneRadius = 64f, ScreenRadius = 54f;
         public const float IslandW = 126f, IslandH = 37f, IslandTop = 11f, IslandMaxW = 300f, StatusH = 60f, HomeH = 34f, HomeBarW = 134f;
         public const float GlassPad = 18f, GlassRadius = 28f, GlassStroke = 1f;
-        public const float TabBarH = 64f;
         // 지도 위 건물 표시 원(행정 지정 도구): 건물 한 칸 크기(m) · 여유 · 높이 범위 · 투명도
         public const float OverlayCell = 8f, OverlayPad = 8f, OverlayHeight = 60f, OverlayAlpha = 0.6f;
         // 휴대폰 안쪽 배치(행정 패널 같은 앱 화면): 단추 · 줄 · 카드 · 글 크기
@@ -29,11 +28,8 @@ namespace CSCommon
         public const float LabelBtnHeight = 52f;
         // 서킷 디자인 에디터 새 틀: 위 판(묶음 탭 · 아이콘 단추) · 아래 도구 독 · 안내 한 줄
         public const float TopBarHeight = 56f;
-        public const float TabHeight = 36f;
-        public const float TabPadX = 14f;
         public const float IconBtnSize = 38f;
         public const float DockToolsHeight = 56f;
-        public const float DockToolHeight = 40f;
         public const float DockBottomGap = 16f;
         public const float HintHeight = 34f;
         // 독 옵션 칸(시안 EditorDocks): 왼쪽 이름 줄들 · 오른쪽 세로선 뒤 일괄 열
@@ -46,14 +42,10 @@ namespace CSCommon
         public const float DockSideBtnH = 40f;
         // 공통 단추(CSCommonButton · 시안 '단추 새 방향' G): 톤 바탕 · 뜻 색 아이콘 · 테두리 없음
         public const float ActionHeight = 40f;
-        public const float ActionFont = 14.5f;
         public const float ActionIcon = 18f;
         public const float ActionGap = 8f;
-        public const float ActionPadL = 12f;
-        public const float ActionPadR = 15f;
         public const float ActionRadius = 7f;
         public const float ActionHeightSmall = 32f;
-        public const float ActionFontSmall = 12.5f;
         public const float ActionIconSmall = 15f;
         public const float LabelBtnMinW = 48f;
         public const float LabelBtnPadX = 6f;
@@ -69,8 +61,8 @@ namespace CSCommon
         public const float IconGap = 5f;
         public const float SepWidth = 11f;
         public const float PillHeight = 22f;
-        /// <summary>CSCommon.Switch 알약 크기(F1 줄 · 설정 패널 · 기상청 설정이 같은 크기).</summary>
-        public const float SwitchW = 46f, SwitchH = 26f;
+        /// <summary>CSCommonUX.Switch 알약 크기(시안 'CSCommonUX.Switch' 48 × 28 — F1 줄 · 설정 패널 · 기상청 설정이 같은 크기).</summary>
+        public const float SwitchW = 48f, SwitchH = 28f;
         public const float FabSize = 40f;
         public const float FabMargin = 8f;
 
@@ -79,7 +71,7 @@ namespace CSCommon
         /// <summary>도구를 쓰는 동안 그 도구와 상관없는 시설 표시의 불투명도.</summary>
         public const float MarkDim = 0.35f;
 
-        /// <summary>카드(CSCommon.Card, 시안 A 선 카드): 모서리 · 안쪽 여백 · 제목 줄 높이 · 제목→설명 · 머리→내용 간격.</summary>
+        /// <summary>카드(CSCommonUX.Card, 시안 A 선 카드): 모서리 · 안쪽 여백 · 제목 줄 높이 · 제목→설명 · 머리→내용 간격.</summary>
         public const float CardRadius = 12f, CardPad = 16f, CardTitleH = 28f, CardDescGap = 2f, CardHeadGap = 8f;
 
         /// <summary>
@@ -91,24 +83,26 @@ namespace CSCommon
         public const float PanelHeadH = 54f, PanelPad = 16f, PanelGap = 14f;
         public const float PanelMarkSize = 28f, PanelMarkRadius = 8f, PanelMarkIcon = 18f;
         /// <summary>F1 창 제목줄 시리즈 고르기(로고 칸 4개, 높이는 Segmented.H): 칸 폭 · 칸 안 로고 폭 · 높이 · 안 고른 칸 불투명도 · 이보다 좁은 창은 칸을 숨기고 로고만.</summary>
-        public const float SeriesCellW = 64f, SeriesLogoW = 48f, SeriesLogoH = 12f, SeriesDim = 0.45f, SeriesHideW = 900f;
+        public const float SeriesCellW = 84f, SeriesLogoW = 64f, SeriesLogoH = 16f, SeriesDim = 0.75f, SeriesHideW = 900f;
         /// <summary>떠 있는 판(메뉴 · 점수 판 · 줄 판) 안쪽 여백.</summary>
         public const float FloatPad = 14f;
         /// <summary>카드 안: 두 칸 사이 · 타일 격자 간격 · 줄 위아래 여백.</summary>
         public const float CardColGap = 16f, InnerGap = 10f, CardRowPad = 12f;
         // GLDS 2.1 에서 옮겨 옴(아티팩트 'CSCommon 컴포넌트' 입력 · 표시 보드): 움직임 · 목록 · 토스트 · 글 칸 단위
         /// <summary>단추를 누르면 이 배로 줄어듦.</summary>
-        public const float PressScale = 0.97f;
-        /// <summary>펼친 목록(CSCommon.Select): 줄 높이 · 위아래 여백 · 왼쪽 표시(○ · □) 크기 · 펼칠 때 시작 배율 · 걸리는 초.</summary>
-        public const float MenuRowH = 40f, MenuPad = 6f, MenuMark = 18f, MenuOpenScale = 0.92f, MenuOpenSeconds = 0.18f;
-        /// <summary>토스트: 높이 · 상태 원 · 원 안 그림 · 왼쪽 · 오른쪽 여백 · 요소 사이 · 최대 폭 · 올라오는 거리 · 들어오는 초 · 사라지는 초.</summary>
-        public const float ToastHeight = 60f, ToastCircle = 36f, ToastIcon = 18f, ToastPadL = 12f, ToastPadR = 16f, ToastGap = 12f, ToastMaxW = 480f, ToastRise = 8f, ToastInSeconds = 0.26f, ToastOutSeconds = 0.18f;
+        /// <summary>펼친 목록(CSCommonUX.Select): 줄 높이 · 위아래 여백 · 왼쪽 표시(○ · □) 크기 · 펼치는 초(Modal.Ease) · 나타나는 초(선형).</summary>
+        public const float MenuRowH = 40f, MenuPad = 6f, MenuMark = 18f, MenuOpenSeconds = 0.24f, MenuFadeSeconds = 0.16f;
+        /// <summary>
+        /// 토스트: 높이 · 상태 원 · 원 안 그림 · 왼쪽 · 오른쪽(단추 없음 28 · 단추 있음 12) 여백 · 요소 사이 · 글 → 단추 더 띄움 · 단추 높이 · 최대 폭 · 올라오는 거리 · 들어오는 초 · 사라지는 초.
+        /// </summary>
+        public const float ToastHeight = 60f, ToastCircle = 36f, ToastIcon = 18f, ToastPadL = 12f, ToastPadR = 28f, ToastPadRAction = 12f, ToastGap = 12f, ToastActionGap = 6f, ToastActionH = 34f;
+        public const float ToastMaxW = 480f, ToastRise = 8f, ToastInSeconds = 0.26f, ToastOutSeconds = 0.18f;
         /// <summary>토스트 자리: 화면 아래 여백 · 떠 있는 것끼리 간격 · 보일 초(되돌리기 같은 단추가 있으면 더 길게).</summary>
         public const float ToastSafeGap = 16f, FloatingGap = 8f, ToastLife = 2.2f, ToastLifeAction = 5f;
-        /// <summary>칩(CSCommon.Chip, GLDS 칩 D): 높이 · 좌우 · 글 · ▾ ✕ 크기 · 글 → 아이콘 · 누르면 줄어드는 배.</summary>
+        /// <summary>칩(CSCommonUX.Chip, GLDS 칩 D): 높이 · 좌우 · 글 · ▾ ✕ 크기 · 글 → 아이콘 · 누르면 줄어드는 배.</summary>
         public const float ChipHeight = 32f, ChipPadX = 14f, ChipFont = 13f, ChipIcon = 14f, ChipIconGap = 4f, ChipPressScale = 0.95f;
-        /// <summary>비중 줄(CSCommon.ShareRow): 위아래 여백 · 높이(여백 8 + 글 20 + 6 + 막대 6 + 여백 8).</summary>
-        public const float ShareRowPad = 8f, ShareRowH = 48f;
+        /// <summary>비중 줄(CSCommonUX.ShareRow): 위아래 여백 · 높이(여백 8 + 글 20 + 6 + 막대 8 + 여백 8).</summary>
+        public const float ShareRowPad = 8f, ShareRowH = 50f;
         /// <summary>서브라벨이 있는 고르기 칸 높이 · 펼친 목록 묶음 머리 높이.</summary>
         public const float SegmentTwoH = 52f, MenuHeadH = 28f;
         /// <summary>CSCommon 부품 글자 하한(방송 그래픽 · 지도 표시 밖) — 이보다 작은 글은 쓰지 않음.</summary>
@@ -119,7 +113,7 @@ namespace CSCommon
         public const float FontBody = 14f, FontValue = 15f, FontDesc = 13f, LineBody = 20f, LineSub = 16f;
         /// <summary>목록 줄: 위아래 12 · 요소 사이 12 · 한 줄 높이(12 + 20 + 12). 섹션 끝 → 띠 보이는 간격 = SectionBottom − 마지막 줄 여백.</summary>
         public const float RowPadY = 12f, RowGap = 12f, RowH = 44f;
-        /// <summary>지표 칸(CSCommon.Metric): 값 15 굵게 줄 20 · 라벨 12 줄 16 · 칸 사이 행 간격 16 · 열 사이 16.</summary>
+        /// <summary>지표 칸(CSCommonUX.Metric): 값 15 굵게 줄 20 · 라벨 12 줄 16 · 칸 사이 행 간격 16 · 열 사이 16.</summary>
         public const float MetricValueH = 20f, MetricLabelH = 16f, MetricRowGap = 16f, MetricColGap = 16f;
         /// <summary>게임 정보 창 옆에 붙는 떠 있는 판 폭.</summary>
         public const float SidePanelW = 340f;
@@ -127,8 +121,6 @@ namespace CSCommon
         public const float FieldAffixGap = 4f, FieldClear = 16f;
         /// <summary>입력 칸 · 분절 홈 모서리.</summary>
         public const float RadiusField = 9f;
-        /// <summary>입력 칸 · 고르기 칸 · 펼친 목록 테두리 두께(상하좌우 같음, 1080p 에서 2px) · 초점 · 오류 · 열림 두께.</summary>
-        public const float FieldLineW = 1f, FieldFocusW = 1.5f;
 
         public const float RadiusWindow = 14f;
         public const float RadiusTile = 8f;

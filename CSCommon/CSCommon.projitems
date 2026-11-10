@@ -8,7 +8,7 @@
     <SharedGUID>6f1e0f3a-5b7c-4d2e-9a61-f1a2b3c4d5e6</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>CSCommon</Import_RootNamespace>
+    <Import_RootNamespace>CSCommonUX</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonChangelog.cs" />
@@ -23,12 +23,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonTheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAtlas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonUXDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonKit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonOptionsHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonOptionsPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonToolbar.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonGlassToolBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonUXToolbar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAnim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonSection.cs" />
   </ItemGroup>
 </Project>

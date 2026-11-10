@@ -1,7 +1,7 @@
 using System;
-using CSCommon.UI;
+using CSCommonUX.UI;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>업데이트 내역 한 판.</summary>
     public sealed class CSCommonRelease

@@ -2,10 +2,10 @@ using System;
 using CitiesHarmony.API;
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
-using CSCommon.UI;
+using CSCommonUX.UI;
 using ICities;
 
-namespace CSCommon
+namespace CSCommonUX
 {
     /// <summary>모드 공통 정보(설정 패널 · 알림 · 로그가 봄).</summary>
     public abstract class CSCommonModBase
