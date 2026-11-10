@@ -434,14 +434,31 @@ namespace CSCommon
 
         // ---------------- 그림
 
+        /// <summary>
+        /// 그림 그리기. 읽을 수 있는 Texture2D(로고 · 이미지)를 그릴 크기보다 큰 원본에서 줄여 그릴 때는 늘 미리 줄인 선명한 그림(ImageSharp)으로 그림 —
+        /// GUI.DrawTexture 의 바로 줄이기는 밉맵 없이 건너뛰어 계단 · 깨짐이 생김. 영상(RenderTexture) · 자르기 · 확대는 그대로.
+        /// </summary>
         public static void Image(Rect r, Texture tex, float alpha = 1f, ScaleMode mode = ScaleMode.ScaleToFit)
         {
             if (!Repaint || tex == null) return;
+            if (mode == ScaleMode.ScaleToFit && tex is Texture2D t2 && !sharpFailed.Contains(t2.GetInstanceID()))
+            {
+                Rect sr = ToScreen(r);
+                if (sr.width < t2.width || sr.height < t2.height) { ImageSharp(r, t2, alpha); return; }
+            }
+            ImageRaw(r, tex, alpha, mode);
+        }
+
+        static void ImageRaw(Rect r, Texture tex, float alpha, ScaleMode mode)
+        {
             Color old = GUI.color;
             GUI.color = new Color(1f, 1f, 1f, alpha * old.a * Opacity);
             GUI.DrawTexture(ToScreen(r), tex, mode, true);
             GUI.color = old;
         }
+
+        /// <summary>미리 줄이지 못하는 그림(읽기 불가 등) — 다시 시도하지 않고 바로 그림.</summary>
+        static readonly HashSet<int> sharpFailed = new();
 
         public static void Image(Rect r, Texture tex, Color tint, ScaleMode mode = ScaleMode.ScaleToFit)
         {
@@ -1092,7 +1109,14 @@ namespace CSCommon
             if (!sharpCache.TryGetValue(key, out var tex) || tex == null)
             {
                 tex = Downscale(src, pw, ph);
-                if (tex == null) { Image(r, src, alpha); return; }
+                if (tex == null) { sharpFailed.Add(src.GetInstanceID()); ImageRaw(r, src, alpha, ScaleMode.ScaleToFit); return; }
+                // 크기가 계속 바뀌는 그림(움직임)이 줄인 그림을 끝없이 쌓지 않게
+                if (sharpCache.Count > 200)
+                {
+                    foreach (var t in sharpCache.Values)
+                        if (t != null) UnityEngine.Object.Destroy(t);
+                    sharpCache.Clear();
+                }
                 sharpCache[key] = tex;
             }
             Color old = GUI.color;

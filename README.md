@@ -24,6 +24,10 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - 주 단추는 주 색(청록 · F1 빨강)으로 꽉 채우고 OnPrimary 글
 - 단추 문구(아이콘 + 글 묶음)는 늘 칸 정가운데
 
+## 옵션 패널 머리 마크
+
+- `CSCommonOptionsPanel.LogoIcon`(SVG path, viewBox 24)을 넘기면 로고 그림이 없는 모드 머리에 28px 둥근 타일 + 아이콘이 붙음. 둘 다 없으면 자리를 비움(예전 빨강 "F1" 글 제거).
+
 ## 쓰는 법
 
 모드 저장소 뿌리에 `CSCommon` 폴더를 그대로 복사하고, 모드 `.csproj` 에서 `CSCommon.projitems` 를 가져옵니다. 이 저장소가 원본이며, 모드 쪽 폴더를 고치면 여기에도 같이 올립니다.

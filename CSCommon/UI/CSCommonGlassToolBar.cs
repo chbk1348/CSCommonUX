@@ -15,6 +15,9 @@ namespace CSCommon
         /// <summary>판 높이 · 창 아래 여백 · 스크롤 끝 안전 영역(판 + 여백 + 숨) · 안쪽 여백 · 모서리.</summary>
         public const float Height = 60f, Bottom = 14f, SafeH = 84f, Pad = 5f, Radius = 30f, CellH = 50f;
 
+        /// <summary>호버 · 선택 바탕: 다크는 흰색, 라이트는 어두운 잉크(흰색은 밝은 유리 위에서 안 보임).</summary>
+        static Color Tint(float a) => Draw.Alpha(CSCommonTheme.Light ? Look.Ink : Color.white, a);
+
         /// <summary>창 r 아래 가운데에 놓이는 판 자리와 칸 폭(창이 좁아 넘치면 칸을 줄임).</summary>
         public static Rect BarRect(Rect window, int count, float maxCellW, out float cellW)
         {
@@ -41,10 +44,7 @@ namespace CSCommon
 
             if (Draw.Repaint)
             {
-                // 1px 씩 넓어지며 옅어지는 여덟 겹(Look.Elevated 와 같은 방식) — 예전 세 겹 큰 상자는 가장자리가 띠처럼 겹겹이 보였음
-                for (int i = 8; i >= 1; i--)
-                    Draw.Round(new Rect(bar.x - i, bar.y + 2f + i * 0.5f - i, bar.width + i * 2f, bar.height + i * 2f), Draw.Alpha(Color.black, Look.ShadowAlpha * (1f - (i - 1f) / 8f)), Radius + i);
-                Draw.Round(bar, Draw.Alpha(Pal.Win, 0.58f), Radius);
+                Draw.Round(bar, Draw.Alpha(Pal.Win, 0.68f), Radius);
                 Draw.Round(bar, new Color(1f, 1f, 1f, 0.07f), Radius);
             }
             // 위 반짝임: 판과 중심이 같은 안쪽 알약(반지름 Radius - 2)의 위 46% 만 잘라 그림. 예전처럼 높이 46% 칸에 반지름 28 을 주면
@@ -87,7 +87,9 @@ namespace CSCommon
         {
             if (!Draw.Repaint) return;
             Color on = ink ?? Pal.Accent;
-            if (hover > 0.01f) Draw.Round(cell, new Color(1f, 1f, 1f, 0.05f * hover), cell.height * 0.5f);
+            // 마우스 올림: 테마에 맞는 옅은 바탕 · 가만히 고른 칸: 강조색 옅은 바탕(떠오른 면 위에 얹어 라이트에서도 보임)
+            if (hover > 0.01f) Draw.Round(cell, Tint(0.10f * hover), cell.height * 0.5f);
+            if (sel) Draw.Round(cell, Draw.Alpha(on, 0.16f), cell.height * 0.5f);
             if (!string.IsNullOrEmpty(icon)) Draw.Icon(icon, new Rect(cell.x + (cell.width - 22f) * 0.5f, cell.y + 5f, 22f, 22f), sel ? on : Pal.Sub);
             Draw.Text(new Rect(cell.x, cell.yMax - 20f, cell.width, 16f), label, 12f, sel ? on : Pal.Sub, sel, TextAnchor.MiddleCenter);
         }

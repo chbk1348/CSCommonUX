@@ -20,8 +20,11 @@ namespace CSCommon.UI
         int cur;
         Action rebuild;
 
-        /// <summary>머리 왼쪽 로고(없으면 빨강 "F1" 글).</summary>
+        /// <summary>머리 왼쪽 로고(없으면 LogoIcon, 둘 다 없으면 비움).</summary>
         protected virtual Texture Logo => null;
+
+        /// <summary>Logo 가 없을 때 머리 왼쪽에 그릴 아이콘(SVG path, viewBox 24). 둘 다 없으면 자리를 비움.</summary>
+        protected virtual string LogoIcon => null;
 
         protected virtual string Title => CSCommonModBase.Instance?.BaseName ?? "";
 
@@ -138,11 +141,19 @@ namespace CSCommon.UI
                     float lh = logo.width > 0 ? Mathf.Min(24f, 80f * logo.height / logo.width) : 20f;
                     Draw.Image(new Rect(x, cy - lh * 0.5f, 80f, lh), logo);
                 }
+                else if (!string.IsNullOrEmpty(LogoIcon))
+                {
+                    var tile = new Rect(x, cy - CSCommonDesign.PanelMarkSize * 0.5f, CSCommonDesign.PanelMarkSize, CSCommonDesign.PanelMarkSize);
+                    Draw.Round(tile, Draw.Alpha(Pal.Primary, 0.14f), CSCommonDesign.PanelMarkRadius);
+                    float ip = (CSCommonDesign.PanelMarkSize - CSCommonDesign.PanelMarkIcon) * 0.5f;
+                    Draw.Icon(LogoIcon, new Rect(tile.x + ip, tile.y + ip, CSCommonDesign.PanelMarkIcon, CSCommonDesign.PanelMarkIcon), Pal.Primary, 24f, 2f);
+                }
                 // UX 1.1: 머리 띠 = 모드 주 색(라이트 모드엔 Accent 가 파랑이라 청록 모드와 안 맞았음)
                 Draw.Round(new Rect(h.x, h.yMax, h.width, 3f), Pal.Primary, 0f);
             }
             // 로고 없는 모드는 자리를 비우지 않음(예전엔 모든 모드에 'F1' 글이 찍혔음)
             if (Logo != null) x += 80f + 12f;
+            else if (!string.IsNullOrEmpty(LogoIcon)) x += CSCommonDesign.PanelMarkSize + 12f;
             float tw = Mathf.Ceil(Draw.TextWidth(Title, 17f, true));
             if (Draw.Repaint) Draw.Text(new Rect(x, h.y, tw + 2f, h.height), Title, 17f, Pal.Txt, true);
             x += tw + 12f;

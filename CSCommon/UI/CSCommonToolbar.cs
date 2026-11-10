@@ -462,7 +462,7 @@ namespace CSCommon.UI
             {
                 var lr = new Rect(x, Mathf.Round(cy - CSCommonDesign.LogoHeight * 0.5f), CSCommonDesign.LogoWidth, CSCommonDesign.LogoHeight);
                 if (logo != null) Draw.Image(lr, logo, 1f, ScaleMode.ScaleToFit);
-                else Draw.Text(lr, "F1", 16f, Pal.Accent, true, TextAnchor.MiddleLeft);
+                // 로고 없으면 비움(F1 글자는 F1 모드 전용이었음)
 
                 if (Compact) return total;
                 Draw.Fill(new Rect(x + CSCommonDesign.LogoWidth + 9f, cy - 14f, 1f, 28f), Pal.Line2);
