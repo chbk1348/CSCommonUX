@@ -1,4 +1,4 @@
-# CSCommon UX 1.1
+# CSCommon UX 1.3
 
 Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 
@@ -17,6 +17,10 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - 기상청 — 개인 사용 / 비공개
 - 주차장 — 개인 사용 / 비공개
 - 농장 — 개인 사용 / 비공개
+
+## UX 1.3 변경 (2026-11-10)
+
+Dockbar 정리 · Section 접기 제거 · TextPill · RoundBottom · Draw.Block · Select 닫힘 애니메이션 · 눌림 되튐 · SubDockBar 정렬. 세부는 커밋 본문 참고.
 
 ## UX 1.1 (B안 선명 대비)
 

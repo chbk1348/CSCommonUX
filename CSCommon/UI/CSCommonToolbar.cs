@@ -106,102 +106,6 @@ namespace CSCommonUX.UI
             CSCommonUX.Panel.Frame(r, CSCommonDesign.RadiusWindow);
         }
 
-        /// <summary>누름 정도 0 ~ 1: 누르는 동안 빠르게 들어가고 떼면 돌아옴(버튼마다 열쇠).</summary>
-        static float PressAnim(int key, Rect r, bool hov) => CSCommonAnim.Toward(key ^ 0x27d4eb2f, hov && Draw.Pressed(r) ? 1f : 0f, 22f);
-
-        /// <summary>누름 그늘(어둡게) — 내용은 Draw.Shift 로 1px 내려 그림.</summary>
-        static void PressShade(Rect r, float p, float radius)
-        {
-            if (p > 0.01f) Draw.Round(r, Draw.Alpha(Color.black, 0.16f * p), radius);
-        }
-
-        /// <summary>
-        /// 툴바 도구 버튼(디자인 시스템 C안 + 이름): 높이 52 · 아이콘 위 · 이름 아래(너비는 이름에 맞춤, 최소 48) · 모서리 10, 설명은 툴팁(이름 — 설명).
-        /// 켜지면 강조색으로 꽉 채우고 아이콘은 어두운 잉크, badge &gt; 0 이면 오른쪽 위에 강조색 점(개수는 툴팁).
-        /// </summary>
-        public static float LabelButton(
-            float x, float cy,
-            string icon, string label,
-            bool on, string tipText,
-            bool draw, Action pick,
-            Color? accent = null,
-            int badge = -1,
-            Color? idle = null)
-        {
-            if (InDock) return DockTool(x, cy, icon, label, on, tipText, draw, pick, accent, badge, idle);
-            float h = CSCommonDesign.LabelBtnHeight;
-            float w = Mathf.Max(CSCommonDesign.LabelBtnMinW, Mathf.Ceil(Draw.TextWidth(label ?? "", CSCommonDesign.LabelBtnFont, on)) + CSCommonDesign.LabelBtnPadX * 2f);
-
-            if (draw)
-            {
-                var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
-                bool hov = Draw.Hover(r);
-
-                int key = CSCommonAnim.Key(icon, label);
-                float hv = CSCommonAnim.Toward(key, hov ? 1f : 0f, 10f);
-                float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 9f);
-                float pr = PressAnim(key, r, hov);
-
-                if (Draw.Repaint)
-                {
-                    Color ac = accent ?? Pal.Primary;
-                    // UX 1.1: 켜짐 글 = OnPrimary(빨강 위 짙은 글은 4.2:1 이었음) · 호버 · 테두리는 테마 덮개 색(Haze)
-                    Color idleFg = idle ?? Color.Lerp(Pal.Light, Pal.Strong, hv);
-                    Color fg = Color.Lerp(idleFg, Pal.OnPrimary, onT);
-                    // 꺼짐: 옅은 아웃라인(호버면 짙게) · 켜짐: 강조색으로 채워짐(서서히)
-                    Draw.Round(r, Draw.Alpha(Pal.Haze, 0.07f * hv * (1f - onT)), CSCommonDesign.IconBtnRadius);
-                    if (onT > 0f) Draw.Round(r, Draw.Alpha(Color.Lerp(ac, Pal.Haze, 0.12f * hv), onT), CSCommonDesign.IconBtnRadius);
-                    Draw.RoundOutline(r, Draw.Alpha(Pal.Haze, (0.14f + 0.18f * hv) * (1f - onT)), CSCommonDesign.IconBtnRadius);
-                    PressShade(r, pr, CSCommonDesign.IconBtnRadius);
-
-                    // 아이콘 위 · 이름 아래(누르는 동안 1px 내려감)
-                    float dy = pr;
-                    Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - 9f), r.y + 8f + dy, 18f, 18f), fg, 24f, 1.8f);
-                    if (!string.IsNullOrEmpty(label))
-                        Draw.Text(new Rect(r.x + 2f, r.y + 30f + dy, r.width - 4f, 14f), label, CSCommonDesign.LabelBtnFont, fg, on, TextAnchor.MiddleCenter);
-
-                    if (badge > 0)
-                    {
-                        var dot = new Vector2(r.xMax - 8.5f, r.y + 8.5f);
-                        Draw.Dot(dot, 5.5f, Pal.Win);
-                        Draw.Dot(dot, 3.5f, on ? Pal.OnPrimary : ac);
-                    }
-                }
-
-                string head = badge > 0 ? label + " · " + badge : label;
-                Tip(r, string.IsNullOrEmpty(tipText) ? head : head + " — " + tipText);
-                if (Draw.Button(r)) pick?.Invoke();
-            }
-
-            return w;
-        }
-
-        /// <summary>왼쪽 로고 마크: F1 로고 그림 + 가는 구분선 + 두 줄 글(제목 · 부제). 그림이 없으면 글자 F1.</summary>
-        public static float LogoMark(float x, float cy, Texture logo, string headerText, string subText, bool draw)
-        {
-            float tw1 = Draw.TextWidth(headerText, CSCommonDesign.FontMin, true);
-            float tw2 = !string.IsNullOrEmpty(subText) ? Draw.TextWidth(subText, CSCommonDesign.FontMin) : 0f;
-            float tw = Compact ? 0f : Mathf.Clamp(Mathf.Max(tw1, tw2), 60f, 170f);
-            float total = Compact ? CSCommonDesign.LogoWidth : CSCommonDesign.LogoWidth + 9f + 1f + 9f + tw;
-
-            if (draw && Draw.Repaint)
-            {
-                var lr = new Rect(x, Mathf.Round(cy - CSCommonDesign.LogoHeight * 0.5f), CSCommonDesign.LogoWidth, CSCommonDesign.LogoHeight);
-                if (logo != null) Draw.Image(lr, logo, 1f, ScaleMode.ScaleToFit);
-                // 로고 없으면 비움(F1 글자는 F1 모드 전용이었음)
-
-                if (Compact) return total;
-                Draw.Fill(new Rect(x + CSCommonDesign.LogoWidth + 9f, cy - 14f, 1f, 28f), Pal.Line2);
-
-                float tx = x + CSCommonDesign.LogoWidth + 19f;
-                Draw.Text(new Rect(tx, cy - 14f, tw, 14f), headerText, CSCommonDesign.FontMin, Color.white, true, TextAnchor.MiddleLeft);
-                if (!string.IsNullOrEmpty(subText))
-                    Draw.TextFit(new Rect(tx, cy + 1f, tw, 13f), subText, CSCommonDesign.FontMin, Pal.Sub, false, TextAnchor.MiddleLeft);
-            }
-
-            return total;
-        }
-
         /// <summary>선택줄 안의 작은 동작 칩(아이콘 + 글).</summary>
         public static float SmallChip(float x, float cy, string icon, string label, string tipText, Color outline, bool draw, Action click)
         {
@@ -219,11 +123,11 @@ namespace CSCommonUX.UI
 
         // ---------------- 위 판 묶음 탭 · 아이콘 단추 · 아래 도구 독(서킷 디자인 에디터 새 틀)
 
-        /// <summary>Dockbar 를 그리는 중: LabelButton 은 알약 칸, FlyoutPanel 은 바탕 없이.</summary>
+        /// <summary>Dockbar 를 그리는 중: FlyoutPanel 은 바탕 없이(독 판이 바탕).</summary>
         public static bool InDock { get; private set; }
 
         /// <summary>
-        /// 독 도구 단추(툴바 C안 알약 칸 — 독 안 LabelButton): 안 고른 도구 = 아이콘만(폭 44), 고른 도구 = 파스텔 채움 + 아이콘 + 이름 가운데(폭 = 24 + 8 + 글폭 + 28).
+        /// 독 도구 단추(툴바 C안 알약 칸 — Dockbar 메인 줄): 안 고른 도구 = 아이콘만(폭 44), 고른 도구 = 파스텔 채움 + 아이콘 + 이름 가운데(폭 = 24 + 8 + 글폭 + 28).
         /// 고른 도구가 바뀌면 폭이 CSCommonAnim.Smooth 로 늘고 줄며 글은 열린 만큼 나타남, 누르면 0.96배. 놓은 수(badge &gt; 0)는 오른쪽 위 작은 알약 · 툴팁.
         /// accent · idle 은 예전 호출 호환용(색은 Look.Pastel* · Look.BarOff 토큰).
         /// </summary>
@@ -259,7 +163,7 @@ namespace CSCommonUX.UI
 
         /// <summary>
         /// CSCommonUX.Dockbar — 도구 독(시안 'Dockbar · SubDockBar'): 위에서 아래로 [메인 줄 + 오른쪽 FAB 줄] → 12 → [SubDockBar 옵션 막대] → 12 → [안내 알약].
-        /// 메인 줄 = 도구 알약(높이 64 · 반지름 32 · 안쪽 8 · 칸 48 · 안 고른 칸 44 · 고른 칸 24 + 8 + 글폭 + 28 — tools(x, cy, draw) 를 재고 그림, LabelButton 은 알약 칸),
+        /// 메인 줄 = 도구 알약(높이 64 · 반지름 32 · 안쪽 8 · 칸 48 · 안 고른 칸 44 · 고른 칸 24 + 8 + 글폭 + 28 — tools(x, cy, draw) 를 재고 그림, 칸은 DockTool),
         /// 오른쪽 12 에 fabs(x, cy, draw)(CSCommonUX.Fab.At · PillBar.IconGroup 을 PillBar.FabGap 간격으로 놓고 폭을 돌려줌, 없으면 null — 모드 나가기는 맨 오른쪽 FabTone.Exit). 둘을 묶어 화면 가운데.
         /// options(centerX, top) = 고른 도구 옵션(SubDockBar 로 한 줄, 그린 사각형을 돌려줌, 없으면 null): 메인 알약 뒤에서 아래로 뜯어져 나옴(위 가운데 기준 · 숨으면 위로 68 · 가로 62% · 세로 55% · 투명,
         /// 0.46초 오버슈트 · 투명 0.22초), 없어지면 마지막 크기의 빈 막대가 거꾸로 들어감, 옵션이 있는 도구끼리 바꾸면 접히지 않고 폭만 바뀜.
@@ -271,6 +175,7 @@ namespace CSCommonUX.UI
         {
             float screenW = Draw.Width, screenH = Draw.Height, gap = CSCommonUX.PillBar.SubGap;
             InDock = true;
+            Draw.BeginOverlay();
             try
             {
                 float toolsW = tools(0f, 0f, false) + CSCommonUX.PillBar.Pad * 2f;
@@ -317,6 +222,9 @@ namespace CSCommonUX.UI
                     CSCommonUX.DockHint.At(screenW * 0.5f, pill.y + hintOff, hint);
                 }
 
+                // 독 알약 + FAB 줄 · 옵션 막대(보이는 동안) 전체가 클릭 · 호버를 먹음(밑 창 몸통으로 새지 않게)
+                Draw.Block(new Rect(pill.x, pill.y, groupW, pill.height));
+                if (hasOpt) Draw.Block(opt);
                 CSCommonUX.PillBar.Plate(pill);
                 tools(pill.x + CSCommonUX.PillBar.Pad, pill.center.y, true);
                 if (fabW > 0f) fabs(pill.xMax + CSCommonUX.PillBar.FabGap, pill.center.y, true);
@@ -333,7 +241,11 @@ namespace CSCommonUX.UI
                 var bounds = new Rect(pill.x, pill.y, groupW, pill.height);
                 return hasOpt ? Rect.MinMaxRect(Mathf.Min(bounds.xMin, opt.xMin), bounds.yMin, Mathf.Max(bounds.xMax, opt.xMax), opt.yMax) : bounds;
             }
-            finally { InDock = false; }
+            finally
+            {
+                InDock = false;
+                Draw.EndOverlay();
+            }
         }
 
         /// <summary>
@@ -372,11 +284,11 @@ namespace CSCommonUX.UI
             return r;
         }
 
-        /// <summary>독 옵션 줄 이름(왼쪽 DockLabelW 칸, 줄 가운데 cy) — 돌려주는 값 = 칸 시작 x.</summary>
+        /// <summary>독 옵션 칸 줄 이름(왼쪽 DockLabelW 칸, 줄 가운데 cy — 여러 줄 칸의 이름 열): 글은 SubDockBar 이름(PillBar.SubText)과 같은 12 굵게 · Look.BarOff · 칩과 같은 32 높이 가운데. 돌려주는 값 = 칸 시작 x.</summary>
         public static float DockLabel(float x, float cy, string label)
         {
             if (Draw.Repaint && !string.IsNullOrEmpty(label))
-                Draw.Text(new Rect(x, cy - 8f, CSCommonDesign.DockLabelW - 6f, 16f), label, CSCommonDesign.FontMin, Pal.Sub, false, TextAnchor.MiddleLeft);
+                Draw.TextFit(new Rect(x, Mathf.Round(cy - CSCommon.PillBar.SubCellH * 0.5f), CSCommonDesign.DockLabelW - CSCommon.PillBar.SubTextPadX, CSCommon.PillBar.SubCellH), label, CSCommon.PillBar.SubTextFont, Look.BarOff, true, TextAnchor.MiddleLeft);
             return x + CSCommonDesign.DockLabelW;
         }
 

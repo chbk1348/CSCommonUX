@@ -136,7 +136,9 @@ namespace CSCommonUX
             Look.Scrim = new Color(5f / 255f, 6f / 255f, 8f / 255f, light ? 0.35f : 0.55f);
             Look.Foot = H(light ? "#F6F7F9" : "#171A20");
             Look.FootLine = H(light ? "#ECEDF1" : "#22262E");
-            Look.Pill = H(light ? "#F1F3F4" : "#1B1F26");
+            // 다크 알약 면 = 플레이트(Section.Plate #1B1F26)보다 한 단 밝게(Pal.Inset 단계): 같은 값이라 플레이트 위 고르기 · 글 칸 · 홈이 안 보였음(라이트는 플레이트보다 한 단 어둡게)
+            Look.Pill = H(light ? "#F1F3F4" : "#262B33");
+            Look.PillRaised = H(light ? "#E8EAED" : "#30363F");
             Look.PillNeutral = H(light ? "#E8EAED" : "#262B33");
             Look.PillNeutralInk = H(light ? "#3C4043" : "#C9CFD8");
             Look.PillHoverLine = H(light ? "#C9CDD2" : "#30363F");

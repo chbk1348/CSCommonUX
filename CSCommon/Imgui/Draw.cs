@@ -33,8 +33,11 @@ namespace CSCommonUX
             S = Mathf.Max(0.5f, Screen.height / 1080f);
             offset = Vector2.zero;
             offsets.Clear();
+            overlayDepth = 0;
             root = Vector2.zero;
             roots.Clear();
+            clipBase = Vector2.zero;
+            clipBases.Clear();
             visible = new Rect(0f, 0f, Width, Height);
             visibles.Clear();
             // 새로 누를 때마다 지난 누름은 버림(다른 데를 눌렀다 옛 버튼 위에서 떼도 눌리지 않게)
@@ -43,7 +46,9 @@ namespace CSCommonUX
             // 뗀 다음 프레임에 풂(같은 프레임의 다른 OnGUI 가 먼저 풀면 창 단추가 뗌을 못 봄)
             if (releaseFrame >= 0 && Time.frameCount != releaseFrame) { held = false; releaseFrame = -1; }
             // 열린 고르기 목록이 창보다 먼저 클릭을 받음
+            BeginOverlay(); // 열린 고르기 목록은 맨 위 판 — 툴바 칸에 막히지 않음
             Select.PreInput();
+            EndOverlay();
         }
 
         /// <summary>논리 화면 크기.</summary>
@@ -59,7 +64,56 @@ namespace CSCommonUX
         /// <summary>
         /// 마우스가 칸 안이고 지금 잘라낸 영역(Visible) 안일 때만 참. 잘라낸 밖(스크롤로 머리 · 툴바 밑으로 들어간 칸)은 눌림 · 호버를 가로채지 않음.
         /// </summary>
-        public static bool Hover(Rect r) { var m = Mouse; return r.Contains(m) && visible.Contains(m); }
+        public static bool Hover(Rect r) { var m = Mouse; return r.Contains(m) && visible.Contains(m) && !UnderOverlay(); }
+
+        // ---- 앞 판(하단 툴바 · 서브 툴바 · FAB · 독 · 독 아래 판)이 덮은 칸
+        // 창 몸통은 툴바보다 먼저 그려져(먼저 입력을 받아) 툴바 칸 · 칸 사이 · 여백을 누르면 그 밑 단추가 눌렸음.
+        // 앞 판은 Block(판 칸) 으로 이번 · 지난 프레임 자리를 남기고 BeginOverlay ~ EndOverlay 안에서 제 칸을 그림 —
+        // 판 밖(overlay 깊이 0)의 Hover · Button 은 그 칸 안 마우스를 못 받음(같은 프레임의 Layout 이 먼저 돌아 MouseDown 전에 남음).
+        static readonly List<Rect> blocks = new(), lastBlocks = new();
+        static int blockFrame = -1, overlayDepth;
+
+        /// <summary>앞 판 칸(지금 좌표)을 남김 — 판 밖 위젯이 이 칸 안 마우스를 못 받음. 모든 이벤트에서 부를 것.</summary>
+        public static void Block(Rect r)
+        {
+            RollBlocks();
+            var a = ToRoot(r);
+            if (a.width > 0f && a.height > 0f && !blocks.Contains(a)) blocks.Add(a);
+        }
+
+        /// <summary>앞 판 그리기 시작 · 끝(짝): 안쪽 위젯은 Block 칸에 막히지 않음.</summary>
+        public static void BeginOverlay() => overlayDepth++;
+
+        /// <summary>앞 판 칸을 모두 풂 — 모달 덮개(Modal.Scrim)가 창을 덮으면 모달 단추가 툴바 칸에 막히지 않게.</summary>
+        public static void ClearBlocks()
+        {
+            RollBlocks();
+            blocks.Clear();
+            lastBlocks.Clear();
+        }
+        public static void EndOverlay() { if (overlayDepth > 0) overlayDepth--; }
+
+        static void RollBlocks()
+        {
+            int f = Time.frameCount;
+            if (blockFrame == f) return;
+            lastBlocks.Clear();
+            if (blockFrame == f - 1) lastBlocks.AddRange(blocks);
+            blocks.Clear();
+            blockFrame = f;
+        }
+
+        /// <summary>마우스가 앞 판 밑인가(앞 판 안 위젯이면 늘 false). 창 몸통 휠 스크롤도 Hover 로 보면 같이 막힘.</summary>
+        public static bool UnderOverlay()
+        {
+            var e = Event.current;
+            if (overlayDepth > 0 || e == null) return false;
+            RollBlocks();
+            var m = e.mousePosition / S + root;
+            foreach (var b in blocks) if (b.Contains(m)) return true;
+            foreach (var b in lastBlocks) if (b.Contains(m)) return true;
+            return false;
+        }
 
         /// <summary>전환 애니메이션용: 이 값(0 ~ 1)을 모든 그리기 색 알파에 곱함. 쓰고 나면 되돌릴 것.</summary>
         public static float Opacity = 1f;
@@ -109,6 +163,9 @@ namespace CSCommonUX
         {
             GUI.BeginGroup(ToScreen(r));
             roots.Push(root);
+            // 맨 바깥 영역(창 몸통 — 창을 끌면 움직임)은 빼고 안쪽 영역 자리만 더함: 끄는 동안 열쇠가 바뀌어 애니 칸이 쌓이지 않게
+            if (clipBases.Count > 0) clipBase += r.position;
+            clipBases.Push(clipBase);
             root += r.position + offset;
             offsets.Push(offset);
             offset = -scroll;
@@ -123,6 +180,7 @@ namespace CSCommonUX
         {
             offset = offsets.Pop();
             if (roots.Count > 0) root = roots.Pop();
+            if (clipBases.Count > 0) clipBase = clipBases.Pop();
             if (visibles.Count > 0) visible = visibles.Pop();
             GUI.EndGroup();
         }
@@ -130,6 +188,14 @@ namespace CSCommonUX
         // 잘라 그리는 영역(BeginClip)들의 화면 기준 시작점 — 영역 안 좌표를 맨 위(영역 밖) 좌표로 바꿀 때
         static Vector2 root;
         static readonly Stack<Vector2> roots = new();
+
+        /// <summary>
+        /// 잘라 그리는 영역들의 자리 합(스크롤 · 밀림 빼고 — 스크롤해도 안 바뀜). 영역마다 안쪽 좌표가 0 부터라
+        /// 다른 영역의 같은 자리 칸(설정 패널 두 섹션의 2번째 행 등)이 같은 애니 열쇠를 나눠 쓰지 않게 Look.Key 가 더함.
+        /// </summary>
+        public static Vector2 ClipBase => clipBase;
+        static Vector2 clipBase;
+        static readonly Stack<Vector2> clipBases = new();
 
         /// <summary>지금 좌표(잘라 그리는 영역 안일 수 있음)의 칸을 맨 위 논리 좌표로(영역 밖 맨 위에 뜨는 목록 · 말풍선 자리).</summary>
         public static Rect ToRoot(Rect r) => new(r.x + offset.x + root.x, r.y + offset.y + root.y, r.width, r.height);
@@ -187,6 +253,20 @@ namespace CSCommonUX
             GUI.color = Op(c);
             style.Draw(Snap(ToScreen(r)), false, false, false, false);
             GUI.color = old;
+        }
+
+        /// <summary>
+        /// 아래 두 모서리만 둥근 채우기(창 몸통 바닥 띠 — 위는 머리 · 탭 줄에 붙음). 네모 Fill 로 창 바닥까지 칠하면 둥근 창 아래 모서리가 직각으로 보였음.
+        /// 겹쳐 칠하지 않음(열기 애니 투명도에서 띠가 진해지지 않게): 위 = 네모, 아래 radius 띠 = 2배 높이 둥근 면의 아래 절반만.
+        /// </summary>
+        public static void RoundBottom(Rect r, Color c, float radius)
+        {
+            if (!Repaint || c.a <= 0f) return;
+            radius = Mathf.Min(radius, r.height * 0.5f);
+            Fill(new Rect(r.x, r.y, r.width, r.height - radius), c);
+            BeginClip(new Rect(r.x, r.yMax - radius, r.width, radius), Vector2.zero);
+            Round(new Rect(0f, -radius, r.width, radius * 2f), c, radius);
+            EndClip();
         }
 
         /// <summary>화면 픽셀 경계로 맞춤 — 칸 끝이 소수 픽셀이면 9칸 그림이 번져 테두리가 변마다 두께 · 진하기가 달라 보였음.</summary>
@@ -716,6 +796,17 @@ namespace CSCommonUX
             Text(r, Fitting ? text : Ellipsis(text, size, bold, r.width), size, c, bold, anchor);
         }
 
+        /// <summary>고정폭 알약 글이 넘칠 때 줄이는 글 크기 한 단계(논리 px).</summary>
+        public const float PillFontStep = 1.5f;
+
+        /// <summary>고정폭 알약 글(단추 · 배지 · 고르기 칸 · 탭 칸): 넘치면 먼저 글 크기를 한 단계 줄이고, 그래도 넘칠 때만 '…'.</summary>
+        public static void TextPill(Rect r, string text, float size, Color c, bool bold = false, TextAnchor anchor = TextAnchor.MiddleCenter)
+        {
+            if (!Repaint || string.IsNullOrEmpty(text)) return;
+            if (!Fitting && TextWidth(text, size, bold) > r.width + FitSlack) size -= PillFontStep;
+            TextFit(r, text, size, c, bold, anchor);
+        }
+
         /// <summary>바탕색 위에서 읽히는 글자색: 밝은 바탕 = 어두운 글(Pal.OnLight), 어두운 바탕 = 흰 글(테마와 상관없이 바탕 밝기로).</summary>
         public static Color On(Color bg) => 0.299f * bg.r + 0.587f * bg.g + 0.114f * bg.b > 0.62f ? Pal.OnLight : Color.white;
 
@@ -738,8 +829,15 @@ namespace CSCommonUX
         // 글 폭 캐시: (글, 화소 크기, 굵기) → CalcSize 화소 폭. 글꼴을 찾으면(EnsureFaces) 비움, 배율은 화소 크기에 들어 있음
         static readonly Dictionary<TextKey, float> widthCache = new(TextKeyComparer.I);
 
+        /// <summary>
+        /// 말줄임 여유(논리 px): 칸 폭을 '글 폭 + 여백'으로 잡아도 칸 x 가 소수(비율로 나눈 카드)면 right − x 가 글 폭보다 아주 조금(1e-5) 작아져,
+        /// 1080p(배율 1 — 글 폭이 정수)에서 마지막 글자가 '…'로 잘렸음('라이더 순위 변…'). 반 화소 밑 차이는 넘쳐도 안 보임.
+        /// </summary>
+        public const float FitSlack = 0.5f;
+
         public static string Ellipsis(string text, float size, bool bold, float width)
         {
+            width += FitSlack;
             if (TextWidth(text, size, bold) <= width) return text;
             var key = new TextKey(text, Px(size), bold ? 1 : 0, Mathf.RoundToInt(width));
             if (ellipsisCache.TryGetValue(key, out string cut)) return cut;
@@ -766,6 +864,8 @@ namespace CSCommonUX
                 var style = TextStyle(px, bold, TextAnchor.MiddleLeft, false);
                 content.text = text;
                 w = style.CalcSize(content).x;
+                // 굵게 잰 폭 = 굵게 · 보통 중 넓은 쪽: 알약은 굵게 재고 안 고른 칸은 보통으로 그리는데, 한글은 대체 글꼴이라 보통이 더 넓을 수 있음('테스트 모…')
+                if (bold) w = Mathf.Max(w, TextStyle(px, false, TextAnchor.MiddleLeft, false).CalcSize(content).x);
                 if (widthCache.Count > 4000) widthCache.Clear();
                 widthCache[key] = w;
             }

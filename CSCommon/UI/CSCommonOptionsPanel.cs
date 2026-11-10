@@ -219,7 +219,7 @@ namespace CSCommonUX.UI
                 else if (it is CSCommonSection s)
                 {
                     float sh = s.Measure(w);
-                    // 보이는 칸만 그림(재기는 늘 — 접는 동안 높이가 매 프레임 바뀜)
+                    // 보이는 칸만 그림(재기는 늘)
                     if (y + sh >= scroll - 40f && y <= scroll + inner.height + 40f) s.Draw(new Rect(0f, y, w, sh));
                     y += sh + gap;
                 }
@@ -238,8 +238,8 @@ namespace CSCommonUX.UI
     }
 
     /// <summary>
-    /// 섹션 하나(CSCommonUX.Section 플레이트): 제목 = 파스텔 칩(누르면 접힘) · 설명 · 줄. 줄 = 알약 행(최소 44 · 호버 Field 면 · 헤어라인 없음),
-    /// 왼쪽 = 이름(14) · 설명(12, 흐림), 오른쪽 = 부품. 설명 · 줄이 몸통이라 같이 접힘.
+    /// 섹션 하나(CSCommonUX.Section 플레이트): 제목 = 파스텔 칩(표시용) · 설명 · 줄. 줄 = 알약 행(최소 44 · 호버 Field 면 · 헤어라인 없음),
+    /// 왼쪽 = 이름(14) · 설명(12, 흐림), 오른쪽 = 부품.
     /// </summary>
     public sealed class CSCommonSection
     {
@@ -337,7 +337,7 @@ namespace CSCommonUX.UI
 
         bool HasTitle => !string.IsNullOrEmpty(title);
 
-        /// <summary>몸통(설명 + 줄) 높이 — 접기는 이 높이를 줄임.</summary>
+        /// <summary>몸통(설명 + 줄) 높이.</summary>
         float BodyHeight(float inner)
         {
             float h = 0f;
@@ -346,41 +346,37 @@ namespace CSCommonUX.UI
             return h;
         }
 
-        float Head => HasTitle ? CSCommonUX.Section.ChipH + CSCommonUX.Section.HeadGap : 0f;
+        // 제목 칩 높이: 한 줄 32, 긴 제목은 글 한 단계 → 두 줄(Section.HeadHeight — 말줄임 없음)
+        float Head(float inner) => HasTitle ? CSCommonUX.Section.HeadHeight(title, inner) + CSCommonUX.Section.HeadGap : 0f;
 
         internal float Measure(float width)
         {
-            float inner = width - Pad * 2f, open = HasTitle ? CSCommonUX.Section.Openness(title) : 1f;
-            return Pad + Head + BodyHeight(inner) * open + CSCommonUX.Section.PadBottom;
+            float inner = width - Pad * 2f;
+            return Pad + Head(inner) + BodyHeight(inner) + CSCommonUX.Section.PadBottom;
         }
 
         internal void Draw(Rect card)
         {
             float inner = card.width - Pad * 2f, x = card.x + Pad;
             CSCommonUX.Section.Frame(card);
-            float y = card.y + Pad, open = 1f, fade = 1f;
+            float by = card.y + Pad;
             if (HasTitle)
             {
-                CSCommonUX.Section.Head(new Rect(x, y, inner, CSCommonUX.Section.ChipH), title, title);
-                open = CSCommonUX.Section.Openness(title, out fade);
-                y += Head;
+                CSCommonUX.Section.Title(new Rect(x, by, inner, CSCommonUX.Section.HeadHeight(title, inner)), title);
+                by += Head(inner);
             }
-            var body = new Rect(x, y, inner, BodyHeight(inner));
-            if (!CSCommonUX.Section.BeginBody(body, open, fade)) return;
-            float by = 0f;
             if (!string.IsNullOrEmpty(desc))
             {
                 float dh = CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f);
-                if (CSCommonUX.Draw.Repaint) CSCommonUX.Draw.Text(new Rect(RowIn, by, inner - RowIn * 2f, dh), desc, 12f, Pal.Sub, false, TextAnchor.UpperLeft, true);
+                if (CSCommonUX.Draw.Repaint) CSCommonUX.Draw.Text(new Rect(x + RowIn, by, inner - RowIn * 2f, dh), desc, 12f, Pal.Sub, false, TextAnchor.UpperLeft, true);
                 by += dh + CSCommonUX.Section.HeadGap;
             }
             foreach (var r in rows)
             {
                 float rh = RowHeight(r, inner);
-                DrawRow(r, new Rect(0f, by, inner, rh), inner);
+                DrawRow(r, new Rect(x, by, inner, rh), inner);
                 by += rh;
             }
-            CSCommonUX.Section.EndBody();
         }
 
         void DrawRow(Row r, Rect pill, float inner)

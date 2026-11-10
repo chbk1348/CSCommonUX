@@ -417,6 +417,8 @@ namespace CSCommonUX.UI
                     // 설정 패널 · 메인 창보다 항상 위에 그림
                     GUI.depth = -100;
                     Draw.Begin();
+                    // 맨 위 대화 상자: 툴바 · 독 칸(Draw.Block)에 막히지 않음(다음 Draw.Begin 이 깊이를 0 으로)
+                    Draw.BeginOverlay();
 
                     float bodyInnerW = W - Pad * 2f - ScrollBarW - 8f;
                     EnsureMeasured(bodyInnerW);

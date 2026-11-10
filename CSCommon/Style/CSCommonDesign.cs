@@ -25,7 +25,6 @@ namespace CSCommonUX
         public const float BarHeight = 68f;
         public const float BtnHeight = 32f;
         /// <summary>툴바 도구 버튼(아이콘 위 · 이름 아래) 높이 · 최소 너비 · 이름 양옆 여백 · 이름 글자 크기 · 모서리 · 버튼 사이.</summary>
-        public const float LabelBtnHeight = 52f;
         // 서킷 디자인 에디터 새 틀: 위 판(묶음 탭 · 아이콘 단추) · 아래 도구 독 · 안내 한 줄
         public const float TopBarHeight = 56f;
         public const float IconBtnSize = 38f;
@@ -47,13 +46,9 @@ namespace CSCommonUX
         public const float ActionRadius = 7f;
         public const float ActionHeightSmall = 32f;
         public const float ActionIconSmall = 15f;
-        public const float LabelBtnMinW = 48f;
-        public const float LabelBtnPadX = 6f;
-        public const float LabelBtnFont = FontMin;
         public const float IconBtnRadius = 10f;
         public const float IconBtnGap = 2f;
         public const float LogoWidth = 72f;
-        public const float LogoHeight = 18f;
         public const float BarPad = 12f;
         public const float BtnPad = 10f;
         public const float Gap = 4f;

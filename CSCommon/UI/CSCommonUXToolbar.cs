@@ -47,6 +47,9 @@ namespace CSCommonUX
             float barW = PillBar.Width(sum, count, PillBar.Gap, PillBar.Pad);
             // shortcut: 창보다 넓어도 칸을 줄이지 않음(넘침) — 탭이 아주 많은 모드가 생기면 안 고른 칸 폭부터 줄일 것
             var bar = new Rect(PillBar.Left(window.center.x, barW + (fab ? PillBar.FabGap + PillBar.FabSize : 0f)), Top(window), barW, PillBar.Height);
+            // 알약 판 + 설정 FAB 줄 전체(칸 사이 · 여백 · FAB 사이 포함)가 클릭 · 호버 · 휠을 먹음 — 먼저 그린 창 몸통 단추로 새지 않게
+            Draw.Block(new Rect(bar.x, bar.y, barW + (fab ? PillBar.FabGap + PillBar.FabSize : 0f), PillBar.Height));
+            Draw.BeginOverlay();
             PillBar.Plate(bar);
 
             int hit = -1;
@@ -64,6 +67,7 @@ namespace CSCommonUX
                 x += wBuf[i] + PillBar.Gap;
             }
             if (fab) fabHit = Fab.In(new Rect(bar.xMax + PillBar.FabGap, bar.y, PillBar.FabSize, PillBar.FabSize), fabIcon, FabTone.Plain, fabSelected, fabLabel);
+            Draw.EndOverlay();
             return hit;
         }
     }
@@ -121,6 +125,9 @@ namespace CSCommonUX
             bool live = on && t >= 1f;
 
             int hit = -1;
+            // 보이는 동안(숨는 중 포함) 서브 알약 판 전체가 입력을 먹음
+            Draw.Block(bar);
+            Draw.BeginOverlay();
             PillBar.BeginTear(bar, t, PillBar.SubGap + PillBar.Height - PillBar.Pad);
             PillBar.Plate(bar);
             float x = bar.x + PillBar.SubPad;
@@ -131,11 +138,14 @@ namespace CSCommonUX
                 int k = key ^ (i + 1) * 7919;
                 float ew = on ? (extraW?.Invoke(i) ?? 0f) : 0f;
                 PillBar.SubCell(c, s.Labels[i], sel, on && !sel && dim != null && dim(i), Look.Hover(k, c, live && !sel), Look.Press(k, c, live), ew);
-                if (ew > 0f) extra?.Invoke(i, new Rect(c.xMax - PillBar.SubCellPadX - ew, c.y, ew, c.height));
+                // 이름이 있으면 [이름 · 뱃지] 의 오른쪽 끝, 이름이 없으면(아이콘만 — 언론 탭 인스타그램) 칸 가운데
+                float ex = string.IsNullOrEmpty(s.Labels[i]) ? Mathf.Round(c.center.x - ew * 0.5f) : c.xMax - PillBar.SubCellPadX - ew;
+                if (ew > 0f) extra?.Invoke(i, new Rect(ex, c.y, ew, c.height));
                 if (live && Draw.Button(c)) hit = i;
                 x += s.W[i] + PillBar.SubCellGap;
             }
             PillBar.EndTear();
+            Draw.EndOverlay();
             return hit;
         }
     }
