@@ -14,7 +14,9 @@ namespace CSCommonUX.UI
     /// </summary>
     public static class CSCommonDialog
     {
-        const float W = CSCommonUX.Modal.Width, MaxH = 660f, Pad = CSCommonUX.Modal.PadX, HeadH = CSCommonUX.Modal.HeadH, FootH = CSCommonUX.Modal.FootH, ScrollBarW = 10f;
+        // 판 폭: 업데이트 내역은 조금 넓게(WideWidth), 일반 알림은 Width
+        static float W = CSCommonUX.Modal.Width;
+        const float MaxH = 660f, Pad = CSCommonUX.Modal.PadX, HeadH = CSCommonUX.Modal.HeadH, FootH = CSCommonUX.Modal.FootH, ScrollBarW = 10f;
 
         static UIPanel win;
         static DialogHost host;
@@ -111,7 +113,7 @@ namespace CSCommonUX.UI
                 }
             }
 
-            Open(title + " · 업데이트 내역", rawRows, dontShowAgain);
+            Open(title + " · 업데이트 내역", rawRows, dontShowAgain, CSCommonUX.Modal.WideWidth);
         }
 
         /// <summary>일반 알림: 문단들 · 점 목록.</summary>
@@ -142,7 +144,7 @@ namespace CSCommonUX.UI
                     });
                 }
             }
-            Open(title, rawRows, null);
+            Open(title, rawRows, null, CSCommonUX.Modal.Width);
         }
 
         static void ParseBullet(string line, out int depth, out bool numbered, out string text)
@@ -208,11 +210,12 @@ namespace CSCommonUX.UI
             return false;
         }
 
-        static void Open(string title, List<LayoutRow> rows, Action dontShowAgain)
+        static void Open(string title, List<LayoutRow> rows, Action dontShowAgain, float width)
         {
             try
             {
                 Close();
+                W = width;
                 var view = UIView.GetAView();
                 if (view == null) return;
                 Vector2 screen = view.GetScreenResolution();

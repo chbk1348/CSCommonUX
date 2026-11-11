@@ -1656,7 +1656,7 @@ namespace CSCommonUX
     {
         public const float HeadH = 56f, FootH = 64f;
         /// <summary>판 최대 폭 · 모서리 · 몸 좌우 · 몸 위 · 몸 아래 · 요소 사이 · 화면 가장자리 여백.</summary>
-        public const float Width = 560f, Radius = 14f, PadX = 20f, BodyTop = 4f, BodyBottom = 16f, Gap = 12f, Margin = 24f;
+        public const float Width = 560f, WideWidth = 720f, Radius = 14f, PadX = 20f, BodyTop = 4f, BodyBottom = 16f, Gap = 12f, Margin = 24f;
         /// <summary>머리: 제목 글 · 설명 글 · 제목 → 설명 · 닫기 원 지름 · 닫기 아이콘 · 닫기 오른쪽.</summary>
         public const float TitleFont = 17f, SubFont = 12.5f, TitleGap = 12f, CloseD = 32f, CloseIcon = 16f, CloseRight = 16f;
         /// <summary>알약 단추: 높이 · 사이 · 발 좌우 · 주 단추 좌우 · 보통 단추 좌우 · 글 · 아이콘 · 아이콘 → 글.</summary>

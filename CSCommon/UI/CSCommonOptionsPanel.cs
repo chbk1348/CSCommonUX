@@ -160,11 +160,18 @@ namespace CSCommonUX.UI
             if (mod != null)
             {
                 bool dev = mod.Channel != "안정";
-                x += CSCommonUX.Badge.At(x, cy, mod.VersionText + " · " + mod.Channel, dev ? Pal.Warn : Pal.DoneInk) + 8f;
-                bool ok = mod.Patched;
-                x += CSCommonUX.Badge.At(x, cy, ok ? "정상" : "Harmony 없음", ok ? Pal.Teal : Pal.Warn) + 8f;
-                CSCommonUX.Badge.At(x, cy, "CSCommonUX " + CSCommonModBase.UXVersion, Pal.Sub);
                 float bw = CSCommonUX.Button.Width(Icons.Info, "업데이트 내역", true);
+                // 뱃지는 업데이트 내역 단추 앞 12 까지만: 자리가 모자라면 뒤 뱃지부터 그리지 않음(겹침 방지)
+                float limit = h.xMax - 16f - bw - 12f;
+                bool ok = mod.Patched;
+                string[] bt = { mod.VersionText + " · " + mod.Channel, ok ? "정상" : "Harmony 없음", "CSCommonUX " + CSCommonModBase.UXVersion };
+                Color[] bc = { dev ? Pal.Warn : Pal.DoneInk, ok ? Pal.Teal : Pal.Warn, Pal.Sub };
+                for (int i = 0; i < bt.Length; i++)
+                {
+                    float w = CSCommonUX.Badge.At(x, cy, bt[i], bc[i], null, false);
+                    if (x + w > limit) break;
+                    x += CSCommonUX.Badge.At(x, cy, bt[i], bc[i]) + 8f;
+                }
                 CSCommonUX.Button.In(new Rect(h.xMax - 16f - bw, cy - CSCommonDesign.ActionHeightSmall * 0.5f, bw, CSCommonDesign.ActionHeightSmall),
                     Icons.Info, "업데이트 내역", null, Tone.Neutral, null, mod.Releases != null, CSCommonChangelog.ShowAll);
             }
@@ -206,7 +213,9 @@ namespace CSCommonUX.UI
             scroll = Mathf.Clamp(scroll, 0f, Mathf.Max(0f, contentH - inner.height));
 
             CSCommonUX.Section.Well(view);
-            CSCommonUX.Draw.BeginClip(inner, new Vector2(0f, scroll));
+            // 부드러운 스크롤: 휠은 목표(scroll)를 바꾸고 그림 · 입력은 다가가는 값(shown)으로
+            float shown = CSCommonUX.CSCommonAnim.Smooth(CSCommonUX.CSCommonAnim.Key("options.page", Name), scroll, 16f);
+            CSCommonUX.Draw.BeginClip(inner, new Vector2(0f, shown));
             float y = 0f;
             foreach (var it in items)
             {
@@ -221,7 +230,7 @@ namespace CSCommonUX.UI
                 {
                     float sh = s.Measure(w);
                     // 보이는 칸만 그림(재기는 늘)
-                    if (y + sh >= scroll - 40f && y <= scroll + inner.height + 40f) s.Draw(new Rect(0f, y, w, sh));
+                    if (y + sh >= shown - 40f && y <= shown + inner.height + 40f) s.Draw(new Rect(0f, y, w, sh));
                     y += sh + gap;
                 }
             }
@@ -338,11 +347,15 @@ namespace CSCommonUX.UI
 
         bool HasTitle => !string.IsNullOrEmpty(title);
 
+        // 부설명 알약은 말줄임 없이 다 들어갈 때만(제목 행 45% 안). 길면 제목 아래 글로 줄바꿈해 다 보임
+        bool DescInPill(float inner) => HasTitle && CSCommonUX.Section.SubFits(inner, title, desc);
+        bool DescAsText(float inner) => !string.IsNullOrEmpty(desc) && !DescInPill(inner);
+
         /// <summary>몸통(설명 + 줄) 높이.</summary>
         float BodyHeight(float inner)
         {
             float h = 0f;
-            if (!HasTitle && !string.IsNullOrEmpty(desc)) h += CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f) + CSCommonUX.Section.HeadGap;
+            if (DescAsText(inner)) h += CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f) + CSCommonUX.Section.HeadGap;
             foreach (var r in rows) h += RowHeight(r, inner);
             return h;
         }
@@ -363,10 +376,10 @@ namespace CSCommonUX.UI
             float by = card.y + Pad;
             if (HasTitle)
             {
-                CSCommonUX.Section.Title(new Rect(x, by, inner, CSCommonUX.Section.HeadHeight(title, inner)), title, desc);
+                CSCommonUX.Section.Title(new Rect(x, by, inner, CSCommonUX.Section.HeadHeight(title, inner)), title, DescInPill(inner) ? desc : null);
                 by += Head(inner);
             }
-            if (!HasTitle && !string.IsNullOrEmpty(desc))
+            if (DescAsText(inner))
             {
                 float dh = CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f);
                 if (CSCommonUX.Draw.Repaint) CSCommonUX.Draw.Text(new Rect(x + RowIn, by, inner - RowIn * 2f, dh), desc, 12f, Pal.Sub, false, TextAnchor.UpperLeft, true);

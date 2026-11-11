@@ -90,7 +90,7 @@ namespace CSCommonUX
         /// </summary>
         public static void Title(Rect r, string title, string sub = null, string icon = null)
         {
-            if (!string.IsNullOrEmpty(sub) && ChipWidth(title, icon) > r.width - SubPillWidth(r, sub) - ChipGap + Draw.FitSlack) sub = null;
+            if (!SubFits(r.width, title, sub, icon)) sub = null;
             float sw = SubPill(r, sub);
             if (!Draw.Repaint || string.IsNullOrEmpty(title)) return;
             float room = Mathf.Max(0f, r.width - sw), font = ChipFontFor(title, icon, room), h = HeadHeight(title, room, icon);
@@ -105,10 +105,17 @@ namespace CSCommonUX
             else Draw.TextFit(tr, title, font, Look.PastelInk, true);
         }
 
-        /// <summary>회색 보조 알약 폭(r 의 45% 까지).</summary>
-        static float SubPillWidth(Rect r, string sub) => Mathf.Min(r.width * 0.45f, Mathf.Ceil(Draw.TextWidth(sub, SubFont)) + SubPadX * 2f);
+        /// <summary>회색 보조 알약 폭(글 전체 — 말줄임 없음).</summary>
+        static float SubPillWidth(Rect r, string sub) => Mathf.Ceil(Draw.TextWidth(sub, SubFont)) + SubPadX * 2f;
 
-        /// <summary>회색 보조 알약(오른쪽 끝, r 의 45% 까지). 차지한 폭(+ 칸 사이)을 돌려줌, 없으면 0.</summary>
+        /// <summary>
+        /// 보조 알약이 말줄임 없이 다 들어가나: 제목 칩 + 칸 사이 + 알약 글 전체 ≤ 폭. 안 들어가면 알약을 그리지 않음
+        /// (부르는 쪽은 설명을 제목 아래 본문 글로 — 예: CSCommonOptionsPanel 섹션 설명).
+        /// </summary>
+        public static bool SubFits(float width, string title, string sub, string icon = null)
+            => !string.IsNullOrEmpty(sub) && ChipWidth(title, icon) + ChipGap + Mathf.Ceil(Draw.TextWidth(sub, SubFont)) + SubPadX * 2f <= width + Draw.FitSlack;
+
+        /// <summary>회색 보조 알약(오른쪽 끝, 글 전체 · 말줄임 없음 — 안 들어가면 Title 이 숨김). 차지한 폭(+ 칸 사이)을 돌려줌, 없으면 0.</summary>
         static float SubPill(Rect r, string sub)
         {
             if (string.IsNullOrEmpty(sub)) return 0f;
@@ -117,7 +124,7 @@ namespace CSCommonUX
             {
                 var p = new Rect(r.xMax - w, Mathf.Round(r.center.y - SubH * 0.5f), w, SubH);
                 Draw.Round(p, Look.Pill, SubH * 0.5f);
-                Draw.TextFit(new Rect(p.x + SubPadX, p.y, p.width - SubPadX * 2f, p.height), sub, SubFont, SubInk, false, TextAnchor.MiddleCenter);
+                Draw.Text(new Rect(p.x + SubPadX, p.y, p.width - SubPadX * 2f + 2f, p.height), sub, SubFont, SubInk, false, TextAnchor.MiddleCenter);
             }
             return w + ChipGap;
         }
