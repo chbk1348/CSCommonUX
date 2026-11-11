@@ -22,7 +22,7 @@ namespace CSCommonUX
         /// <summary>
         /// 하단 툴바: 안 고른 칸 = 아이콘만(폭 44), 고른 칸 = 모드 파스텔 채움 + [아이콘 24 · 8 · 이름 14 굵게] 가운데(폭 = 24 + 8 + 글폭 + 28).
         /// 고른 칸을 옮기면 칸 폭이 CSCommonAnim.Smooth 로 늘고 줄며 글은 열린 만큼 나타남. 누르면 0.96배, 안 고른 칸 호버 = 옅은 알약. cur = -1 이면 고른 칸 없음(설정 FAB 를 고름).
-        /// fabIcon 이 있으면 알약 오른쪽 12 에 지름 64 설정 FAB(fabSelected 면 파스텔 채움, fabLabel = 툴팁)를 두고 둘을 묶어 창 가운데 정렬.
+        /// fabIcon 이 있으면 알약 오른쪽 12 에 지름 64 설정 FAB(fabSelected 면 파스텔 채움, fabLabel = 툴팁)를 둠. 알약은 늘 창 가운데(FAB 는 바깥 오른쪽).
         /// extra(칸 번호, 칸, 고름) 로 칸 위에 뱃지 등을 덧그림. 눌러서 뗀 칸 번호(없으면 -1), FAB 를 눌러 떼면 fabHit.
         /// 서브 알약이 있으면 SubToolBar.Bar 를 이것보다 먼저 부를 것(서브 알약이 이 알약 뒤 층에서 뜯어져 나옴). 모든 이벤트 종류에서 불러야 함.
         /// </summary>
@@ -46,7 +46,7 @@ namespace CSCommonUX
             bool fab = !string.IsNullOrEmpty(fabIcon);
             float barW = PillBar.Width(sum, count, PillBar.DockGap, PillBar.PadX);
             // shortcut: 창보다 넓어도 칸을 줄이지 않음(넘침) — 탭이 아주 많은 모드가 생기면 안 고른 칸 폭부터 줄일 것
-            var bar = new Rect(PillBar.Left(window.center.x, barW + (fab ? PillBar.FabGap + PillBar.FabSize : 0f)), Top(window), barW, PillBar.Height);
+            var bar = new Rect(PillBar.Left(window.center.x, barW), Top(window), barW, PillBar.Height); // 알약은 늘 창 가운데(서브 알약과 같은 축) · FAB 는 그 오른쪽 12
             // 알약 판 + 설정 FAB 줄 전체(칸 사이 · 여백 · FAB 사이 포함)가 클릭 · 호버 · 휠을 먹음 — 먼저 그린 창 몸통 단추로 새지 않게
             Draw.Block(new Rect(bar.x, bar.y, barW + (fab ? PillBar.FabGap + PillBar.FabSize : 0f), PillBar.Height));
             Draw.BeginOverlay();

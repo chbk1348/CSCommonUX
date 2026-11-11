@@ -258,12 +258,15 @@ namespace CSCommonUX.UI
                 // 이미 내려감
             }
             var gone = win;
+            var fading = host;
             win = null;
             host = null;
             if (gone != null)
             {
                 gone.isInteractive = false;
-                UnityEngine.Object.Destroy(gone.gameObject);
+                // 닫힘 애니메이션(CSCommonUX.Modal.CloseSeconds) 뒤 DialogHost 가 스스로 지움
+                if (fading != null) fading.BeginClose(gone);
+                else UnityEngine.Object.Destroy(gone.gameObject);
             }
         }
 
@@ -333,6 +336,9 @@ namespace CSCommonUX.UI
             float scroll;
             float targetScroll;
             float openTime;
+            bool closing;
+            float closeTime;
+            UIPanel closingPanel;
             bool draggingBar;
             float dragGrabOffset;
 
@@ -398,8 +404,25 @@ namespace CSCommonUX.UI
                 contentH = Mathf.Max(40f, y + 6f);
             }
 
+            /// <summary>닫힘 시작: 입력은 이미 풀렸고, 0.14초 동안 가라앉으며 사라진 뒤 판을 지움.</summary>
+            public void BeginClose(UIPanel panel)
+            {
+                closing = true;
+                closeTime = Time.realtimeSinceStartup;
+                closingPanel = panel;
+            }
+
             void Update()
             {
+                if (closing)
+                {
+                    if (Time.realtimeSinceStartup - closeTime >= CSCommonUX.Modal.CloseSeconds && closingPanel != null)
+                    {
+                        UnityEngine.Object.Destroy(closingPanel.gameObject);
+                        closingPanel = null;
+                    }
+                    return;
+                }
                 // 부드러운 휠 관성 스크롤 보간 (드래그 중에는 즉시 추종)
                 if (!draggingBar && !Mathf.Approximately(scroll, targetScroll))
                 {
@@ -411,7 +434,9 @@ namespace CSCommonUX.UI
 
             void OnGUI()
             {
-                if (win == null) return;
+                if (!closing && win == null) return;
+                // 닫히는 중: 입력 없이 그리기만(단추가 눌리지 않게)
+                if (closing && Event.current.type != EventType.Repaint) return;
                 try
                 {
                     // 설정 패널 · 메인 창보다 항상 위에 그림
@@ -432,7 +457,9 @@ namespace CSCommonUX.UI
 
                     // 등장 애니메이션(CSCommonUX.Modal: 0.18초 · 시안 곡선 · 10 아래에서 떠오름)
                     float age = Time.realtimeSinceStartup - openTime;
-                    float ease = CSCommonUX.Modal.Ease(age / CSCommonUX.Modal.OpenSeconds);
+                    float ease = closing
+                        ? CSCommonUX.Modal.Ease(1f - (Time.realtimeSinceStartup - closeTime) / CSCommonUX.Modal.CloseSeconds)
+                        : CSCommonUX.Modal.Ease(age / CSCommonUX.Modal.OpenSeconds);
                     float oldOp = Draw.Opacity;
                     Draw.Opacity = oldOp * ease;
 
