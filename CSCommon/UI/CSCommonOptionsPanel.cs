@@ -341,7 +341,7 @@ namespace CSCommonUX.UI
         float BodyHeight(float inner)
         {
             float h = 0f;
-            if (!string.IsNullOrEmpty(desc)) h += CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f) + CSCommonUX.Section.HeadGap;
+            if (!HasTitle && !string.IsNullOrEmpty(desc)) h += CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f) + CSCommonUX.Section.HeadGap;
             foreach (var r in rows) h += RowHeight(r, inner);
             return h;
         }
@@ -362,10 +362,10 @@ namespace CSCommonUX.UI
             float by = card.y + Pad;
             if (HasTitle)
             {
-                CSCommonUX.Section.Title(new Rect(x, by, inner, CSCommonUX.Section.HeadHeight(title, inner)), title);
+                CSCommonUX.Section.Title(new Rect(x, by, inner, CSCommonUX.Section.HeadHeight(title, inner)), title, desc);
                 by += Head(inner);
             }
-            if (!string.IsNullOrEmpty(desc))
+            if (!HasTitle && !string.IsNullOrEmpty(desc))
             {
                 float dh = CSCommonUX.Draw.TextHeight(desc, 12f, inner - RowIn * 2f);
                 if (CSCommonUX.Draw.Repaint) CSCommonUX.Draw.Text(new Rect(x + RowIn, by, inner - RowIn * 2f, dh), desc, 12f, Pal.Sub, false, TextAnchor.UpperLeft, true);

@@ -14,9 +14,9 @@ namespace CSCommonUX
         /// <summary>우물(바탕 창 띠): 반지름 · 안쪽 여백 · 플레이트 사이.</summary>
         public const float WellRadius = 24f, WellPad = 12f, Gap = 12f;
         /// <summary>플레이트: 반지름 · 히어로 반지름 · 안쪽(좌우 · 위) · 아래 · 머리 아래 간격.</summary>
-        public const float Radius = 24f, HeroRadius = 28f, Pad = 16f, PadBottom = 12f, HeadGap = 6f;
+        public const float Radius = 24f, HeroRadius = 28f, Pad = 16f, PadBottom = 12f, HeadGap = 8f;
         /// <summary>제목 칩: 높이 · 왼쪽(아이콘 있을 때) · 오른쪽 · 칸 사이 · 아이콘 · 글 · 선 굵기 · 두 줄 칩 위아래 안쪽.</summary>
-        public const float ChipH = 32f, ChipPadL = 12f, ChipPadR = 14f, ChipGap = 8f, ChipIcon = 16f, ChipFont = 13.5f, ChipStroke = 2f, ChipWrapPadY = 7f;
+        public const float ChipH = 32f, ChipPadL = 12f, ChipPadR = 16f, ChipGap = 8f, ChipIcon = 16f, ChipFont = 13.5f, ChipStroke = 2f, ChipWrapPadY = 7f;
         /// <summary>보조 알약: 높이 · 좌우 · 글.</summary>
         public const float SubH = 28f, SubPadX = 12f, SubFont = 12.5f;
         /// <summary>알약 행: 높이 · 왼쪽(순번 원 앞) · 오른쪽 · 칸 사이 · 글 · 순번 원 · 순번 글.</summary>

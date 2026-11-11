@@ -1,4 +1,4 @@
-# CSCommon UX 1.3
+# CSCommon UX 3.0
 
 Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 
@@ -17,6 +17,13 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - 기상청 — 개인 사용 / 비공개
 - 주차장 — 개인 사용 / 비공개
 - 농장 — 개인 사용 / 비공개
+
+## UX 3.0 변경 (2026-11-11)
+
+- **성능:** `Draw.TextWidth` · `TextHeight` 캐시(`widthCache` · `heightCache`), 아이콘 · 말줄임 캐시 키를 `TextKey` 로, `Draw.Field` GUIStyle 캐시(`fieldStyles`). 모드 사본 9곳에 같이 반영.
+- **툴바:** `DockTool` 툴팁 문자열을 마우스를 올렸을 때만 조립. `Fab` · `SubChip` · `IconGroup` 애니메이션 키를 자리와 무관하게 바꿔 `slots` · `presses` 가 계속 커지지 않게 함. 네임스페이스 `CSCommon.PillBar` → `CSCommonUX.PillBar`.
+- **Section:** 제목 칩과 본문 사이 `HeadGap` 6 → 8, 칩 오른쪽 안쪽 `ChipPadR` 14 → 16. 옵션 패널의 부연 설명(`desc`)은 제목 줄 맨 오른쪽 회색 보조 알약으로 옮김(제목이 없을 때만 본문에 그림).
+- **입력:** 마우스 뗌 판정 한 프레임 늦춤(`releaseFrame`), `Hover` 가 잘린 영역(`visible`)까지 봄.
 
 ## UX 1.3 변경 (2026-11-10)
 

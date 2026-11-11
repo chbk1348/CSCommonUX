@@ -2165,7 +2165,7 @@ namespace CSCommonUX
     public static class PillBar
     {
         /// <summary>판 높이 · 안쪽 여백 · 칸 높이 · 칸 사이 · 아이콘 · 아이콘→이름 · 이름 글 · 고른 칸 좌우 · 안 고른 칸 폭 · 누름 배율.</summary>
-        public const float Height = 64f, Pad = 8f, CellH = 48f, Gap = 2f, IconSize = 24f, IconGap = 8f, Font = 14f, CellPadX = 14f, IdleW = 44f, PressScale = 0.96f;
+        public const float Height = 64f, Pad = 8f, PadX = 14f, CellH = 48f, Gap = 2f, IconSize = 24f, IconGap = 8f, Font = 14f, CellPadX = 14f, IdleW = 44f, PressScale = 0.96f;
         /// <summary>서브 알약 · 독 옵션 막대: 높이 · 안쪽 · 칸 높이 · 칸 좌우 · 칸 최소 폭 · 칸 사이 · 글 · 메인 알약과 간격(독은 옵션 막대와 안내 알약 사이도 같음).</summary>
         public const float SubH = 48f, SubPad = 8f, SubCellH = 32f, SubCellPadX = 14f, SubCellMinW = 64f, SubCellGap = 4f, SubFont = 13f, SubGap = 12f;
         /// <summary>둥근 FAB 지름 · 알약과 FAB · FAB 끼리 간격.</summary>
@@ -2341,7 +2341,7 @@ namespace CSCommonUX
             float w = SubCellW(Mathf.Ceil(Draw.TextWidth(label ?? "", SubFont, true)));
             if (!draw) return w;
             var r = new Rect(x, Mathf.Round(cy - SubCellH * 0.5f), w, SubCellH);
-            int key = Look.Key(r, "pillbar.subchip", label);
+            int key = CSCommonAnim.Key("pillbar.subchip", label); // 자리와 무관(움직이는 막대에서 presses · slots 가 쌓이지 않게)
             SubCell(r, label, on, !enabled, Look.Hover(key, r, enabled && !on), Look.Press(key, r, enabled));
             CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             if (Draw.Button(r) && enabled) click?.Invoke();
@@ -2377,7 +2377,7 @@ namespace CSCommonUX
             for (int i = 0; i < n; i++)
             {
                 var c = new Rect(bar.x + Pad + i * (CellH + Gap), bar.y + Pad, CellH, CellH);
-                int k = Look.Key(c, "pillbar.icongroup", icons[i]);
+                int k = CSCommonAnim.Key("pillbar.icongroup", icons[i]); // 자리와 무관
                 bool sel = on != null && on(i);
                 Cell(c, icons[i], null, 0f, sel ? 1f : 0f, Look.Hover(k, c, !sel), Look.Press(k, c));
                 CSCommonUX.UI.CSCommonToolbar.Tip(c, tips != null && i < tips.Length ? tips[i] : null);
@@ -2403,7 +2403,7 @@ namespace CSCommonUX
         /// <summary>칸 r 에 그리고 눌러 떼면 true. on = 고름(Plain 이면 파스텔로 채움).</summary>
         public static bool In(Rect r, string icon, FabTone tone = FabTone.Plain, bool on = false, string tip = null)
         {
-            int key = Look.Key(r, "fab", icon);
+            int key = CSCommonAnim.Key("fab", icon) ^ (int)tone * 0x01000193; // 자리와 무관 · 색 종류별로 나눔
             float hover = Look.Hover(key, r), press = Look.Press(key, r);
             if (Draw.Repaint)
             {

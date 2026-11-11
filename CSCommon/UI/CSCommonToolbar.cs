@@ -142,10 +142,17 @@ namespace CSCommonUX.UI
                 float h = CSCommonUX.PillBar.CellH;
                 var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
                 CSCommonUX.PillBar.Cell(r, icon, label, lw, CSCommonUX.PillBar.Open(w, selW), CSCommonUX.Look.Hover(key, r, !on), CSCommonUX.Look.Press(key, r));
-                string count = badge > 0 ? badge.ToString() : null;
-                if (count != null) CSCommonUX.Badge.Count(r.xMax - CSCommonUX.Badge.Count(0f, 0f, count, false), r.y + 9f, count, true, on);
-                string head = badge > 0 ? label + " · " + badge : label;
-                Tip(r, string.IsNullOrEmpty(tipText) ? head : head + " — " + tipText);
+                if (badge > 0)
+                {
+                    string count = badge.ToString();
+                    CSCommonUX.Badge.Count(r.xMax - CSCommonUX.Badge.Count(0f, 0f, count, false), r.y + 9f, count, true, on);
+                }
+                // 툴팁 문자열은 호버 중일 때만 조립(매 프레임 할당 방지) — 조건은 Tip 안과 같음
+                if (Draw.Hover(r) && !Draw.Holding)
+                {
+                    string head = badge > 0 ? label + " · " + badge : label;
+                    Tip(r, string.IsNullOrEmpty(tipText) ? head : head + " — " + tipText);
+                }
                 if (Draw.Button(r)) pick?.Invoke();
             }
             return w;
@@ -178,7 +185,7 @@ namespace CSCommonUX.UI
             Draw.BeginOverlay();
             try
             {
-                float toolsW = tools(0f, 0f, false) + CSCommonUX.PillBar.Pad * 2f;
+                float toolsW = tools(0f, 0f, false) + CSCommonUX.PillBar.PadX * 2f;
                 float fabW = fabs != null ? fabs(0f, 0f, false) : 0f;
                 float groupW = toolsW + (fabW > 0f ? CSCommonUX.PillBar.FabGap + fabW : 0f);
                 bool hasHint = !string.IsNullOrEmpty(hint);
@@ -226,7 +233,7 @@ namespace CSCommonUX.UI
                 Draw.Block(new Rect(pill.x, pill.y, groupW, pill.height));
                 if (hasOpt) Draw.Block(opt);
                 CSCommonUX.PillBar.Plate(pill);
-                tools(pill.x + CSCommonUX.PillBar.Pad, pill.center.y, true);
+                tools(pill.x + CSCommonUX.PillBar.PadX, pill.center.y, true);
                 if (fabW > 0f) fabs(pill.xMax + CSCommonUX.PillBar.FabGap, pill.center.y, true);
 
                 // 독 아래 판(DockBarPanel)이 붙을 자리: 지금 보이는 맨 아래(메인 · 옵션 막대 · 안내) + 12
@@ -288,7 +295,7 @@ namespace CSCommonUX.UI
         public static float DockLabel(float x, float cy, string label)
         {
             if (Draw.Repaint && !string.IsNullOrEmpty(label))
-                Draw.TextFit(new Rect(x, Mathf.Round(cy - CSCommon.PillBar.SubCellH * 0.5f), CSCommonDesign.DockLabelW - CSCommon.PillBar.SubTextPadX, CSCommon.PillBar.SubCellH), label, CSCommon.PillBar.SubTextFont, Look.BarOff, true, TextAnchor.MiddleLeft);
+                Draw.TextFit(new Rect(x, Mathf.Round(cy - CSCommonUX.PillBar.SubCellH * 0.5f), CSCommonDesign.DockLabelW - CSCommonUX.PillBar.SubTextPadX, CSCommonUX.PillBar.SubCellH), label, CSCommonUX.PillBar.SubTextFont, Look.BarOff, true, TextAnchor.MiddleLeft);
             return x + CSCommonDesign.DockLabelW;
         }
 

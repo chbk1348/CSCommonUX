@@ -606,6 +606,7 @@ namespace CSCommonUX
                 // 찾기 전에 만든 글 모양(기본 글꼴)은 버림
                 textStyles.Clear();
                 widthCache.Clear();
+                heightCache.Clear();
                 CSCommonLog.Info($"글꼴: 게임 UI 글꼴 씀(보통 {faceRegular.name} · 굵게 {(faceBold != null ? faceBold.name : "엔진 굵게")})");
             }
             catch (Exception e)
@@ -828,6 +829,8 @@ namespace CSCommonUX
         static readonly Dictionary<TextKey, string> ellipsisCache = new(TextKeyComparer.I);
         // 글 폭 캐시: (글, 화소 크기, 굵기) → CalcSize 화소 폭. 글꼴을 찾으면(EnsureFaces) 비움, 배율은 화소 크기에 들어 있음
         static readonly Dictionary<TextKey, float> widthCache = new(TextKeyComparer.I);
+        // 글 높이 캐시: (글, 화소 크기, 굵기, 화소 폭) → CalcHeight 화소 높이. widthCache 와 같이 비움
+        static readonly Dictionary<TextKey, float> heightCache = new(TextKeyComparer.I);
 
         /// <summary>
         /// 말줄임 여유(논리 px): 칸 폭을 '글 폭 + 여백'으로 잡아도 칸 x 가 소수(비율로 나눈 카드)면 right − x 가 글 폭보다 아주 조금(1e-5) 작아져,
@@ -875,9 +878,18 @@ namespace CSCommonUX
         public static float TextHeight(string text, float size, float width, bool bold = false)
         {
             if (string.IsNullOrEmpty(text)) return 0f;
-            var style = TextStyle(Px(size), bold, TextAnchor.UpperLeft, true);
-            content.text = text;
-            return style.CalcHeight(content, width * S) / S;
+            int px = Px(size);
+            float wpx = width * S;
+            var key = new TextKey(text, px, bold ? 1 : 0, Mathf.RoundToInt(wpx));
+            if (!heightCache.TryGetValue(key, out float h))
+            {
+                var style = TextStyle(px, bold, TextAnchor.UpperLeft, true);
+                content.text = text;
+                h = style.CalcHeight(content, wpx);
+                if (heightCache.Count > 4000) heightCache.Clear();
+                heightCache[key] = h;
+            }
+            return h / S;
         }
 
         // ---------------- 입력
