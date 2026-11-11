@@ -567,7 +567,7 @@ namespace CSCommonUX.UI
                 // 스크롤바 렌더링 (호버/드래그 시 넓어지고 밝아짐)
                 if (maxScroll > 0f && Draw.Repaint)
                 {
-                    bool barHover = draggingBar || Draw.Hover(barTrack);
+                    bool barHover = draggingBar;
                     float thumbH = Mathf.Max(32f, bodyH * bodyH / contentH);
                     float travel = Mathf.Max(1f, bodyH - thumbH);
                     float thumbY = barTrack.y + travel * (scroll / maxScroll);

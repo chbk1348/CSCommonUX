@@ -124,13 +124,9 @@ namespace CSCommonUX
 
         // ---------------- 알약 행
 
-        /// <summary>알약 행 바탕: 평소 투명 · 호버 Field 면(0.12초 선형), 반지름 = 높이 반(최대 22).</summary>
+        /// <summary>알약 행 바탕: 호버 면 없음(자리만 유지 — 호출부 호환).</summary>
         public static void Row(Rect r, bool hoverable = true)
-        {
-            int key = Look.Key(r, "section.row");
-            float hv = CSCommonAnim.Toward(key, hoverable && Draw.Hover(r) ? 1f : 0f, 1f / HoverSeconds);
-            if (Draw.Repaint && hv > 0.01f) Draw.Round(r, Draw.Alpha(Look.Field, hv), Mathf.Min(RowH * 0.5f, r.height * 0.5f));
-        }
+        { /* 호버 면 없음 — 줄은 면 없이 글 · 부품만 */         }
 
         /// <summary>행 왼쪽 순번 원(28 · Pill 면 · 12.5 BarOff 글). 다음 글이 시작할 x 를 돌려줌.</summary>
         public static float Rank(Rect row, int n)

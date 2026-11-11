@@ -32,7 +32,7 @@ namespace CSCommonUX
         public const float DockBottomGap = 16f;
         public const float HintHeight = 34f;
         // 독 옵션 칸(시안 EditorDocks): 왼쪽 이름 줄들 · 오른쪽 세로선 뒤 일괄 열
-        public const float DockPad = 14f;
+        public const float DockPad = 16f;
         public const float DockLabelW = 56f;
         public const float DockRowH = 44f;
         public const float DockRowGap = 6f;

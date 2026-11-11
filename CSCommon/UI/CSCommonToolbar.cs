@@ -134,18 +134,21 @@ namespace CSCommonUX.UI
         public static float DockTool(float x, float cy, string icon, string label, bool on, string tipText, bool draw, Action pick, Color? accent = null, int badge = -1, Color? idle = null)
         {
             float lw = Mathf.Ceil(Draw.TextWidth(label ?? "", CSCommonUX.PillBar.Font, true));
-            float selW = CSCommonUX.PillBar.CellW(lw);
+            float bw = badge > 0 ? CSCommonUX.Badge.Count(0f, 0f, badge.ToString(), false) : 0f, extra = bw > 0f ? CSCommonUX.Tabs.CountGap + bw : 0f; // 수 알약은 고른 칸 안 이름 뒤
+            float selW = CSCommonUX.PillBar.CellW(lw + extra);
             int key = CSCommonAnim.Key(icon, label) ^ 0x6d2b79f5;
             float w = CSCommonAnim.Smooth(key ^ 0x1b873593, on ? selW : CSCommonUX.PillBar.IdleW, 18f);
             if (draw)
             {
                 float h = CSCommonUX.PillBar.CellH;
                 var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
-                CSCommonUX.PillBar.Cell(r, icon, label, lw, CSCommonUX.PillBar.Open(w, selW), CSCommonUX.Look.Hover(key, r, !on), CSCommonUX.Look.Press(key, r));
-                if (badge > 0)
+                float open = CSCommonUX.PillBar.Open(w, selW);
+                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, CSCommonUX.Look.Hover(key, r, !on), CSCommonUX.Look.Press(key, r));
+                if (bw > 0f && open > 0.98f)
                 {
                     string count = badge.ToString();
-                    CSCommonUX.Badge.Count(r.xMax - CSCommonUX.Badge.Count(0f, 0f, count, false), r.y + 9f, count, true, on);
+                    float chunkX = r.center.x - (CSCommonUX.PillBar.IconSize + CSCommonUX.PillBar.IconGap + lw + extra) * 0.5f;
+                    CSCommonUX.Badge.Count(Mathf.Round(chunkX + CSCommonUX.PillBar.IconSize + CSCommonUX.PillBar.IconGap + lw + CSCommonUX.Tabs.CountGap), r.center.y, count, true, true, CSCommonUX.Tabs.CountH, CSCommonUX.Look.PastelInk);
                 }
                 // 툴팁 문자열은 호버 중일 때만 조립(매 프레임 할당 방지) — 조건은 Tip 안과 같음
                 if (Draw.Hover(r) && !Draw.Holding)
@@ -210,7 +213,8 @@ namespace CSCommonUX.UI
                 if (t > 0f || options != null)
                 {
                     CSCommonUX.PillBar.BeginTear(opt, t, -(gap + CSCommonUX.PillBar.Height - CSCommonUX.PillBar.Pad));
-                    CSCommonUX.PillBar.Plate(opt, Mathf.Min(CSCommonUX.PillBar.SubH, opt.height) * 0.5f);
+                    // 바탕은 SubDockBar(알약) · DockOptions(설정 판)가 제 모양으로 그림 — 숨는 동안의 빈 막대만 여기서
+                    if (options == null) CSCommonUX.PillBar.Plate(opt, Mathf.Min(CSCommonUX.PillBar.SubH, opt.height) * 0.5f);
                     if (options != null)
                     {
                         var o = options(screenW * 0.5f, opt.y);
@@ -257,12 +261,13 @@ namespace CSCommonUX.UI
 
         /// <summary>
         /// CSCommonUX.SubDockBar — 독 옵션 막대 한 줄(높이 48 · 반지름 24 · 안쪽 8 · 칩 32 · 칩 사이 4): items(x, cy, draw) 를 재고(draw = false) 막대 가운데에 그림 —
-        /// CSCommonUX.PillBar.SubChip · DockLabel · Sep 등. Dockbar 의 options 콜백에서 return CSCommonToolbar.SubDockBar(centerX, top, items). 막대 바탕 · 뜯어짐은 Dockbar 가 그림.
+        /// CSCommonUX.PillBar.SubChip · DockLabel · Sep 등. Dockbar 의 options 콜백에서 return CSCommonToolbar.SubDockBar(centerX, top, items). 막대 바탕은 여기서, 뜯어짐은 Dockbar 가 그림.
         /// </summary>
         public static Rect SubDockBar(float centerX, float top, Func<float, float, bool, float> items)
         {
             float pad = CSCommonUX.PillBar.SubPad, w = items(0f, 0f, false) + pad * 2f;
             var r = new Rect(CSCommonUX.PillBar.Left(centerX, w), top, w, CSCommonUX.PillBar.SubH);
+            CSCommonUX.PillBar.Plate(r);
             items(r.x + pad, r.center.y, true);
             return r;
         }
@@ -280,6 +285,12 @@ namespace CSCommonUX.UI
             float w = pad * 2f + leftW + (hasSide ? gap * 2f + 1f + CSCommonDesign.DockSideW : 0f);
             float h = pad * 2f + Mathf.Max(leftH, hasSide ? sideH : 0f);
             var r = new Rect(Mathf.Round(centerX - w * 0.5f), top, w, h);
+            // 독 안 = 설정 판(DockBar_Panel 모양: 반지름 28 · Pal.Win · 1px 선) — 서브 알약과 따로 떠 있음
+            if (InDock && Draw.Repaint)
+            {
+                Draw.Round(r, Pal.Win, CSCommonUX.DockBarPanel.Radius);
+                Draw.RoundOutline(r, CSCommonUX.Look.BarLine, CSCommonUX.DockBarPanel.Radius);
+            }
             var l = new Rect(r.x + pad, r.y + pad, leftW, h - pad * 2f);
             left?.Invoke(l);
             if (hasSide)

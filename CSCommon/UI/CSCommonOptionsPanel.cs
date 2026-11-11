@@ -162,7 +162,8 @@ namespace CSCommonUX.UI
                 bool dev = mod.Channel != "안정";
                 x += CSCommonUX.Badge.At(x, cy, mod.VersionText + " · " + mod.Channel, dev ? Pal.Warn : Pal.DoneInk) + 8f;
                 bool ok = mod.Patched;
-                CSCommonUX.Badge.At(x, cy, ok ? "정상" : "Harmony 없음", ok ? Pal.Teal : Pal.Warn);
+                x += CSCommonUX.Badge.At(x, cy, ok ? "정상" : "Harmony 없음", ok ? Pal.Teal : Pal.Warn) + 8f;
+                CSCommonUX.Badge.At(x, cy, "CSCommonUX " + CSCommonModBase.UXVersion, Pal.Sub);
                 float bw = CSCommonUX.Button.Width(Icons.Info, "업데이트 내역", true);
                 CSCommonUX.Button.In(new Rect(h.xMax - 16f - bw, cy - CSCommonDesign.ActionHeightSmall * 0.5f, bw, CSCommonDesign.ActionHeightSmall),
                     Icons.Info, "업데이트 내역", null, Tone.Neutral, null, mod.Releases != null, CSCommonChangelog.ShowAll);
@@ -238,12 +239,12 @@ namespace CSCommonUX.UI
     }
 
     /// <summary>
-    /// 섹션 하나(CSCommonUX.Section 플레이트): 제목 = 파스텔 칩(표시용) · 설명 · 줄. 줄 = 알약 행(최소 44 · 호버 Field 면 · 헤어라인 없음),
+    /// 섹션 하나(CSCommonUX.Section 플레이트): 제목 = 파스텔 칩(표시용) · 설명 · 줄. 줄 = 알약 행(최소 44 · 호버 없음 · 헤어라인 없음),
     /// 왼쪽 = 이름(14) · 설명(12, 흐림), 오른쪽 = 부품.
     /// </summary>
     public sealed class CSCommonSection
     {
-        const float Pad = CSCommonUX.Section.Pad, RowPad = CSCommonDesign.CardRowPad, RowIn = CSCommonUX.Section.RowPadR;
+        const float Pad = CSCommonUX.Section.Pad, RowPad = CSCommonDesign.CardRowPad, RowIn = 0f; // 글 · 부품이 제목 칩 왼쪽 끝 선에 맞음(안쪽 여백 없음)
 
         enum Kind { Toggle, Steps, Slider, Button, Info, Note }
 
@@ -381,8 +382,6 @@ namespace CSCommonUX.UI
 
         void DrawRow(Row r, Rect pill, float inner)
         {
-            // 알약 행(호버 면) — 글 · 부품은 좌우 RowIn 안쪽
-            CSCommonUX.Section.Row(pill, r.Kind != Kind.Note && r.Kind != Kind.Info);
             var row = new Rect(pill.x + RowIn, pill.y, pill.width - RowIn * 2f, pill.height);
             float top = row.y + RowPad, body = row.height - RowPad * 2f, cy = top + body * 0.5f;
             float lw = TextWidth(r, inner);

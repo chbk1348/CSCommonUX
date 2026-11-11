@@ -33,6 +33,9 @@ namespace CSCommonUX
         /// <summary>판 꼬리표(설정 패널 판 배지): 예 "개발 중" · "안정".</summary>
         public virtual string Channel => "개발 중";
 
+        /// <summary>공유 UI(CSCommonUX) 판: 설정 패널 판 줄과 로그에 보임.</summary>
+        public const string UXVersion = "3.0";
+
         public string VersionText
         {
             get
@@ -105,7 +108,7 @@ namespace CSCommonUX
                     CSCommonLog.Exception(e, "Harmony 패치");
                 }
             });
-            CSCommonLog.Info($"{VersionText} 켜짐");
+            CSCommonLog.Info($"{VersionText} 켜짐 · CSCommonUX {UXVersion}");
         }
 
         /// <summary>정리 단계마다 따로 감쌈(점검 API 57): 하나가 던져도 나머지(특히 패치 떼기)는 함.</summary>

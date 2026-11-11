@@ -134,7 +134,7 @@ namespace CSCommonUX.UI
             bool primary = kind == CSCommonButtonKind.Primary;
             // UX 1.1: 주 단추는 주 색으로 꽉 채움 + OnPrimary 글
             b.color = primary ? Pal.Primary : Look.Tone0;
-            b.hoveredColor = primary ? Color.Lerp(Pal.Primary, Pal.Haze, 0.10f) : Look.Tone1;
+            b.hoveredColor = primary ? Pal.Primary : Look.Tone0; // 호버 효과 없음
             b.pressedColor = primary ? Color.Lerp(Pal.Primary, Pal.Haze, 0.18f) : Look.Tone2;
             b.focusedColor = b.color;
             b.disabledColor = Over(Look.Off);

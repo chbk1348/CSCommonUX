@@ -44,7 +44,7 @@ namespace CSCommonUX
                 sum += wBuf[i];
             }
             bool fab = !string.IsNullOrEmpty(fabIcon);
-            float barW = PillBar.Width(sum, count, PillBar.Gap, PillBar.PadX);
+            float barW = PillBar.Width(sum, count, PillBar.DockGap, PillBar.PadX);
             // shortcut: 창보다 넓어도 칸을 줄이지 않음(넘침) — 탭이 아주 많은 모드가 생기면 안 고른 칸 폭부터 줄일 것
             var bar = new Rect(PillBar.Left(window.center.x, barW + (fab ? PillBar.FabGap + PillBar.FabSize : 0f)), Top(window), barW, PillBar.Height);
             // 알약 판 + 설정 FAB 줄 전체(칸 사이 · 여백 · FAB 사이 포함)가 클릭 · 호버 · 휠을 먹음 — 먼저 그린 창 몸통 단추로 새지 않게
@@ -64,7 +64,7 @@ namespace CSCommonUX
                 extra?.Invoke(i, c, sel);
                 if (!sel) CSCommonUX.UI.CSCommonToolbar.Tip(c, name);
                 if (Draw.Button(c)) hit = i;
-                x += wBuf[i] + PillBar.Gap;
+                x += wBuf[i] + PillBar.DockGap;
             }
             if (fab) fabHit = Fab.In(new Rect(bar.xMax + PillBar.FabGap, bar.y, PillBar.FabSize, PillBar.FabSize), fabIcon, FabTone.Plain, fabSelected, fabLabel);
             Draw.EndOverlay();

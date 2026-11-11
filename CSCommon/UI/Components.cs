@@ -68,7 +68,7 @@ namespace CSCommonUX
         public static Color WarnFill = Draw.Hex("#FFD9A8"), WarnInk = Draw.Hex("#5A3000");
 
         /// <summary>호버 0 ~ 1(서서히).</summary>
-        public static float Hover(int key, Rect r, bool enabled = true) => CSCommonAnim.Toward(key, enabled && Draw.Hover(r) ? 1f : 0f, 12f);
+        public static float Hover(int key, Rect r, bool enabled = true) => 0f; // 호버 효과 없음(호출부 호환)
 
         /// <summary>눌림: 누르는 데 걸리는 초 · 떼고 돌아오는 초 · 돌아오는 곡선 cubic-bezier(.2, .9, .3, 1.3)(시안 '.press' — 살짝 넘쳤다 앉음).</summary>
         public const float PressInSeconds = 0.03f, PressOutSeconds = 0.26f, PressX1 = 0.2f, PressY1 = 0.9f, PressX2 = 0.3f, PressY2 = 1.3f;
@@ -638,7 +638,7 @@ namespace CSCommonUX
             bool focus = GUI.GetNameOfFocusedControl() == name;
             bool has = value.Length > 0;
             int key = CSCommonAnim.Key("textfield", name);
-            float hv = CSCommonAnim.Toward(key, enabled && !error && Draw.Hover(r) ? 1f : 0f, 1f / FadeSeconds);
+            float hv = 0f; // 호버 효과 없음
             float fo = CSCommonAnim.Toward(key ^ 0x3b9ac9ff, enabled && focus ? 1f : 0f, 1f / FadeSeconds);
             float rad = r.height * 0.5f;
             if (Draw.Repaint)
@@ -1132,7 +1132,7 @@ namespace CSCommonUX
                 }
             }
             bool drag = sliding && slideKey == key;
-            float grow = CSCommonAnim.Toward(key ^ 0x2545f491, hover || drag ? 1f : 0f, 1f / GrowSeconds);
+            float grow = CSCommonAnim.Toward(key ^ 0x2545f491, drag ? 1f : 0f, 1f / GrowSeconds);
             if (!Draw.Repaint) return value;
 
             float old = Draw.Opacity;
@@ -1920,7 +1920,7 @@ namespace CSCommonUX
         public static bool SheetRow(Rect r, string icon, string text, string sub = null, Color? dot = null, bool enabled = true)
         {
             int key = CSCommonAnim.Key("sheet.row", text) ^ Mathf.RoundToInt(r.y) * 31;
-            float hv = CSCommonAnim.Toward(key, enabled && Draw.Hover(r) ? 1f : 0f, 1f / HoverSeconds);
+            float hv = 0f; // 호버 효과 없음
             if (Draw.Repaint)
             {
                 if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Look.Pill, hv), SheetRowRadius);
@@ -2165,11 +2165,13 @@ namespace CSCommonUX
     public static class PillBar
     {
         /// <summary>판 높이 · 안쪽 여백 · 칸 높이 · 칸 사이 · 아이콘 · 아이콘→이름 · 이름 글 · 고른 칸 좌우 · 안 고른 칸 폭 · 누름 배율.</summary>
-        public const float Height = 64f, Pad = 8f, PadX = 14f, CellH = 48f, Gap = 2f, IconSize = 24f, IconGap = 8f, Font = 14f, CellPadX = 14f, IdleW = 44f, PressScale = 0.96f;
+        public const float Height = 64f, Pad = 8f, PadX = 12f, CellH = 48f, Gap = 2f, IconSize = 24f, IconGap = 8f, Font = 14f, CellPadX = 14f, IdleW = 44f, PressScale = 0.96f;
         /// <summary>서브 알약 · 독 옵션 막대: 높이 · 안쪽 · 칸 높이 · 칸 좌우 · 칸 최소 폭 · 칸 사이 · 글 · 메인 알약과 간격(독은 옵션 막대와 안내 알약 사이도 같음).</summary>
         public const float SubH = 48f, SubPad = 8f, SubCellH = 32f, SubCellPadX = 14f, SubCellMinW = 64f, SubCellGap = 4f, SubFont = 13f, SubGap = 12f;
         /// <summary>둥근 FAB 지름 · 알약과 FAB · FAB 끼리 간격.</summary>
         public const float FabSize = 64f, FabGap = 12f;
+        /// <summary>독 도구 칸 사이(Dockbar 도구 줄 · IconGroup) — 아이콘 사이를 넓게.</summary>
+        public const float DockGap = 12f;
         /// <summary>서브 막대 이름 글 · 구분선: 글 크기 · 좌우 여백 · 구분선 높이.</summary>
         public const float SubTextFont = 12f, SubTextPadX = 6f, SubSepH = 18f;
         /// <summary>뜯어져 나오기: 걸리는 초 · 투명도 0→1 초 · 숨은 가로 · 세로 배율.</summary>
@@ -2370,13 +2372,13 @@ namespace CSCommonUX
         public static float IconGroup(float x, float cy, string[] icons, string[] tips, Func<int, bool> on, bool draw, Action<int> pick)
         {
             int n = icons.Length;
-            float w = Width(CellH * n, n, Gap, Pad);
+            float w = Width(CellH * n, n, DockGap, PadX);
             if (!draw) return w;
             var bar = new Rect(x, Mathf.Round(cy - Height * 0.5f), w, Height);
             Plate(bar);
             for (int i = 0; i < n; i++)
             {
-                var c = new Rect(bar.x + Pad + i * (CellH + Gap), bar.y + Pad, CellH, CellH);
+                var c = new Rect(bar.x + PadX + i * (CellH + DockGap), bar.y + Pad, CellH, CellH);
                 int k = CSCommonAnim.Key("pillbar.icongroup", icons[i]); // 자리와 무관
                 bool sel = on != null && on(i);
                 Cell(c, icons[i], null, 0f, sel ? 1f : 0f, Look.Hover(k, c, !sel), Look.Press(k, c));
