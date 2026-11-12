@@ -17,6 +17,24 @@ namespace CSCommonUX
 
         static readonly Dictionary<int, Slot> slots = new();
 
+        /// <summary>정리 주기 · 안 쓴 지 몇 초면 지울지(실제 시간 초). 화면 자리 열쇠(창을 끌면 바뀜)가 끝없이 쌓이지 않게.</summary>
+        public const float PruneEvery = 60f, PruneUnused = 300f;
+        static float nextPrune;
+        static readonly List<int> stale = new();
+
+        /// <summary>PruneEvery 마다 PruneUnused 넘게 안 쓴 열쇠(slots · appear)를 지움. 지울 열쇠 목록은 재사용(할당 없음).</summary>
+        static void Prune(float now)
+        {
+            if (now < nextPrune) return;
+            nextPrune = now + PruneEvery;
+            foreach (var kv in slots) if (now - kv.Value.At > PruneUnused) stale.Add(kv.Key);
+            foreach (int k in stale) slots.Remove(k);
+            stale.Clear();
+            foreach (var kv in appear) if (now - kv.Value.Seen > PruneUnused) stale.Add(kv.Key);
+            foreach (int k in stale) appear.Remove(k);
+            stale.Clear();
+        }
+
         /// <summary>목표(0 또는 1 등)로 다가가는 값. speed = 초당 다가가는 비율(12 ≈ 0.15초에 거의 다 옴). 처음 보는 열쇠는 목표에서 시작.</summary>
         public static float Toward(int key, float target, float speed = 12f) => Toward(key, target, speed, target);
 
@@ -24,6 +42,7 @@ namespace CSCommonUX
         public static float Toward(int key, float target, float speed, float start)
         {
             float now = Time.unscaledTime;
+            Prune(now);
             if (!slots.TryGetValue(key, out var s))
             {
                 s = new Slot { Value = start, At = now };
@@ -47,6 +66,7 @@ namespace CSCommonUX
         public static float Smooth(int key, float target, float rate = 18f)
         {
             float now = Time.unscaledTime;
+            Prune(now);
             if (!slots.TryGetValue(key, out var s))
             {
                 slots[key] = new Slot { Value = target, At = now };

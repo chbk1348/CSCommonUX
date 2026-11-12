@@ -37,7 +37,23 @@ namespace CSCommonUX.UI
         static UIFont boldFont;
 
         /// <summary>게임 굵은 UI 글꼴(OpenSans-Bold, 없으면 Semibold · 그마저도 없으면 기본 글꼴) — 글꼴 모드가 바꾼 글꼴도 따라감.</summary>
-        public static UIFont BoldFont => boldFont != null ? boldFont : boldFont = FindGameBoldFont();
+        public static UIFont BoldFont
+        {
+            get
+            {
+                if (boldFont != null) return boldFont;
+                // 못 찾은 뒤엔 게임 UI(UIView)가 바뀔 때(도시 · 메뉴 불러오기)까지 다시 찾지 않음 — 찾기는 모든 UIFont 를 훑음
+                var view = UIView.GetAView();
+                if (boldMissed && boldMissView == view) return null;
+                boldFont = FindGameBoldFont();
+                boldMissed = boldFont == null;
+                boldMissView = view;
+                return boldFont;
+            }
+        }
+
+        static bool boldMissed;
+        static UIView boldMissView;
 
         static UIFont FindGameBoldFont()
         {

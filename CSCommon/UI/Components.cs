@@ -80,6 +80,18 @@ namespace CSCommonUX
         }
 
         static readonly Dictionary<int, PressRun> presses = new();
+        static float nextPressPrune;
+        static readonly List<int> stalePresses = new();
+
+        /// <summary>CSCommonAnim 과 같은 주기로 오래 안 쓴 눌림 열쇠를 지움(화면 자리 열쇠가 쌓이지 않게, 할당 없음).</summary>
+        static void PrunePresses(float now)
+        {
+            if (now < nextPressPrune) return;
+            nextPressPrune = now + CSCommonAnim.PruneEvery;
+            foreach (var kv in presses) if (now - kv.Value.Last > CSCommonAnim.PruneUnused) stalePresses.Add(kv.Key);
+            foreach (int k in stalePresses) presses.Remove(k);
+            stalePresses.Clear();
+        }
 
         /// <summary>
         /// 누름 정도: 누르는 동안 0.03초에 0 → 1, 떼면 0.26초 동안 시안 곡선으로 0 쪽으로 돌아가며 잠깐 0 아래(음수)로 넘침.
@@ -90,6 +102,7 @@ namespace CSCommonUX
             key ^= 0x27d4eb2f;
             bool down = enabled && Draw.Hover(r) && Draw.Pressed(r);
             float now = Time.unscaledTime;
+            PrunePresses(now);
             if (!presses.TryGetValue(key, out var s)) s = new PressRun { Rel = -100f, Last = now };
             if (Event.current == null || Event.current.type == EventType.Repaint)
             {
@@ -119,12 +132,13 @@ namespace CSCommonUX
 
         /// <summary>
         /// 떠 있는 판 그림자 + 바탕 + 1px 선. 그림자는 1px 씩 넓어지며 옅어지는 여러 겹(흐림 흉내) — 예전 두 겹 큰 상자는
-        /// 가장자리가 띠처럼 겹겹이 보였음.
+        /// 가장자리가 띠처럼 겹겹이 보였음. 겹은 미리 구운 한 장(Draw.Shadow)으로, 모서리에 비해 작은 판만 겹마다 그림.
         /// </summary>
         public static void Elevated(Rect r, float radius, Color fill, float shadow = 1f)
         {
             if (!Draw.Repaint) return;
             const int layers = 8;
+            if (!Draw.Shadow(r, radius, ShadowAlpha * shadow))
             for (int i = layers; i >= 1; i--)
             {
                 float k = 1f - (i - 1f) / layers;
@@ -699,8 +713,24 @@ namespace CSCommonUX
             GUI.SetNextControlName(name);
             string v = Draw.Field(fr, value, font, maxLength);
             GUI.skin.settings.cursorColor = cursor;
+            // 한글 IME: CS1 은 조합을 꺼 둬서 초점 칸에서만 켜고(조합 창은 글 칸 아래), 초점을 잃으면 되돌림
+            if (focus)
+            {
+                imeOwner = name;
+                Input.imeCompositionMode = IMECompositionMode.On;
+                var sr = Draw.ToScreen(fr);
+                Input.compositionCursorPos = new Vector2(sr.x + FieldInset, sr.yMax);
+            }
+            else if (imeOwner == name)
+            {
+                imeOwner = null;
+                Input.imeCompositionMode = IMECompositionMode.Auto;
+            }
             return v;
         }
+
+        // shortcut: 초점인 채로 칸이 사라지면(창 닫기) 다음 글 칸이 그려질 때까지 조합이 켜져 있음 — 문제되면 창 닫을 때 Release 호출로.
+        static string imeOwner;
 
         /// <summary>이름(위, 12 보조색) · 칸(40) · 도움말(아래 12 · 높이 18 고정, 잘못이면 빨강).</summary>
         public static string Labeled(Rect r, string label, string value, int maxLength, string help = null, string placeholder = null, bool error = false, bool enabled = true, string name = null)

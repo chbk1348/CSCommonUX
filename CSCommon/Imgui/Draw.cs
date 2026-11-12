@@ -40,6 +40,8 @@ namespace CSCommonUX
             clipBases.Clear();
             visible = new Rect(0f, 0f, Width, Height);
             visibles.Clear();
+            view = visible;
+            views.Clear();
             // 새로 누를 때마다 지난 누름은 버림(다른 데를 눌렀다 옛 버튼 위에서 떼도 눌리지 않게)
             var e = Event.current;
             if (e != null && e.type == EventType.MouseDown) held = false;
@@ -72,13 +74,17 @@ namespace CSCommonUX
         // 판 밖(overlay 깊이 0)의 Hover · Button 은 그 칸 안 마우스를 못 받음(같은 프레임의 Layout 이 먼저 돌아 MouseDown 전에 남음).
         static readonly List<Rect> blocks = new(), lastBlocks = new();
         static int blockFrame = -1, overlayDepth;
+        // 판 칸이 바뀔 때마다(새 프레임 · 칸 더함 · 비움) 올림 — UnderOverlay 가 같은 판 칸 · 같은 마우스면 지난 결과를 씀
+        static int blockVer, underVer = -1;
+        static Vector2 underAt;
+        static bool under;
 
         /// <summary>앞 판 칸(지금 좌표)을 남김 — 판 밖 위젯이 이 칸 안 마우스를 못 받음. 모든 이벤트에서 부를 것.</summary>
         public static void Block(Rect r)
         {
             RollBlocks();
             var a = ToRoot(r);
-            if (a.width > 0f && a.height > 0f && !blocks.Contains(a)) blocks.Add(a);
+            if (a.width > 0f && a.height > 0f && !blocks.Contains(a)) { blocks.Add(a); blockVer++; }
         }
 
         /// <summary>앞 판 그리기 시작 · 끝(짝): 안쪽 위젯은 Block 칸에 막히지 않음.</summary>
@@ -90,6 +96,7 @@ namespace CSCommonUX
             RollBlocks();
             blocks.Clear();
             lastBlocks.Clear();
+            blockVer++;
         }
         public static void EndOverlay() { if (overlayDepth > 0) overlayDepth--; }
 
@@ -101,6 +108,7 @@ namespace CSCommonUX
             if (blockFrame == f - 1) lastBlocks.AddRange(blocks);
             blocks.Clear();
             blockFrame = f;
+            blockVer++;
         }
 
         /// <summary>마우스가 앞 판 밑인가(앞 판 안 위젯이면 늘 false). 창 몸통 휠 스크롤도 Hover 로 보면 같이 막힘.</summary>
@@ -110,8 +118,12 @@ namespace CSCommonUX
             if (overlayDepth > 0 || e == null) return false;
             RollBlocks();
             var m = e.mousePosition / S + root;
-            foreach (var b in blocks) if (b.Contains(m)) return true;
-            foreach (var b in lastBlocks) if (b.Contains(m)) return true;
+            if (underVer == blockVer && underAt == m) return under;
+            underVer = blockVer;
+            underAt = m;
+            under = false;
+            foreach (var b in blocks) if (b.Contains(m)) return under = true;
+            foreach (var b in lastBlocks) if (b.Contains(m)) return under = true;
             return false;
         }
 
@@ -162,6 +174,11 @@ namespace CSCommonUX
         public static void BeginClip(Rect r, Vector2 scroll)
         {
             GUI.BeginGroup(ToScreen(r));
+            // 그리기 거름 칸(그룹 안 좌표, Shift 반영) = 바깥 거름 칸 ∩ 그룹 칸
+            views.Push(view);
+            float gx = r.x + offset.x, gy = r.y + offset.y;
+            float vx0 = Mathf.Max(view.x, gx), vy0 = Mathf.Max(view.y, gy);
+            view = new Rect(vx0 - gx, vy0 - gy, Mathf.Max(0f, Mathf.Min(view.xMax, gx + r.width) - vx0), Mathf.Max(0f, Mathf.Min(view.yMax, gy + r.height) - vy0));
             roots.Push(root);
             // 맨 바깥 영역(창 몸통 — 창을 끌면 움직임)은 빼고 안쪽 영역 자리만 더함: 끄는 동안 열쇠가 바뀌어 애니 칸이 쌓이지 않게
             if (clipBases.Count > 0) clipBase += r.position;
@@ -182,8 +199,31 @@ namespace CSCommonUX
             if (roots.Count > 0) root = roots.Pop();
             if (clipBases.Count > 0) clipBase = clipBases.Pop();
             if (visibles.Count > 0) visible = visibles.Pop();
+            if (views.Count > 0) view = views.Pop();
             GUI.EndGroup();
         }
+
+        // 그리기 거름 칸: 지금 그룹 안 좌표(r + offset)로 본 보이는 곳. Begin 전에도 다 그리게 처음엔 아주 넓게
+        static Rect view = new(-1e6f, -1e6f, 2e6f, 2e6f);
+        static readonly Stack<Rect> views = new();
+
+        /// <summary>글 거름에서 가로는 보지 않음(넘쳐 그리는 글).</summary>
+        const float NoX = 1e6f;
+
+        /// <summary>
+        /// 화면 밖 칸이면 true(그리지 않음). pad = 칸 밖으로 번지는 만큼(논리). GUI.matrix 가 걸려 있으면(확대 · 회전 · 기울임) 거르지 않음.
+        /// 입력(Hover · Button)은 거르지 않음.
+        /// </summary>
+        static bool Off(Rect r, float padX, float padY)
+        {
+            float x = r.x + offset.x, y = r.y + offset.y;
+            if (x + r.width + padX > view.x && x - padX < view.xMax && y + r.height + padY > view.y && y - padY < view.yMax) return false;
+            var m = GUI.matrix;
+            return m.m00 == 1f && m.m11 == 1f && m.m01 == 0f && m.m10 == 0f && m.m03 == 0f && m.m13 == 0f;
+        }
+
+        /// <summary>글 거름: 잘라 그리는 글은 칸 안, 넘쳐 그리는 글(MinText 모드 · 맞춤 실패)은 세로만 글 크기 2배 여유.</summary>
+        static bool TextOff(Rect r, float size, bool overflow) => Off(r, overflow ? NoX : 1f, overflow ? Mathf.Max(size, MinText) * 2f : 1f);
 
         // 잘라 그리는 영역(BeginClip)들의 화면 기준 시작점 — 영역 안 좌표를 맨 위(영역 밖) 좌표로 바꿀 때
         static Vector2 root;
@@ -213,7 +253,7 @@ namespace CSCommonUX
 
         public static void Fill(Rect r, Color c)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(r, 1f, 1f)) return;
             Color old = GUI.color;
             GUI.color = Op(c);
             GUI.DrawTexture(ToScreen(r), Texture2D.whiteTexture);
@@ -242,7 +282,7 @@ namespace CSCommonUX
         /// <summary>둥근 모서리 채우기. radius는 논리 단위.</summary>
         public static void Round(Rect r, Color c, float radius)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(r, 1f, 1f)) return;
             int px = SlicePx(r, radius);
             if (!roundStyles.TryGetValue(px, out var style))
             {
@@ -279,7 +319,7 @@ namespace CSCommonUX
         /// <summary>둥근 모서리 테두리.</summary>
         public static void RoundOutline(Rect r, Color c, float radius, float width = 1f)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(r, 1f, 1f)) return;
             int px = SlicePx(r, radius);
             int wpx = Mathf.Max(1, Mathf.RoundToInt(width * S));
             long key = ((long)px << 16) | (uint)wpx;
@@ -299,6 +339,67 @@ namespace CSCommonUX
         {
             Round(r, fill, radius);
             RoundOutline(r, line, radius, lineWidth);
+        }
+
+        // 떠 있는 판 그림자(Look.Elevated) 구운 9칸: 열쇠 = 모서리 화소 · 배율 · 진하기
+        static readonly Dictionary<long, GUIStyle> shadowStyles = new();
+
+        /// <summary>
+        /// 떠 있는 판 그림자 8겹(겹 i = 1 ~ 8: 칸 좌우 i · 위 −(2 − 0.5i) · 아래 2 + 1.5i 넓힘, 모서리 radius + i, 검정 알파 alpha × (1 − (i − 1)/8))을
+        /// 미리 구운 한 장으로 그림. 판이 모서리에 비해 작아 9칸으로 늘릴 가운데가 없으면 false(부른 쪽이 겹으로 그림).
+        /// </summary>
+        public static bool Shadow(Rect r, float radius, float alpha)
+        {
+            if (!Repaint || alpha <= 0f) return true;
+            int rp = Mathf.RoundToInt(Mathf.Max(0f, radius) * S);
+            if (r.width * S < rp * 2 + 8 || r.height * S < rp * 2 + 4f * S + 8) return false;
+            var outer = new Rect(r.x - 8f, r.y - 2f, r.width + 16f, r.height + 16f);
+            if (Off(outer, 1f, 1f)) return true;
+            long key = ((long)rp << 32) | ((long)Mathf.RoundToInt(S * 1000f) << 12) | (uint)(Mathf.RoundToInt(alpha * 1000f) & 0xFFF);
+            if (!shadowStyles.TryGetValue(key, out var style)) shadowStyles[key] = style = BakeShadow(rp, alpha);
+            Color old = GUI.color;
+            GUI.color = Op(Color.white);
+            style.Draw(Snap(ToScreen(outer)), false, false, false, false);
+            GUI.color = old;
+            return true;
+        }
+
+        /// <summary>Shadow 의 한 장: 화소마다 4×4 표본으로 겹마다 덮인 넓이, 겹은 알파 겹침(1 − Π(1 − a)). 판 칸 바깥 여백 = 좌우 8 · 위 2 · 아래 14(논리).</summary>
+        static GUIStyle BakeShadow(int rp, float alpha)
+        {
+            int w = Mathf.CeilToInt(16f * S) + rp * 2 + 8, h = Mathf.CeilToInt(20f * S) + rp * 2 + 8;
+            float fx = 8f * S, fy = 2f * S, iw = w - 16f * S, ih = h - 16f * S;
+            var px = new Color32[w * h];
+            const int N = 4;
+            for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                float keep = 1f;
+                for (int i = 1; i <= 8; i++)
+                {
+                    float x0 = fx - i * S, x1 = fx + iw + i * S, y0 = fy + (2f - 0.5f * i) * S, y1 = fy + ih + (2f + 1.5f * i) * S, rad = rp + i * S;
+                    int hit = 0;
+                    for (int sy = 0; sy < N; sy++)
+                    for (int sx = 0; sx < N; sx++)
+                    {
+                        float u = x + (sx + 0.5f) / N, v = h - y - 1 + (sy + 0.5f) / N;
+                        if (u < x0 || u > x1 || v < y0 || v > y1) continue;
+                        float cx = Mathf.Clamp(u, x0 + rad, x1 - rad), cy = Mathf.Clamp(v, y0 + rad, y1 - rad);
+                        if ((u - cx) * (u - cx) + (v - cy) * (v - cy) <= rad * rad) hit++;
+                    }
+                    keep *= 1f - alpha * (1f - (i - 1f) / 8f) * hit / (N * N);
+                }
+                px[y * w + x] = new Color32(0, 0, 0, (byte)Mathf.RoundToInt((1f - keep) * 255f));
+            }
+            var tex = new Texture2D(w, h, TextureFormat.ARGB32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear, hideFlags = HideFlags.HideAndDontSave };
+            tex.SetPixels32(px);
+            tex.Apply();
+            var style = new GUIStyle();
+            style.normal.background = tex;
+            // 늘리지 않는 가장자리: 모든 겹의 둥근 모서리를 덮음(좌우 = 여백 + 모서리, 위 = 여백 + 모서리 + 6, 아래 = 모서리 + 12)
+            int side = Mathf.CeilToInt(fx + rp) + 2;
+            style.border = new RectOffset(side, side, Mathf.CeilToInt(fy + rp + 6f * S) + 2, Mathf.CeilToInt(rp + 12f * S) + 2);
+            return style;
         }
 
         static GUIStyle NineSlice(Texture2D tex, int border)
@@ -368,7 +469,7 @@ namespace CSCommonUX
 
         public static void Dot(Vector2 center, float radius, Color c)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(new Rect(center.x - radius, center.y - radius, radius * 2f, radius * 2f), 1f, 1f)) return;
             Color old = GUI.color;
             GUI.color = Op(c);
             GUI.DrawTexture(ToScreen(new Rect(center.x - radius, center.y - radius, radius * 2f, radius * 2f)), Disc);
@@ -377,7 +478,7 @@ namespace CSCommonUX
 
         public static void Ring(Vector2 center, float radius, float width, Color c)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(new Rect(center.x - radius, center.y - radius, radius * 2f, radius * 2f), 1f, 1f)) return;
             int d = Mathf.Max(2, Mathf.RoundToInt(radius * 2f * S));
             int w = Mathf.Max(1, Mathf.RoundToInt(width * S));
             long key = ((long)d << 16) | (uint)w;
@@ -429,7 +530,7 @@ namespace CSCommonUX
 
         public static void Line(Vector2 a, Vector2 b, float width, Color c)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(Rect.MinMaxRect(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y)), width + 2f, width + 2f)) return;
             Vector2 sa = ToScreen(a), sb = ToScreen(b);
             Vector2 d = sb - sa;
             float len = d.magnitude;
@@ -525,7 +626,7 @@ namespace CSCommonUX
         /// </summary>
         public static void Image(Rect r, Texture tex, float alpha = 1f, ScaleMode mode = ScaleMode.ScaleToFit)
         {
-            if (!Repaint || tex == null) return;
+            if (!Repaint || tex == null || Off(r, 1f, 1f)) return;
             if (mode == ScaleMode.ScaleToFit && tex is Texture2D t2 && !sharpFailed.Contains(t2.GetInstanceID()))
             {
                 Rect sr = ToScreen(r);
@@ -547,7 +648,7 @@ namespace CSCommonUX
 
         public static void Image(Rect r, Texture tex, Color tint, ScaleMode mode = ScaleMode.ScaleToFit)
         {
-            if (!Repaint || tex == null) return;
+            if (!Repaint || tex == null || Off(r, 1f, 1f)) return;
             Color old = GUI.color;
             GUI.color = Op(tint);
             GUI.DrawTexture(ToScreen(r), tex, mode, true);
@@ -664,9 +765,7 @@ namespace CSCommonUX
         {
             int px = Px(size);
             if (!Fitting || width <= 1f) return px;
-            var style = TextStyle(px, face, TextAnchor.MiddleLeft, false);
-            content.text = text;
-            float w = style.CalcSize(content).x, limit = width * S;
+            float w = FaceWidthPx(text, px, face), limit = width * S;
             if (w <= limit) return px;
             return Mathf.Max(Mathf.Max(6, Mathf.RoundToInt(px * 0.82f)), Mathf.FloorToInt(px * limit / w));
         }
@@ -677,7 +776,7 @@ namespace CSCommonUX
         /// <summary>방송 제목 글(ROUND · 큰 제목) — 게임 굵은 글꼴.</summary>
         public static void TextWide(Rect r, string text, float size, Color c, TextAnchor anchor = TextAnchor.MiddleLeft)
         {
-            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f) return;
+            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f || TextOff(r, size, MinText > 0f)) return;
             if (HasClockColon(text)) { ClockText(r, text, size, c, 2, anchor); return; } // 큰 시계(홈 '21:41')도 콜론을 점 둘로
             var style = TextStyle(FitPx(text, size, 2, r.width), 2, anchor, false);
             style.normal.textColor = Op(c);
@@ -689,15 +788,28 @@ namespace CSCommonUX
         static float FaceWidth(string text, float size, int face)
         {
             if (string.IsNullOrEmpty(text)) return 0f;
-            var style = TextStyle(Px(size), face, TextAnchor.MiddleLeft, false);
-            content.text = text;
-            return style.CalcSize(content).x / S;
+            return FaceWidthPx(text, Px(size), face) / S;
+        }
+
+        /// <summary>글꼴 face 글 폭(화면 px), widthCache 에 둠 — 열쇠 C = 1 로 TextWidth(굵게 · 보통 중 넓은 쪽, C = 0)와 나눔.</summary>
+        static float FaceWidthPx(string text, int px, int face)
+        {
+            var key = new TextKey(text, px, face, 1);
+            if (!widthCache.TryGetValue(key, out float w))
+            {
+                var style = TextStyle(px, face, TextAnchor.MiddleLeft, false);
+                content.text = text;
+                w = style.CalcSize(content).x;
+                if (widthCache.Count > 4000) widthCache.Clear();
+                widthCache[key] = w;
+            }
+            return w;
         }
 
         /// <summary>브랜드 글꼴 글(방송 타워 · 숫자 · 약어) — bold = 굵게 · 아니면 보통. 브랜드 글꼴이 없으면 게임 글꼴.</summary>
         public static void TextBrand(Rect r, string text, float size, Color c, bool bold = true, TextAnchor anchor = TextAnchor.MiddleLeft)
         {
-            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f) return;
+            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f || TextOff(r, size, MinText > 0f)) return;
             int face = bold ? 3 : 4;
             var style = TextStyle(FitPx(text, size, face, r.width), face, anchor, false);
             style.normal.textColor = Op(c);
@@ -717,7 +829,8 @@ namespace CSCommonUX
 
         public static void Text(Rect r, string text, float size, Color c, bool bold = false, TextAnchor anchor = TextAnchor.MiddleLeft, bool wrap = false)
         {
-            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f) return;
+            // 넘쳐 그리는 줄바꿈 글(MinText 모드)은 아래로 몇 줄이든 번질 수 있어 거르지 않음
+            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f || (wrap ? MinText <= 0f && TextOff(r, size, false) : TextOff(r, size, MinText > 0f))) return;
             if (!wrap && HasClockColon(text)) { ClockText(r, text, size, c, bold ? 1 : 0, anchor); return; }
             var style = TextStyle(wrap ? Px(size) : FitPx(text, size, bold ? 1 : 0, r.width), bold, anchor, wrap);
             style.normal.textColor = Op(c);
@@ -796,7 +909,7 @@ namespace CSCommonUX
         /// </summary>
         public static void TextFit(Rect r, string text, float size, Color c, bool bold = false, TextAnchor anchor = TextAnchor.MiddleLeft)
         {
-            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f) return;
+            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f || TextOff(r, size, true)) return;
             float floor = Mathf.Min(size, CSCommonDesign.FontMin), limit = r.width + FitSlack;
             float s = FitSize(TextWidth(text, size, bold), size, floor, r.width);
             // 글 폭은 크기에 딱 비례하지 않음(화소 반올림) — 한 단계씩 더 줄여 확인
@@ -1201,7 +1314,7 @@ namespace CSCommonUX
         /// </summary>
         public static void Icon(string d, Rect r, Color c, float viewBox = 24f, float stroke = 1.75f)
         {
-            if (!Repaint || c.a <= 0f || string.IsNullOrEmpty(d)) return;
+            if (!Repaint || c.a <= 0f || string.IsNullOrEmpty(d) || Off(new Rect(r.x, r.y, r.width, r.width), 4f, 4f)) return;
             Rect sr = ToScreen(r);
             int px = Mathf.Max(4, Mathf.RoundToInt(sr.width));
             var key = new TextKey(d, px, Mathf.RoundToInt(stroke * 10000f), Mathf.RoundToInt(viewBox * 10000f));
@@ -1258,7 +1371,7 @@ namespace CSCommonUX
         /// </summary>
         public static void ImageSharp(Rect r, Texture2D src, float alpha = 1f)
         {
-            if (!Repaint || src == null) return;
+            if (!Repaint || src == null || Off(r, 1f, 1f)) return;
             Rect sr = ToScreen(r);
             // 비율 유지(ScaleToFit)
             float aspect = src.width / (float)Mathf.Max(1, src.height);
@@ -1420,17 +1533,23 @@ namespace CSCommonUX
 
         // ---------------- 구글 머티리얼 서클 인디케이터(Spinner)
 
-        static Texture2D spinnerTex;
-        static Color32[] spinnerPx;
-        static int spinnerSize;
-        static int spinnerLastFrame = -1;
-        static float spinnerLastR = -1f, spinnerLastW = -1f;
+        // 크기(칸 · 반지름 · 굵기 화소)별 텍스처 + 고리 띠 화소(가운데에서 x · y · 거리 · 각도 미리 셈). 띠 밖 화소는 늘 투명이라 다시 칠하지 않음.
+        sealed class SpinnerTex
+        {
+            public Texture2D Tex;
+            public Color32[] Px;
+            public int[] Ring;
+            public float[] Dx, Dy, Dist, Ang;
+            public int Frame = -1;
+        }
+
+        static readonly Dictionary<long, SpinnerTex> spinners = new();
 
         /// <summary>
         /// 구글 머티리얼 서클 인디케이터(Google Circular Progress Indicator):
         /// 1.333초 주기로 호의 머리(head)가 먼저 270° 치고 나가며 늘어나고(16° → 286°), 뒤이어 꼬리(tail)가 따라붙으며 줄어듦(286° → 16°).
         /// 동시에 전체 고리가 끊임없이 회전하며, 양 끝은 둥근 마감(stroke-linecap: round).
-        /// 한 장의 재사용 텍스처를 써서 매 프레임 새 Texture2D · GC 할당이 없고, GUI.matrix 회전을 쓰지 않아 BeginClip 안에서도 잘리지 않음.
+        /// 크기별 재사용 텍스처(고리 띠 화소만 프레임마다 다시 칠함)라 매 프레임 새 Texture2D · GC 할당이 없고, GUI.matrix 회전을 쓰지 않아 BeginClip 안에서도 잘리지 않음.
         /// </summary>
         public static void Spinner(Vector2 center, float radius, float width, Color c)
         {
@@ -1458,73 +1577,86 @@ namespace CSCommonUX
             float half = Mathf.Max(0.75f, width * S * 0.5f);
             int d = Mathf.Clamp(Mathf.CeilToInt((rPx + half + 2f) * 2f), 8, 256);
 
-            if (spinnerTex == null || spinnerSize != d)
+            // 반지름 · 굵기는 0.1 화소 단위로 같은 칸(예전: 0.1 넘게 바뀌면 다시 칠함)
+            rPx = Mathf.Round(rPx * 10f) / 10f;
+            half = Mathf.Round(half * 10f) / 10f;
+            long key = ((long)d << 40) | ((long)Mathf.RoundToInt(rPx * 10f) << 20) | (uint)Mathf.RoundToInt(half * 10f);
+            if (!spinners.TryGetValue(key, out var sp))
             {
-                if (spinnerTex != null) UnityEngine.Object.Destroy(spinnerTex);
-                spinnerSize = d;
-                spinnerTex = new Texture2D(d, d, TextureFormat.ARGB32, false)
+                sp = new SpinnerTex
                 {
-                    wrapMode = TextureWrapMode.Clamp,
-                    filterMode = FilterMode.Bilinear,
-                    hideFlags = HideFlags.HideAndDontSave
+                    Tex = new Texture2D(d, d, TextureFormat.ARGB32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear, hideFlags = HideFlags.HideAndDontSave },
+                    Px = new Color32[d * d],
                 };
-                spinnerPx = new Color32[d * d];
-                spinnerLastFrame = -1;
+                // 고리 띠: |거리 − 반지름| < 굵기 반 + 0.5 인 화소만 알파가 0 보다 클 수 있음(끝 둥근 마감도 고리 위 점까지 거리라 이보다 멂)
+                var ring = new List<int>();
+                float cMid0 = d * 0.5f;
+                for (int y = 0; y < d; y++)
+                for (int x = 0; x < d; x++)
+                {
+                    float dx = x + 0.5f - cMid0, dy = d - y - 0.5f - cMid0;
+                    if (Mathf.Abs(Mathf.Sqrt(dx * dx + dy * dy) - rPx) < half + 0.5f) ring.Add(y * d + x);
+                }
+                int n = ring.Count;
+                sp.Ring = ring.ToArray();
+                sp.Dx = new float[n];
+                sp.Dy = new float[n];
+                sp.Dist = new float[n];
+                sp.Ang = new float[n];
+                for (int k = 0; k < n; k++)
+                {
+                    int x = sp.Ring[k] % d, y = sp.Ring[k] / d;
+                    float dx = x + 0.5f - cMid0, dy = d - y - 0.5f - cMid0;
+                    sp.Dx[k] = dx;
+                    sp.Dy[k] = dy;
+                    sp.Dist[k] = Mathf.Sqrt(dx * dx + dy * dy);
+                    sp.Ang[k] = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+                }
+                spinners[key] = sp;
             }
 
-            if (spinnerLastFrame != Time.frameCount || Mathf.Abs(spinnerLastR - rPx) > 0.1f || Mathf.Abs(spinnerLastW - half) > 0.1f)
+            if (sp.Frame != Time.frameCount)
             {
-                spinnerLastFrame = Time.frameCount;
-                spinnerLastR = rPx;
-                spinnerLastW = half;
-
+                sp.Frame = Time.frameCount;
                 float mid = (from + to) * 0.5f;
                 float halfSpan = (to - from) * 0.5f;
                 float rad0 = from * Mathf.Deg2Rad, rad1 = to * Mathf.Deg2Rad;
                 float x0 = Mathf.Cos(rad0) * rPx, y0 = Mathf.Sin(rad0) * rPx;
                 float x1 = Mathf.Cos(rad1) * rPx, y1 = Mathf.Sin(rad1) * rPx;
-                float cMid = d * 0.5f;
-
-                for (int y = 0; y < d; y++)
+                var px = sp.Px;
+                for (int k = 0; k < sp.Ring.Length; k++)
                 {
-                    float dy = d - y - 0.5f - cMid;
-                    int row = y * d;
-                    for (int x = 0; x < d; x++)
+                    float dx = sp.Dx[k], dy = sp.Dy[k];
+                    float distToArc;
+                    if (Mathf.Abs(Mathf.DeltaAngle(mid, sp.Ang[k])) <= halfSpan)
                     {
-                        float dx = x + 0.5f - cMid;
-                        float dist = Mathf.Sqrt(dx * dx + dy * dy);
-                        float ang = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
-                        float distToArc;
-                        if (Mathf.Abs(Mathf.DeltaAngle(mid, ang)) <= halfSpan)
-                        {
-                            distToArc = Mathf.Abs(dist - rPx);
-                        }
-                        else
-                        {
-                            float d0 = (dx - x0) * (dx - x0) + (dy - y0) * (dy - y0);
-                            float d1 = (dx - x1) * (dx - x1) + (dy - y1) * (dy - y1);
-                            distToArc = Mathf.Sqrt(d0 < d1 ? d0 : d1);
-                        }
-                        float a = Mathf.Clamp01(half + 0.5f - distToArc);
-                        spinnerPx[row + x] = new Color32(255, 255, 255, (byte)(a * 255f));
+                        distToArc = Mathf.Abs(sp.Dist[k] - rPx);
                     }
+                    else
+                    {
+                        float d0 = (dx - x0) * (dx - x0) + (dy - y0) * (dy - y0);
+                        float d1 = (dx - x1) * (dx - x1) + (dy - y1) * (dy - y1);
+                        distToArc = Mathf.Sqrt(d0 < d1 ? d0 : d1);
+                    }
+                    float a = Mathf.Clamp01(half + 0.5f - distToArc);
+                    px[sp.Ring[k]] = new Color32(255, 255, 255, (byte)(a * 255f));
                 }
-                spinnerTex.SetPixels32(spinnerPx);
-                spinnerTex.Apply(false);
+                sp.Tex.SetPixels32(px);
+                sp.Tex.Apply(false);
             }
 
             Vector2 sc = ToScreen(center);
             float halfD = d * 0.5f;
             Color old = GUI.color;
             GUI.color = Op(c);
-            GUI.DrawTexture(new Rect(Mathf.Round(sc.x - halfD), Mathf.Round(sc.y - halfD), d, d), spinnerTex);
+            GUI.DrawTexture(new Rect(Mathf.Round(sc.x - halfD), Mathf.Round(sc.y - halfD), d, d), sp.Tex);
             GUI.color = old;
         }
 
         /// <summary>부드러운 빛 번짐(가운데 진하고 가장자리로 0 — 타원으로 늘려 찍음). 계기판 뒤 후광 · 페달 빛.</summary>
         public static void Glow(Rect r, Color c)
         {
-            if (!Repaint || c.a <= 0f) return;
+            if (!Repaint || c.a <= 0f || Off(r, 1f, 1f)) return;
             if (glowTex == null)
             {
                 const int size = 128;
@@ -1573,8 +1705,22 @@ namespace CSCommonUX
 
         public static Color Shade(Color c, float f) => new(c.r * f, c.g * f, c.b * f, c.a);
 
-        /// <summary>화면 픽셀 좌표(Camera.WorldToScreenPoint) 자리에 게임 UI(패널 · 창 등)가 덮여 있는지.</summary>
+        // 가림 판정 캐시: 화면 8px 칸마다 결과를 0.2초 둠 — 월드 표식 수백 개가 매 Repaint 마다 UI RaycastAll 을 하지 않게.
+        // shortcut: 판정이 칸(8px) 안에서 어긋나거나 막 열고 닫은 창에 0.2초 늦을 수 있음, 표식이 패널 가장자리에서 깜빡이면 칸을 줄임
+        static readonly Dictionary<int, bool> occluded = new();
+        static float occludedAt;
+
+        /// <summary>화면 픽셀 좌표(Camera.WorldToScreenPoint) 자리에 게임 UI(패널 · 창 등)가 덮여 있는지(8px 칸 · 0.2초 캐시).</summary>
         public static bool IsOccluded(Vector3 screenPoint)
+        {
+            float now = Time.realtimeSinceStartup;
+            if (now - occludedAt > 0.2f || now < occludedAt || occluded.Count > 4096) { occluded.Clear(); occludedAt = now; }
+            int key = (Mathf.FloorToInt(screenPoint.x / 8f) & 0xFFFF) | (Mathf.FloorToInt(screenPoint.y / 8f) << 16);
+            if (!occluded.TryGetValue(key, out bool hit)) occluded[key] = hit = RaycastOccluded(screenPoint);
+            return hit;
+        }
+
+        static bool RaycastOccluded(Vector3 screenPoint)
         {
             var view = UIView.GetAView();
             if (view == null || view.uiCamera == null) return false;
