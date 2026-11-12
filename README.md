@@ -24,6 +24,7 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - **툴바:** `DockTool` 툴팁 문자열을 마우스를 올렸을 때만 조립. `Fab` · `SubChip` · `IconGroup` 애니메이션 키를 자리와 무관하게 바꿔 `slots` · `presses` 가 계속 커지지 않게 함. 네임스페이스 `CSCommon.PillBar` → `CSCommonUX.PillBar`.
 - **Section:** 제목 칩과 본문 사이 `HeadGap` 6 → 8, 칩 오른쪽 안쪽 `ChipPadR` 14 → 16. 옵션 패널의 부연 설명(`desc`)은 제목 줄 맨 오른쪽 회색 보조 알약으로 옮김(제목이 없을 때만 본문에 그림).
 - **입력:** 마우스 뗌 판정 한 프레임 늦춤(`releaseFrame`), `Hover` 가 잘린 영역(`visible`)까지 봄.
+- **공통 부품:** `InputBlocker`(모드 7벌 → 1벌, `Begin(모드 이름)` · 값 바뀔 때만 대입 · 맨 앞은 보일 때와 30틀마다 · `At`), `FontPatch`(F1에서 옮김, 글꼴 재빌드 알림 스택 넘침 · 프리징 방지, 여러 모드가 켜져도 한 번만 붙음), `PerfWatch`(할당 없는 계측, N초 평균 · 최대, 50ms 즉시, 로그 함수 `PerfWatch.Log` 바꿔 끼움), `Scan`(건물 전수 스캔 공유 · 프레임 분할 · 구독, 모드 컨트롤러 Update 에서 `Scan.Tick()`, 자가 검사 포함).
 
 ## UX 1.3 변경 (2026-11-10)
 

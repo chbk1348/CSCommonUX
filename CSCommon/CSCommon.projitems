@@ -21,6 +21,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonMod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonPatcher.cs" Condition="'$(CSCommonNoHarmony)' != 'true'" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonSettingsXml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\FontPatch.cs" Condition="'$(CSCommonNoHarmony)' != 'true'" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\PerfWatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Scan.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\InputBlocker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\Pal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonDesign.cs" />
