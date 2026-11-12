@@ -406,7 +406,7 @@ namespace CSCommonUX
     /// </summary>
     public static class Badge
     {
-        public const float H = 24f, PadX = 12f, Icon = 13f, IconGap = 5f, Stroke = 2.4f, CountH = 20f, CountAlpha = 0.22f, CountOnAlpha = 0.26f;
+        public const float H = 24f, PadX = 12f, Icon = 13f, IconGap = 5f, Stroke = 2.4f, CountH = 20f, CountAlpha = 0.22f, CountOnAlpha = 0.26f, DotD = 6f;
 
         /// <summary>뜻 색 → 파스텔 면 · 글.</summary>
         public static void Colors(Color c, out Color fill, out Color ink)
@@ -420,18 +420,21 @@ namespace CSCommonUX
             else { fill = Draw.Alpha(c, 0.16f); ink = c; }
         }
 
-        public static float At(float x, float cy, string text, Color color, string icon = null, bool draw = true, float height = H)
+        /// <param name="dot">true = 글 앞 상태 점(지름 DotD, 글색 — 아이콘이 있으면 무시).</param>
+        /// <param name="minW">최소 폭(글이 자주 바뀌는 알약이 옆을 밀지 않게). 글 · 아이콘 · 점은 가운데.</param>
+        public static float At(float x, float cy, string text, Color color, string icon = null, bool draw = true, float height = H, bool dot = false, float minW = 0f)
         {
-            float tw = Mathf.Ceil(Draw.TextWidth(text, CSCommonDesign.FontMin, true)), iw = icon != null ? Icon + IconGap : 0f;
-            float w = PadX * 2f + iw + tw;
+            float tw = Mathf.Ceil(Draw.TextWidth(text, CSCommonDesign.FontMin, true)), iw = icon != null ? Icon + IconGap : dot ? DotD + IconGap : 0f;
+            float w = Mathf.Max(minW, PadX * 2f + iw + tw);
             if (draw && Draw.Repaint)
             {
                 var r = new Rect(x, Mathf.Round(cy - height * 0.5f), w, height);
                 Colors(color, out var fill, out var ink);
                 Draw.Round(r, fill, height * 0.5f);
-                float tx = r.x + PadX;
-                if (icon != null) { Draw.Icon(icon, new Rect(tx, Mathf.Round(r.center.y - Icon * 0.5f), Icon, Icon), ink, 24f, Stroke); tx += iw; }
-                Draw.Text(new Rect(tx, r.y, tw + 2f, r.height), text, CSCommonDesign.FontMin, ink, true, TextAnchor.MiddleLeft);
+                float tx = Mathf.Round(r.center.x - (iw + tw) * 0.5f);
+                if (icon != null) Draw.Icon(icon, new Rect(tx, Mathf.Round(r.center.y - Icon * 0.5f), Icon, Icon), ink, 24f, Stroke);
+                else if (dot) Draw.Dot(new Vector2(tx + DotD * 0.5f, r.center.y), DotD * 0.5f, ink);
+                Draw.Text(new Rect(tx + iw, r.y, tw + 2f, r.height), text, CSCommonDesign.FontMin, ink, true, TextAnchor.MiddleLeft);
             }
             return w;
         }
@@ -1042,13 +1045,16 @@ namespace CSCommonUX
     {
         public const float Pad = 4f, Gap = 4f, Icon = 18f, Stroke = 2f, Font = 14f, ValueMinW = 76f, PressScale = 0.95f;
 
-        public static void In(Rect r, string value, Action minus, Action plus, string minusTip = null, string plusTip = null)
+        /// <param name="enabled">false = 잠금(두 단추 꺼짐 · 값 흐린 글, 예: 다른 설정이 값을 정하는 동안).</param>
+        /// <param name="canMinus">false = 최소 끝(− 꺼짐). minus 가 null 이어도 꺼짐(예전 방식).</param>
+        /// <param name="canPlus">false = 최대 끝(+ 꺼짐). plus 가 null 이어도 꺼짐.</param>
+        public static void In(Rect r, string value, Action minus, Action plus, string minusTip = null, string plusTip = null, bool enabled = true, bool canMinus = true, bool canPlus = true)
         {
             if (Draw.Repaint) Draw.Round(r, Look.Pill, r.height * 0.5f);
             float s = r.height - Pad * 2f;
-            if (Round(new Rect(r.x + Pad, r.y + Pad, s, s), Icons.Minus, minusTip, minus != null)) minus?.Invoke();
-            if (Draw.Repaint) Draw.TextPill(new Rect(r.x + Pad + s + Gap, r.y, Mathf.Max(0f, r.width - (Pad + s + Gap) * 2f), r.height), value, Font, Look.BarInk, true, TextAnchor.MiddleCenter);
-            if (Round(new Rect(r.xMax - Pad - s, r.y + Pad, s, s), Icons.Plus, plusTip, plus != null)) plus?.Invoke();
+            if (Round(new Rect(r.x + Pad, r.y + Pad, s, s), Icons.Minus, minusTip, enabled && canMinus && minus != null)) minus();
+            if (Draw.Repaint) Draw.TextPill(new Rect(r.x + Pad + s + Gap, r.y, Mathf.Max(0f, r.width - (Pad + s + Gap) * 2f), r.height), value, Font, enabled ? Look.BarInk : Look.OffText, true, TextAnchor.MiddleCenter);
+            if (Round(new Rect(r.xMax - Pad - s, r.y + Pad, s, s), Icons.Plus, plusTip, enabled && canPlus && plus != null)) plus();
         }
 
         /// <summary>원 단추(켜짐 = 회색 원 · 꺼짐 = 면 없이 흐린 아이콘). 누르면 true.</summary>
