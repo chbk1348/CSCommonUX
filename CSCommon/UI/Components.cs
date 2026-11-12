@@ -2230,6 +2230,8 @@ namespace CSCommonUX
             float peak = 0f;
             for (int i = 1; i < 40; i++) peak = Mathf.Max(peak, Overshoot(i / 40f));
             check(peak > 1.02f && peak < 1.12f, "tear overshoot");
+            // 말줄임표 없는 맞춤: 들어가면 그대로 · 넘치면 비례로 줄이되 하한(12) 밑으론 안 줄임 · 원래 하한보다 작은 글은 키우지 않음
+            check(Near(Draw.FitSize(80f, 14f, 12f, 100f), 14f) && Near(Draw.FitSize(105f, 14f, 12f, 100f), 14f * 100f / 105f) && Near(Draw.FitSize(200f, 14f, 12f, 100f), 12f) && Near(Draw.FitSize(200f, 10f, 12f, 100f), 10f), "text fit floor");
         }
 
         // ---- 움직임

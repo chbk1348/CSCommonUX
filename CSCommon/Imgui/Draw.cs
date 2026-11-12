@@ -790,23 +790,49 @@ namespace CSCommonUX
             GUI.matrix = old;
         }
 
-        /// <summary>넘치면 끝을 '…'로 줄여 한 줄로(글자를 키운 모드는 '…' 없이 글자를 줄여 맞춤).</summary>
+        /// <summary>
+        /// 칸에 맞춘 글(말줄임표 없음): 넘치면 글 크기를 하한(CSCommonDesign.FontMin, 원래 더 작으면 원래 크기)까지 줄여 한 줄로.
+        /// 하한에서도 넘치면 줄바꿈 없이 하한 크기 한 줄로 잘리지 않게 그대로 그림 — 칸 · 문구를 고치라고 자세한 로그에 한 번 알림.
+        /// </summary>
         public static void TextFit(Rect r, string text, float size, Color c, bool bold = false, TextAnchor anchor = TextAnchor.MiddleLeft)
         {
-            if (!Repaint || string.IsNullOrEmpty(text)) return;
-            Text(r, Fitting ? text : Ellipsis(text, size, bold, r.width), size, c, bold, anchor);
+            if (!Repaint || string.IsNullOrEmpty(text) || c.a <= 0f) return;
+            float floor = Mathf.Min(size, CSCommonDesign.FontMin), limit = r.width + FitSlack;
+            float s = FitSize(TextWidth(text, size, bold), size, floor, r.width);
+            // 글 폭은 크기에 딱 비례하지 않음(화소 반올림) — 한 단계씩 더 줄여 확인
+            while (s > floor && TextWidth(text, s, bold) > limit) s = Mathf.Max(floor, s - FitStep);
+            if (TextWidth(text, s, bold) <= limit) { Text(r, text, s, c, bold, anchor); return; }
+            if (overflowSeen.Count > 2000) overflowSeen.Clear();
+            if (overflowSeen.Add(text)) CSCommonLog.Detail($"경고: 글이 칸보다 넓음(칸 {r.width:0} · 글 '{text}') — 칸 폭을 늘리거나 문구를 줄이세요");
+            var style = TextStyle(Px(floor), bold, anchor, false);
+            var clip = style.clipping;
+            style.clipping = TextClipping.Overflow;
+            style.normal.textColor = Op(c);
+            content.text = text;
+            style.Draw(ToScreen(r), content, false, false, false, false);
+            style.clipping = clip;
+        }
+
+        /// <summary>넘쳐 알린 글(한 번만 알림).</summary>
+        static readonly HashSet<string> overflowSeen = new();
+
+        /// <summary>맞춤 글 크기를 찾을 때 줄이는 한 단계(논리 px).</summary>
+        public const float FitStep = 0.5f;
+
+        /// <summary>폭 textW(크기 size 에서 잰 글 폭)인 글이 칸 폭 width 에 들어가는 글 크기(비례 어림, floor 밑으로는 안 줄임). 들어가면 size 그대로.</summary>
+        public static float FitSize(float textW, float size, float floor, float width)
+        {
+            floor = Mathf.Min(size, floor);
+            if (textW <= width + FitSlack || textW <= 0f) return size;
+            return Mathf.Clamp(size * width / textW, floor, size);
         }
 
         /// <summary>고정폭 알약 글이 넘칠 때 줄이는 글 크기 한 단계(논리 px).</summary>
         public const float PillFontStep = 1.5f;
 
-        /// <summary>고정폭 알약 글(단추 · 배지 · 고르기 칸 · 탭 칸): 넘치면 먼저 글 크기를 한 단계 줄이고, 그래도 넘칠 때만 '…'.</summary>
+        /// <summary>고정폭 알약 글(단추 · 배지 · 고르기 칸 · 탭 칸): 넘치면 글 크기를 하한까지 줄임(TextFit, 말줄임표 없음).</summary>
         public static void TextPill(Rect r, string text, float size, Color c, bool bold = false, TextAnchor anchor = TextAnchor.MiddleCenter)
-        {
-            if (!Repaint || string.IsNullOrEmpty(text)) return;
-            if (!Fitting && TextWidth(text, size, bold) > r.width + FitSlack) size -= PillFontStep;
-            TextFit(r, text, size, c, bold, anchor);
-        }
+            => TextFit(r, text, size, c, bold, anchor);
 
         /// <summary>바탕색 위에서 읽히는 글자색: 밝은 바탕 = 어두운 글(Pal.OnLight), 어두운 바탕 = 흰 글(테마와 상관없이 바탕 밝기로).</summary>
         public static Color On(Color bg) => 0.299f * bg.r + 0.587f * bg.g + 0.114f * bg.b > 0.62f ? Pal.OnLight : Color.white;
@@ -826,36 +852,16 @@ namespace CSCommonUX
             public int GetHashCode(TextKey k) { unchecked { return (((k.T?.GetHashCode() ?? 0) * 397 ^ k.A) * 397 ^ k.B) * 397 ^ k.C; } }
         }
 
-        static readonly Dictionary<TextKey, string> ellipsisCache = new(TextKeyComparer.I);
         // 글 폭 캐시: (글, 화소 크기, 굵기) → CalcSize 화소 폭. 글꼴을 찾으면(EnsureFaces) 비움, 배율은 화소 크기에 들어 있음
         static readonly Dictionary<TextKey, float> widthCache = new(TextKeyComparer.I);
         // 글 높이 캐시: (글, 화소 크기, 굵기, 화소 폭) → CalcHeight 화소 높이. widthCache 와 같이 비움
         static readonly Dictionary<TextKey, float> heightCache = new(TextKeyComparer.I);
 
         /// <summary>
-        /// 말줄임 여유(논리 px): 칸 폭을 '글 폭 + 여백'으로 잡아도 칸 x 가 소수(비율로 나눈 카드)면 right − x 가 글 폭보다 아주 조금(1e-5) 작아져,
-        /// 1080p(배율 1 — 글 폭이 정수)에서 마지막 글자가 '…'로 잘렸음('라이더 순위 변…'). 반 화소 밑 차이는 넘쳐도 안 보임.
+        /// 맞춤 여유(논리 px): 칸 폭을 '글 폭 + 여백'으로 잡아도 칸 x 가 소수(비율로 나눈 카드)면 right − x 가 글 폭보다 아주 조금(1e-5) 작아져,
+        /// 1080p(배율 1 — 글 폭이 정수)에서 글이 괜히 줄었음. 반 화소 밑 차이는 넘쳐도 안 보임.
         /// </summary>
         public const float FitSlack = 0.5f;
-
-        public static string Ellipsis(string text, float size, bool bold, float width)
-        {
-            width += FitSlack;
-            if (TextWidth(text, size, bold) <= width) return text;
-            var key = new TextKey(text, Px(size), bold ? 1 : 0, Mathf.RoundToInt(width));
-            if (ellipsisCache.TryGetValue(key, out string cut)) return cut;
-            int lo = 0, hi = text.Length;
-            while (lo < hi)
-            {
-                int mid = (lo + hi + 1) / 2;
-                if (TextWidth(text.Substring(0, mid) + "…", size, bold) <= width) lo = mid;
-                else hi = mid - 1;
-            }
-            cut = text.Substring(0, lo) + "…";
-            if (ellipsisCache.Count > 2000) ellipsisCache.Clear();
-            ellipsisCache[key] = cut;
-            return cut;
-        }
 
         public static float TextWidth(string text, float size, bool bold = false)
         {
@@ -867,7 +873,7 @@ namespace CSCommonUX
                 var style = TextStyle(px, bold, TextAnchor.MiddleLeft, false);
                 content.text = text;
                 w = style.CalcSize(content).x;
-                // 굵게 잰 폭 = 굵게 · 보통 중 넓은 쪽: 알약은 굵게 재고 안 고른 칸은 보통으로 그리는데, 한글은 대체 글꼴이라 보통이 더 넓을 수 있음('테스트 모…')
+                // 굵게 잰 폭 = 굵게 · 보통 중 넓은 쪽: 알약은 굵게 재고 안 고른 칸은 보통으로 그리는데, 한글은 대체 글꼴이라 보통이 더 넓을 수 있음
                 if (bold) w = Mathf.Max(w, TextStyle(px, false, TextAnchor.MiddleLeft, false).CalcSize(content).x);
                 if (widthCache.Count > 4000) widthCache.Clear();
                 widthCache[key] = w;
