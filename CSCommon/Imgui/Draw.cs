@@ -24,6 +24,8 @@ namespace CSCommonUX
         static readonly Dictionary<long, Texture2D> rings = new();
         static Texture2D disc;
         static readonly GUIContent content = new();
+        static readonly PerfWatch guiWatch = new("OnGUI");
+        static long guiStart;
 
         public static bool Repaint => Event.current.type == EventType.Repaint;
 
@@ -44,6 +46,8 @@ namespace CSCommonUX
             views.Clear();
             // 새로 누를 때마다 지난 누름은 버림(다른 데를 눌렀다 옛 버튼 위에서 떼도 눌리지 않게)
             var e = Event.current;
+            guiStart = PerfWatch.Now;
+            if (e != null && e.type == EventType.Repaint) InputBlocker.Painted(); // 허브 공유: 그린 순서(모드끼리 가림)
             if (e != null && e.type == EventType.MouseDown) held = false;
             // 뗀 다음 프레임에 풂(같은 프레임의 다른 OnGUI 가 먼저 풀면 창 단추가 뗌을 못 봄)
             if (releaseFrame >= 0 && Time.frameCount != releaseFrame) { held = false; releaseFrame = -1; }
@@ -111,13 +115,15 @@ namespace CSCommonUX
             blockVer++;
         }
 
-        /// <summary>마우스가 앞 판 밑인가(앞 판 안 위젯이면 늘 false). 창 몸통 휠 스크롤도 Hover 로 보면 같이 막힘.</summary>
+        /// <summary>마우스가 앞 판 밑인가(앞 판 안 위젯이면 false — 위에 그려진 다른 모드 창 밑이면 늘 true, 허브 있을 때만). 창 몸통 휠 스크롤도 Hover 로 보면 같이 막힘.</summary>
         public static bool UnderOverlay()
         {
             var e = Event.current;
-            if (overlayDepth > 0 || e == null) return false;
-            RollBlocks();
+            if (e == null) return false;
             var m = e.mousePosition / S + root;
+            if (InputBlocker.Covered(m)) return true; // 다른 모드 창이 위(허브 있을 때만) — 앞 판 안 위젯도 막힘
+            if (overlayDepth > 0) return false;
+            RollBlocks();
             if (underVer == blockVer && underAt == m) return under;
             underVer = blockVer;
             underAt = m;
@@ -1068,6 +1074,7 @@ namespace CSCommonUX
         /// <summary>마우스를 떼면(어느 버튼에도 안 걸려도) 누른 상태를 풂 — OnGUI 끝에 한 번.</summary>
         public static void EndInput()
         {
+            guiWatch.End(guiStart); // Begin ~ EndInput(모드 OnGUI 한 번) — 허브 공유 전후 비교 지점
             var e = Event.current;
             if (e != null && e.rawType == EventType.MouseUp && e.button == 0) releaseFrame = Time.frameCount;
         }
