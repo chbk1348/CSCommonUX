@@ -54,8 +54,34 @@ namespace CSCommonUX.UI
             return page;
         }
 
-        /// <summary>패널을 새로 지음(값이 바뀌어 줄 모양이 달라질 때).</summary>
-        protected void RebuildPanel() => rebuild?.Invoke();
+        /// <summary>패널을 새로 지음(값이 바뀌어 줄 모양이 달라질 때). KeepPlaceOnRebuild 면 닫지 않고 제자리에서.</summary>
+        protected void RebuildPanel()
+        {
+            if (KeepPlaceOnRebuild) RebuildInPlace();
+            else rebuild?.Invoke();
+        }
+
+        /// <summary>RebuildPanel 을 닫지 않고 내용만 다시 짓기(탭 · 스크롤 유지 — 앰비언트 사운드팩 바꿈 뒤). 기본 끔 = 패널을 닫고 새로 지음.</summary>
+        protected virtual bool KeepPlaceOnRebuild => false;
+
+        /// <summary>패널을 닫지 않고 내용만 다시 지음(탭 · 스크롤 유지).</summary>
+        internal void RebuildInPlace()
+        {
+            var scrolls = new Dictionary<string, float>();
+            foreach (var p in pages) scrolls[p.Name] = p.Scroll;
+            pages.Clear();
+            try
+            {
+                Build();
+            }
+            catch (Exception e)
+            {
+                CSCommonLog.Exception(e, "설정 패널 내용 다시 짓기");
+            }
+            cur = Mathf.Clamp(cur, 0, Mathf.Max(0, pages.Count - 1));
+            foreach (var p in pages)
+                if (scrolls.TryGetValue(p.Name, out float s)) p.Scroll = s;
+        }
 
         /// <summary>게임 UI 자리 → IMGUI 논리 좌표(화면 높이 1080 기준).</summary>
         Rect ScreenRect()
@@ -187,6 +213,12 @@ namespace CSCommonUX.UI
 
         internal CSCommonPage(string name) => Name = name;
 
+        internal float Scroll
+        {
+            get => scroll;
+            set => scroll = value;
+        }
+
         /// <summary>플레이트 하나(제목 칩 · 설명 · 줄). top = 예전 제목 앞 막대 색(새 디자인엔 없음 — 호출 모양만 지킴).</summary>
         public CSCommonSection Section(string title, string desc = null, Color? top = null)
         {
@@ -296,8 +328,11 @@ namespace CSCommonUX.UI
             rows.Add(new Row { Kind = Kind.Steps, Label = label, Desc = desc, Steps = steps, GetStep = get, SetStep = set });
 
         /// <summary>끌기 막대(오른쪽 막대 · 굵은 값).</summary>
-        public void Slider(string label, string desc, float min, float max, float step, Func<float> get, Func<float, string> format, Action<float> set) =>
-            rows.Add(new Row { Kind = Kind.Slider, Label = label, Desc = desc, Min = min, Max = max, Step = step, GetFloat = get, Format = format, SetFloat = set });
+        // steps 를 주면 막대 오른쪽에 선택 상자(앰비언트 — 소리마다 사운드팩 음원)
+        public void Slider(string label, string desc, float min, float max, float step, Func<float> get, Func<float, string> format, Action<float> set,
+            string[] steps = null, Func<int> getStep = null, Action<int> setStep = null) =>
+            rows.Add(new Row { Kind = Kind.Slider, Label = label, Desc = desc, Min = min, Max = max, Step = step, GetFloat = get, Format = format, SetFloat = set,
+                Steps = steps, GetStep = getStep, SetStep = setStep });
 
         public void Button(string label, string desc, string text, Action act, CSCommonButtonKind kind = CSCommonButtonKind.Outline, Func<bool> enabled = null) =>
             rows.Add(new Row { Kind = Kind.Button, Label = label, Desc = desc, Text = text, Act = act, ButtonKind = kind, Enabled = enabled });
@@ -313,7 +348,7 @@ namespace CSCommonUX.UI
         {
             Kind.Toggle => 46f,
             Kind.Steps => 220f,
-            Kind.Slider => 300f,
+            Kind.Slider => r.Steps != null && r.Steps.Length > 0 ? 430f : 300f,
             Kind.Button => CSCommonUX.Button.Width(null, r.Text),
             Kind.Info => 220f,
             _ => 0f,
@@ -437,12 +472,22 @@ namespace CSCommonUX.UI
                 {
                     // 시안 'CSCommonUX.Slider': 막대 + 오른쪽 값 알약(폭 64 · 높이 28 · Look.Pill · 12.5)
                     const float valueW = 64f, valueH = 28f, valueFont = 12.5f;
+                    // steps 가 있으면 선택 상자(폭 178)를 오른쪽 끝에, 막대 · 값 알약은 그 왼쪽(사이 12)
+                    bool hasSteps = r.Steps != null && r.Steps.Length > 0;
+                    const float dropW = 178f, dropGap = 12f;
+                    float boxR = hasSteps ? row.xMax - dropW - dropGap : row.xMax;
                     float v = r.GetFloat();
-                    float nv = CSCommonUX.Slider.In(new Rect(rx, Mathf.Round(cy - 9f), rw - valueW - 12f, 18f), v, r.Min, r.Max, r.Step, Look.PastelStrong, out _, r.Format(v));
+                    float nv = CSCommonUX.Slider.In(new Rect(rx, Mathf.Round(cy - 9f), boxR - rx - valueW - 12f, 18f), v, r.Min, r.Max, r.Step, Look.PastelStrong, out _, r.Format(v));
                     if (!Mathf.Approximately(nv, v)) Safe(() => r.SetFloat(nv), r.Label);
+                    if (hasSteps)
+                    {
+                        int cur = Mathf.Clamp(r.GetStep(), 0, r.Steps.Length - 1);
+                        CSCommonUX.Select.In(new Rect(row.xMax - dropW, Mathf.Round(cy - 20f), dropW, 40f), r.Steps[cur], null, r.Steps, null, cur,
+                            i => Safe(() => r.SetStep(i), r.Label));
+                    }
                     if (CSCommonUX.Draw.Repaint)
                     {
-                        var vr = new Rect(row.xMax - valueW, Mathf.Round(cy - valueH * 0.5f), valueW, valueH);
+                        var vr = new Rect(boxR - valueW, Mathf.Round(cy - valueH * 0.5f), valueW, valueH);
                         CSCommonUX.Draw.Round(vr, Look.Pill, valueH * 0.5f);
                         CSCommonUX.Draw.TextFit(vr, r.Format(r.GetFloat()), valueFont, Look.BarInk, true, TextAnchor.MiddleCenter);
                     }

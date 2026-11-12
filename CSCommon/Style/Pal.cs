@@ -37,13 +37,22 @@ namespace CSCommonUX
         /// <summary>시리즈 테마가 바꾸지 않는 로고 빨강(레드 플래그 띠 · 소프트 타이어 · 과열 · 나침반 북쪽 · 폴).</summary>
         public static Color FixedRed = Draw.Hex("#E10600");
         public static Color Accent = Draw.Hex("#E10600");
-        /// <summary>시리즈 대표색(F1 은 Accent): F2 파랑 · WEC 청록 · 모토GP 주황. 바탕 위 글로도, 면으로도(그 위 글 = AccentInk) 4.5:1. 라이트 값은 CSCommonTheme.</summary>
+        /// <summary>시리즈 대표색(F1 은 Accent): F2 파랑 · WEC 청록 · 모토GP 주황(옛) · NASCAR 노랑. 바탕 위 글로도, 면으로도(그 위 글 = AccentInk) 4.5:1. 라이트 값은 CSCommonTheme.</summary>
         public static Color SeriesF2 = Draw.Hex("#5294FA"), SeriesWec = Draw.Hex("#12A594"), SeriesMoto = Draw.Hex("#F08A00");
+        /// <summary>NASCAR 노랑(브랜드 노랑 계열): 다크 #FFD100(바탕 #14171C 위 12:1 · AccentInk 글 13:1), 라이트 #7A5C00(흰 바탕 · 흰 글 6.2:1).</summary>
+        public static Color SeriesNascar = Draw.Hex("#FFD100");
+        /// <summary>WEC 방송 타워: 짙은 남색 판 · 상황 띠 빨강 그라데이션(왼쪽 → 오른쪽 끝). 화면 위 방송 그래픽이라 라이트 테마에서도 같음.</summary>
+        public static Color WecTowerBg = Draw.Hex("#0B1B3A"), WecBand = Draw.Hex("#E4162B"), WecBandEnd = Draw.Hex("#7C0A1A");
+        /// <summary>NASCAR 방송 타워: 검정 판 · 짝수 줄 · 순위 칸 · 시리즈 이름 띠(회색) · 바깥 테두리(밝은 초록). 라이트 테마에서도 같음.</summary>
+        public static Color NascarTowerBg = Draw.Hex("#101012"), NascarRowAlt = Draw.Hex("#1A1A1D"), NascarPosBg = Draw.Hex("#2B2C30"), NascarBand = Draw.Hex("#3A3C42"), NascarBorder = Draw.Hex("#3DDC4A");
+        /// <summary>시리즈 옅은 글(Pink 자리) = 시리즈 색과 Strong 을 섞는 비율.</summary>
         /// <summary>시리즈 옅은 글(Pink 자리) = 시리즈 색과 Strong 을 섞는 비율.</summary>
         public const float SeriesTintMix = 0.5f;
         public static Color Yellow = Draw.Hex("#F5C400");
         public static Color Green = Draw.Hex("#22C55E");
         public static Color Teal = Draw.Hex("#2ED4BF");
+        /// <summary>주차장 그림 뜻 색: 화단 잔디 · 연석(테마와 상관없음).</summary>
+        public static Color Grass = Draw.Hex("#4CA64C"), Curb = Draw.Hex("#CCCCCC");
         /// <summary>
         /// 모드 기본 팔레트 색 — 주 톤 바탕 · 초점 테두리 · 켜짐 · 고른 표시(면 · 테두리 · 아이콘). 모드가 CSCommonTheme.Use 의 CSCommonPalette 로 고름(기본 청록, F1 빨강).
         /// 청록(Teal)은 '잘됨 · 완료' 뜻 색으로 그대로 남음(토스트 완료 · 목표 넘은 막대 · 정상 뱃지).
@@ -116,6 +125,8 @@ namespace CSCommonUX
         public static readonly Color[] Series = { Draw.Hex("#6366F1"), Draw.Hex("#3B82F6"), Draw.Hex("#1E3A8A"), Draw.Hex("#EC4899") };
         /// <summary>올림픽: 오륜 파랑(대표색 없는 팀 · 난민 선수단) · 나라 스포츠 대표색(선수단 버스).</summary>
         public static Color OlympicBlue = Draw.Hex("#0081C8");
+        /// <summary>메달 점(금 · 은 · 동 — 메달 순위 머리 · 우리 메달 줄). 테마와 상관없는 뜻 색.</summary>
+        public static Color MedalGold = Draw.Hex("#D9A92B"), MedalSilver = Draw.Hex("#A8AFB8"), MedalBronze = Draw.Hex("#C2834A");
         /// <summary>팬챗(시민 커뮤니티): 보라(인플루언서 인증) · 분홍 · 하늘 · 라임 — 시민 아바타 색은 ChatAvatars 에서 이름 해시로 고름.</summary>
         public static Color ChatViolet = Draw.Hex("#A78BFA"), ChatPink = Draw.Hex("#F472B6"), ChatSky = Draw.Hex("#7DD3FC"), ChatLime = Draw.Hex("#A3E635");
         public static readonly Color[] ChatAvatars = { Teal, Ok, ChatViolet, Warn, ChatPink, Yellow, Green, ChatSky, ChatLime };

@@ -66,6 +66,8 @@ namespace CSCommonUX
         public static Color Knob = Draw.Hex("#FCFCFC"), KnobOff = Draw.Hex("#8A919B"), PastelNote = Draw.Hex("#0A3D37"), SwatchLine = new(1f, 1f, 1f, 0.12f);
         public static Color PastelStrong = Draw.Hex("#B8EFE6"), ProgressLow = Draw.Hex("#FFA94D"), TipFill = Draw.Hex("#0B0D11"), TipInk = Draw.Hex("#ECEDF2");
         public static Color WarnFill = Draw.Hex("#FFD9A8"), WarnInk = Draw.Hex("#5A3000");
+        /// <summary>히어로 면(Section.Hero — 모드 파스텔을 아주 옅게) · 잘됨 알약 면 · 글(청록 파스텔, 팔레트와 상관없음). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color HeroFill = new(184f / 255f, 239f / 255f, 230f / 255f, 0.08f), OkFill = Draw.Hex("#B8EFE6"), OkInk = Draw.Hex("#0A3D37");
 
         /// <summary>호버 0 ~ 1(서서히).</summary>
         public static float Hover(int key, Rect r, bool enabled = true) => 0f; // 호버 효과 없음(호출부 호환)
@@ -409,7 +411,9 @@ namespace CSCommonUX
         /// <summary>뜻 색 → 파스텔 면 · 글.</summary>
         public static void Colors(Color c, out Color fill, out Color ink)
         {
-            if (c == Pal.Primary || c == Pal.Teal || c == Pal.Ok || c == Pal.Green || c == Pal.DoneInk) { fill = Look.PastelFill; ink = Look.PastelInk; }
+            // 초록(잘됨) = 청록 파스텔(팔레트와 상관없이 — 금색 · 빨강 팔레트에서도 '양호'가 모드 색이 되지 않게)
+            if (c == Pal.Green || c == Pal.DoneInk) { fill = Look.OkFill; ink = Look.OkInk; }
+            else if (c == Pal.Primary || c == Pal.Teal || c == Pal.Ok) { fill = Look.PastelFill; ink = Look.PastelInk; }
             else if (c == Pal.Warn || c == Pal.Yellow) { fill = Look.WarnFill; ink = Look.WarnInk; }
             else if (c == Pal.Red || c == Pal.MapDanger) { fill = Look.FabCancelFill; ink = Look.FabCancelInk; }
             else if (c == Pal.Sub || c == Pal.Dim || c == Pal.Light || c == Look.OffText) { fill = Look.PillNeutral; ink = Look.BarOff; }
@@ -1238,15 +1242,34 @@ namespace CSCommonUX
     public static class Stat
     {
         public const float LabelH = 16f, ValueH = 30f, ValueFont = 24f, LineFont = 12.5f, LineH = 26f;
+        /// <summary>숫자 뒤 단위(시안 '62 / 92' 의 '/ 92'): 글 14 · Look.PillSub · 숫자 → 단위 사이.</summary>
+        public const float UnitFont = 14f, UnitGap = 5f;
 
-        public static void In(Rect r, string label, string value, string sub = null, Color? color = null)
+        /// <summary>칸 높이(이름 · 숫자 · 있으면 설명).</summary>
+        public static float Height(bool sub) => LabelH + ValueH + (sub ? LabelH : 0f);
+
+        /// <summary>글에 맞춘 폭(이름 · 숫자 + 단위 · 설명 중 가장 넓은 것) — 숫자 줄(Section.HeroStatGap 사이)에 늘어놓을 때.</summary>
+        public static float Width(string label, string value, string sub = null, string unit = null)
+        {
+            float v = Draw.TextWidth(value ?? "", ValueFont, true) + (string.IsNullOrEmpty(unit) ? 0f : UnitGap + Draw.TextWidth(unit, UnitFont));
+            float s = string.IsNullOrEmpty(sub) ? 0f : Draw.TextWidth(sub, CSCommonDesign.FontMin);
+            return Mathf.Ceil(Mathf.Max(Draw.TextWidth(label ?? "", CSCommonDesign.FontMin), Mathf.Max(v, s)));
+        }
+
+        public static void In(Rect r, string label, string value, string sub = null, Color? color = null, string unit = null)
         {
             if (!Draw.Repaint) return;
             // 세 줄(이름 16 · 숫자 30 · 설명 16)을 칸 세로 가운데로
             bool hasSub = !string.IsNullOrEmpty(sub);
             float y = r.y + Mathf.Max(0f, Mathf.Round((r.height - LabelH - ValueH - (hasSub ? LabelH : 0f)) * 0.5f));
             Draw.TextFit(new Rect(r.x, y, r.width, LabelH), label, CSCommonDesign.FontMin, Look.PillSub);
-            Draw.TextFit(new Rect(r.x, y + LabelH, r.width, ValueH), value, ValueFont, color ?? Look.BarInk, true);
+            if (string.IsNullOrEmpty(unit)) Draw.TextFit(new Rect(r.x, y + LabelH, r.width, ValueH), value, ValueFont, color ?? Look.BarInk, true);
+            else
+            {
+                float vw = Mathf.Min(r.width, Mathf.Ceil(Draw.TextWidth(value, ValueFont, true)));
+                Draw.TextFit(new Rect(r.x, y + LabelH, vw + 2f, ValueH), value, ValueFont, color ?? Look.BarInk, true);
+                Draw.TextFit(new Rect(r.x + vw + UnitGap, y + LabelH, Mathf.Max(0f, r.width - vw - UnitGap), ValueH), unit, UnitFont, Look.PillSub);
+            }
             if (hasSub) Draw.TextFit(new Rect(r.x, y + LabelH + ValueH, r.width, LabelH), sub, CSCommonDesign.FontMin, Look.PillSub);
         }
 
@@ -1595,22 +1618,22 @@ namespace CSCommonUX
             Back(r, key, on, enabled, Look.Hover(key, r, enabled && hoverable && !on));
         }
 
-        static void Back(Rect r, int key, bool on, bool enabled, float hv)
+        static void Back(Rect r, int key, bool on, bool enabled, float hv, bool danger = false)
         {
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (!Draw.Repaint) return;
-            Color bg = !enabled ? Look.BtnOff : Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), Look.PastelFill, onT);
+            Color bg = !enabled ? Look.BtnOff : Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), danger ? Look.FabCancelFill : Look.PastelFill, onT);
             Draw.Round(r, bg, Mathf.Min(Radius, r.height * 0.5f));
         }
 
-        /// <summary>바탕 + 누르기. content = 타일 안 그림(눌림 배율 안에서 부름). 누르면 true(잠김이면 늘 false).</summary>
-        public static bool In(Rect r, bool on, bool enabled = true, string tip = null, Action content = null)
+        /// <summary>바탕 + 누르기. content = 타일 안 그림(눌림 배율 안에서 부름). danger = 고르면 빨강 파스텔(지우기 분류). 누르면 true(잠김이면 늘 false).</summary>
+        public static bool In(Rect r, bool on, bool enabled = true, string tip = null, Action content = null, bool danger = false)
         {
             int key = Look.Key(r, "tile");
             float hv = Look.Hover(key, r, enabled && !on), pr = Look.Press(key, r, enabled);
             bool paint = Draw.Repaint;
             if (paint) Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
-            Back(r, key, on, enabled, hv);
+            Back(r, key, on, enabled, hv, danger);
             content?.Invoke();
             if (paint) Draw.EndScale();
             CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
@@ -1618,10 +1641,31 @@ namespace CSCommonUX
         }
 
         /// <summary>타일 이름 글 색(고르면 파스텔 글 · 잠김 흐린 글).</summary>
-        public static Color Ink(bool on, bool enabled = true) => !enabled ? Look.BtnOffInk : on ? Look.PastelInk : Look.BarInk;
+        public static Color Ink(bool on, bool enabled = true, bool danger = false) => !enabled ? Look.BtnOffInk : on ? danger ? Look.FabCancelInk : Look.PastelInk : Look.BarInk;
 
         /// <summary>타일 보조 글 색(고르면 파스텔 보조 글 · 잠김 더 흐린 글).</summary>
-        public static Color Sub(bool on, bool enabled = true) => !enabled ? Look.IconOffInk : on ? Look.PastelNote : Look.PillSub;
+        public static Color Sub(bool on, bool enabled = true, bool danger = false) => !enabled ? Look.IconOffInk : on ? danger ? Look.FabCancelInk : Look.PastelNote : Look.PillSub;
+    }
+
+    /// <summary>
+    /// CSCommonUX.Check — 여럿 고르기 칸(시안 '경기장 · 호텔 표' 왼쪽): 20 · 반지름 6, 평소 Section.Plate 면 + 1px Look.PillHoverLine,
+    /// 고르면 모드 파스텔 면 + 1px Look.PastelInk + ✓ 14(Look.PastelInk). 누르면 true(누름 칸은 r 그대로 — 부르는 쪽이 줄보다 먼저 부를 것).
+    /// </summary>
+    public static class Check
+    {
+        public const float Size = 20f, Radius = 6f, Icon = 14f, Stroke = 3f;
+
+        public static bool In(Rect r, bool on, bool enabled = true)
+        {
+            if (Draw.Repaint)
+            {
+                var box = new Rect(Mathf.Round(r.center.x - Size * 0.5f), Mathf.Round(r.center.y - Size * 0.5f), Size, Size);
+                Draw.Round(box, on ? Look.PastelFill : Section.Plate, Radius);
+                Draw.RoundOutline(box, on ? Look.PastelInk : Look.PillHoverLine, Radius);
+                if (on) Draw.Icon(Icons.Done, new Rect(Mathf.Round(box.center.x - Icon * 0.5f), Mathf.Round(box.center.y - Icon * 0.5f), Icon, Icon), Look.PastelInk, 24f, Stroke);
+            }
+            return enabled && Draw.Button(r);
+        }
     }
 
     /// <summary>

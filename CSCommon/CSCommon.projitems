@@ -10,12 +10,16 @@
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>CSCommonUX</Import_RootNamespace>
   </PropertyGroup>
+  <!-- Harmony 없는 모드: csproj 에 <CSCommonNoHarmony>true</CSCommonNoHarmony> → 모드 진입(CSCommonMod<,>) · CSCommonLoading · CSCommonPatcher 를 뺌 -->
+  <PropertyGroup Condition="'$(CSCommonNoHarmony)' == 'true'">
+    <DefineConstants>$(DefineConstants);CSCOMMON_NO_HARMONY</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonChangelog.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonLoading.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonLoading.cs" Condition="'$(CSCommonNoHarmony)' != 'true'" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonLog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonMod.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonPatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonPatcher.cs" Condition="'$(CSCommonNoHarmony)' != 'true'" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\CSCommonSettingsXml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\Pal.cs" />
@@ -32,5 +36,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAnim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonSection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonDetail.cs" />
   </ItemGroup>
 </Project>

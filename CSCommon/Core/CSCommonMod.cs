@@ -1,9 +1,11 @@
 using System;
-using CitiesHarmony.API;
 using ColossalFramework.Plugins;
+#if !CSCOMMON_NO_HARMONY
+using CitiesHarmony.API;
 using ColossalFramework.UI;
 using CSCommonUX.UI;
 using ICities;
+#endif
 
 namespace CSCommonUX
 {
@@ -80,6 +82,8 @@ namespace CSCommonUX
         public abstract void SaveSettings();
     }
 
+#if !CSCOMMON_NO_HARMONY
+    // Harmony 없는 모드(csproj 에 CSCommonNoHarmony = true)는 이 진입 · CSCommonLoading · CSCommonPatcher 없이 CSCommonModBase 만 씀
     /// <summary>
     /// 모드 진입(IUserMod 쪽): 켜질 때 설정 읽기 → 게임 설정 화면에 패널 걸기 → CitiesHarmony가 준비되면 패치.
     /// 꺼질 때 패치 · 패널 고리를 뗌. 모드 클래스는 이것을 이어받고 IUserMod(Name · Description)를 붙임.
@@ -143,4 +147,5 @@ namespace CSCommonUX
         /// <summary>게임이 모드 설정 화면을 열 때 부름(반사로). 패널은 화면이 보일 때 UxOptionsHost가 지음.</summary>
         public void OnSettingsUI(UIHelperBase helper) => CSCommonOptionsHost<TPanel>.Setup(helper);
     }
+#endif
 }

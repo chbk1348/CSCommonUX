@@ -22,6 +22,9 @@ namespace CSCommonUX
         public static bool Light { get; private set; }
         public static CSCommonPalette Palette { get; private set; }
 
+        /// <summary>잘됨 알약(Look.OkFill · OkInk)을 팔레트와 상관없이 청록 파스텔로(올림픽 — 금색 팔레트에서 '양호'가 모드 색이 되지 않게). 끄면 모드 파스텔과 같음. Use 앞에 정함.</summary>
+        public static bool SeparateOk;
+
         public static void Use(bool light, CSCommonPalette palette = CSCommonPalette.Teal)
         {
             Light = light;
@@ -36,7 +39,7 @@ namespace CSCommonUX
                 Pal.Body = H("#2E3338"); Pal.Hero = H("#F1F3F5");
                 Pal.Accent = H("#1A73E8"); Pal.Teal = H("#00695C"); Pal.Ok = H("#0B57D0"); Pal.Warn = H("#9A5200");
                 Pal.Red = H("#B3261E"); Pal.Green = H("#146C2E"); Pal.PersonalBest = H("#146C2E"); Pal.Yellow = H("#B08800");
-                Pal.SeriesF2 = H("#0B57D0"); Pal.SeriesWec = H("#00695C"); Pal.SeriesMoto = H("#8F4E00");
+                Pal.SeriesF2 = H("#0B57D0"); Pal.SeriesWec = H("#00695C"); Pal.SeriesMoto = H("#8F4E00"); Pal.SeriesNascar = H("#7A5C00");
                 Pal.AccentInk = Color.white; Pal.DoneDot = H("#E6F4EA"); Pal.DoneInk = H("#146C2E"); Pal.TodoDot = H("#FCE8E6"); Pal.WarnDot = H("#FEF0DB");
                 Pal.Selected = H("#FFFFFF"); Pal.OnSelected = H("#14171A"); Pal.Strong = H("#0B0D10"); Pal.Haze = Color.black;
                 Look.Field = H("#F1F3F5"); Look.FieldFocus = H("#FFFFFF"); Look.FieldLine = H("#7A8089");
@@ -55,7 +58,7 @@ namespace CSCommonUX
                 Pal.Body = H("#DDE2E8"); Pal.Hero = H("#20252D");
                 Pal.Accent = H("#E10600"); Pal.Teal = H("#2ED4BF"); Pal.Ok = H("#5CC8FF"); Pal.Warn = H("#FFA94D");
                 Pal.Red = H("#FF6B5E"); Pal.Green = H("#22C55E"); Pal.PersonalBest = H("#00C761"); Pal.Yellow = H("#F5C400");
-                Pal.SeriesF2 = H("#5294FA"); Pal.SeriesWec = H("#12A594"); Pal.SeriesMoto = H("#F08A00");
+                Pal.SeriesF2 = H("#5294FA"); Pal.SeriesWec = H("#12A594"); Pal.SeriesMoto = H("#F08A00"); Pal.SeriesNascar = H("#FFD100");
                 Pal.AccentInk = H("#06121A"); Pal.DoneDot = H("#1F4D33"); Pal.DoneInk = H("#4CC787"); Pal.TodoDot = H("#4D1F1C"); Pal.WarnDot = H("#3A2A14");
                 Pal.Selected = H("#3A404B"); Pal.OnSelected = Color.white; Pal.Strong = Color.white; Pal.Haze = Color.white;
                 Look.Field = H("#1E232B"); Look.FieldFocus = H("#14171C"); Look.FieldLine = H("#737B88");
@@ -166,6 +169,10 @@ namespace CSCommonUX
             Look.TipInk = H("#ECEDF2");
             Look.WarnFill = H(light ? "#FFE8CC" : "#FFD9A8");
             Look.WarnInk = H(light ? "#8A4A00" : "#5A3000");
+            // 히어로 면(시안 금색 #FFFAEB = 서브 채움 60% + 흰색) · 잘됨 파스텔(팔레트와 상관없이 청록 — 상태 알약 '양호 · 닿음 · 입촌 완료')
+            Look.HeroFill = light ? Color.Lerp(Color.white, Look.PastelSubFill, 0.6f) : Draw.Alpha(Look.PastelFill, 0.08f);
+            Look.OkFill = SeparateOk ? H(light ? "#D6F3EE" : "#B8EFE6") : Look.PastelFill;
+            Look.OkInk = SeparateOk ? H(light ? "#0B4F47" : "#0A3D37") : Look.PastelInk;
             Look.CountBg = new Color(1f, 169f / 255f, 77f / 255f, 0.22f);
         }
     }

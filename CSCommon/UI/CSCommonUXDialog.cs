@@ -66,6 +66,35 @@ namespace CSCommonUX
     {
         public const float Width = 420f, MinHeight = 224f, Radius = 14f, Pad = 20f, Gap = 10f, IconD = 44f, IconSize = 20f, TitleFont = 17f, TitleH = 24f, TextFont = 13.5f, BtnGap = 8f;
 
+        /// <summary>
+        /// 고르기 창(시안 '종목 유형 모달 3.0' · 유형이 많아 넓은 모달 폭 720 · 모달 타일 높이 72): 요소 사이 12 · 머리 한 줄(아이콘 원 44 · 제목 17 · 오른쪽 배지)
+        /// → 묶음마다 소제목(12 · 16 줄 → 4) + 타일 격자(4열 · 그림 32 선 1.6 · 그림과 이름 사이 8 · 추천 배지 안쪽 8 · 넘치면 창 안 스크롤)
+        /// → 체크 묶음 76(이름 12 · 16 줄 → 4 → 체크 알약 44 · 체크 칸 앞 12 · 칸과 글 사이 12) → 발(안내 12.5 · [취소] [실행]).
+        /// </summary>
+        public const float PickWidth = Modal.WideWidth, PickGap = 12f, PickTileH = Modal.TileH, PickIcon = 32f, PickStroke = 1.6f, PickIconGap = 8f, PickTagInset = 8f;
+        public const float PickSubH = 76f, PickLabelH = 16f, PickLabelFont = 12f, PickLabelGap = 4f, PickCheckH = 44f, PickCheckPad = 12f, PickHintFont = 12.5f;
+
+        /// <summary>고르기 창 판: 면 Popover.Surface + 1px Look.PillLine(In · Prompt 와 같은 판).</summary>
+        public static void PickFrame(Rect box)
+        {
+            if (!Draw.Repaint) return;
+            Draw.Round(box, Popover.Surface, Radius);
+            Draw.RoundOutline(box, Look.PillLine, Radius);
+        }
+
+        /// <summary>고르기 창 머리 한 줄(높이 IconD): 뜻 아이콘 원 44 · 제목 17 굵게 · 오른쪽 상태 배지(badge, 없으면 생략).</summary>
+        public static void PickHead(Rect r, string icon, string title, string badge)
+        {
+            if (!Draw.Repaint) return;
+            var ic = new Vector2(r.x + IconD * 0.5f, r.center.y);
+            Draw.Dot(ic, IconD * 0.5f, Look.PastelFill);
+            Draw.Icon(icon, new Rect(ic.x - IconSize * 0.5f, ic.y - IconSize * 0.5f, IconSize, IconSize), Look.PastelInk, 24f, 2f);
+            float bw = string.IsNullOrEmpty(badge) ? 0f : Badge.At(0f, 0f, badge, Pal.Primary, null, false);
+            if (bw > 0f) Badge.At(r.xMax - bw, r.center.y, badge, Pal.Primary);
+            float x = r.x + IconD + PickGap;
+            Draw.TextFit(new Rect(x, r.y, Mathf.Max(0f, r.xMax - bw - PickGap - x), r.height), title, TitleFont, Look.BarInk, true);
+        }
+
         static float TextTop => Pad + IconD + Gap + TitleH + Gap;
 
         /// <summary>판 높이: 224(설명이 두세 줄이면 그대로), 더 길면 설명만큼.</summary>
@@ -87,18 +116,7 @@ namespace CSCommonUX
         {
             float opacity = Draw.Opacity;
             Draw.Opacity *= appear;
-            float x = box.x + Pad, y = box.y + Pad, inner = box.width - Pad * 2f;
-            if (Draw.Repaint)
-            {
-                Draw.Round(box, Popover.Surface, Radius);
-                Draw.RoundOutline(box, Look.PillLine, Radius);
-                var ic = new Vector2(x + IconD * 0.5f, y + IconD * 0.5f);
-                Draw.Dot(ic, IconD * 0.5f, danger ? Look.FabCancelFill : Look.PastelFill);
-                Draw.Icon(danger ? Icons.Warn : Icons.Info, new Rect(ic.x - IconSize * 0.5f, ic.y - IconSize * 0.5f, IconSize, IconSize), danger ? Look.FabCancelInk : Look.PastelInk, 24f, 2f);
-                Draw.TextFit(new Rect(x, y + IconD + Gap, inner, TitleH), title, TitleFont, Look.BarInk, true);
-                if (!string.IsNullOrEmpty(text))
-                    Draw.Text(new Rect(x, box.y + TextTop, inner, Draw.TextHeight(text, TextFont, inner)), text, TextFont, Section.SubInk, false, TextAnchor.UpperLeft, true);
-            }
+            Head(box, danger ? Icons.Warn : Icons.Info, danger, title, text);
             float by = box.yMax - Pad - CSCommonDesign.ActionHeight;
             float okW = Button.Width(danger ? Icons.Trash : Icons.Check, ok), cancelW = Button.Width(null, cancel);
             var okR = new Rect(box.xMax - Pad - okW, by, okW, CSCommonDesign.ActionHeight);
@@ -109,6 +127,87 @@ namespace CSCommonUX
             Button.In(okR, danger ? Icons.Trash : Icons.Check, ok, null, danger ? Tone.Danger : Tone.Primary, null, true, () => hit = 1);
             Draw.Opacity = opacity;
             return hit;
+        }
+
+        /// <summary>입력 창 높이: 확인 창 + 글 칸(단추 높이) + 사이.</summary>
+        public static float PromptHeight(string text, float width = Width) => Height(text, width) + CSCommonDesign.ActionHeight + Gap;
+
+        /// <summary>입력 창 자리: area 가운데(폭은 area − 40 안) + 열 때 10 아래에서 떠오름.</summary>
+        public static Rect PlacePrompt(Rect area, string text, float appear = 1f)
+        {
+            float w = Mathf.Min(Width, area.width - Pad * 2f), h = PromptHeight(text, w);
+            return new Rect(Mathf.Round(area.center.x - w * 0.5f), Mathf.Round(area.center.y - h * 0.5f + (1f - appear) * Modal.Rise), w, h);
+        }
+
+        /// <summary>
+        /// 입력 창(이름 바꾸기): 머리(icon · 제목 · 설명)는 In 과 같고, 발 위에 글 칸(value · maxLength · 지우기), 발은 왼쪽 회색 [reset](있으면) · 오른쪽 [취소 · 확인]. Enter = 확인.
+        /// 고친 글은 value 로 돌려주고, 누른 단추: 1 = 확인 · 0 = 취소 · 2 = reset · -1 = 없음.
+        /// </summary>
+        public static int Prompt(Rect box, string icon, string title, string text, ref string value, int maxLength, string placeholder, string ok, string cancel, string reset, float appear = 1f)
+        {
+            float opacity = Draw.Opacity;
+            Draw.Opacity *= appear;
+            int hit = -1;
+            var e = Event.current;
+            if (e.type == EventType.KeyDown && (e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter))
+            {
+                hit = 1;
+                e.Use();
+            }
+            Head(box, icon ?? Icons.Info, false, title, text);
+            float by = box.yMax - Pad - CSCommonDesign.ActionHeight;
+            value = Textfield.In(new Rect(box.x + Pad, by - Gap - CSCommonDesign.ActionHeight, box.width - Pad * 2f, CSCommonDesign.ActionHeight), value ?? "", maxLength, placeholder, name: "csDialogPrompt", clearable: true);
+            float okW = Button.Width(Icons.Check, ok), cancelW = Button.Width(null, cancel);
+            var okR = new Rect(box.xMax - Pad - okW, by, okW, CSCommonDesign.ActionHeight);
+            var cancelR = new Rect(okR.x - BtnGap - cancelW, by, cancelW, CSCommonDesign.ActionHeight);
+            if (!string.IsNullOrEmpty(reset))
+                Button.In(new Rect(box.x + Pad, by, Button.Width(Icons.Undo, reset), CSCommonDesign.ActionHeight), Icons.Undo, reset, null, Tone.Neutral, null, true, () => hit = 2);
+            Button.In(cancelR, null, cancel, null, Tone.Neutral, null, true, () => hit = 0);
+            Button.In(okR, Icons.Check, ok, null, Tone.Primary, null, true, () => hit = 1);
+            Draw.Opacity = opacity;
+            return hit;
+        }
+
+        /// <summary>판 + 머리(뜻 아이콘 원 44 → 제목 → 설명). In · List · Prompt 가 같이 씀.</summary>
+        static void Head(Rect box, string icon, bool danger, string title, string text)
+        {
+            if (!Draw.Repaint) return;
+            float x = box.x + Pad, y = box.y + Pad, inner = box.width - Pad * 2f;
+            Draw.Round(box, Popover.Surface, Radius);
+            Draw.RoundOutline(box, Look.PillLine, Radius);
+            var ic = new Vector2(x + IconD * 0.5f, y + IconD * 0.5f);
+            Draw.Dot(ic, IconD * 0.5f, danger ? Look.FabCancelFill : Look.PastelFill);
+            Draw.Icon(icon, new Rect(ic.x - IconSize * 0.5f, ic.y - IconSize * 0.5f, IconSize, IconSize), danger ? Look.FabCancelInk : Look.PastelInk, 24f, 2f);
+            Draw.TextFit(new Rect(x, y + IconD + Gap, inner, TitleH), title, TitleFont, Look.BarInk, true);
+            if (!string.IsNullOrEmpty(text))
+                Draw.Text(new Rect(x, box.y + TextTop, inner, Draw.TextHeight(text, TextFont, inner)), text, TextFont, Section.SubInk, false, TextAnchor.UpperLeft, true);
+        }
+
+        /// <summary>목록 대화상자 높이(시안 '달리는 버스 더 보기' 420 × 640 — 화면이 작으면 area 안으로 줄어듦).</summary>
+        public const float ListHeight = 640f;
+
+        /// <summary>목록 대화상자 자리: area 가운데 420 × 640(area − 40 안) + 열 때 10 아래에서 떠오름.</summary>
+        public static Rect PlaceList(Rect area, float appear = 1f)
+        {
+            float w = Mathf.Min(Width, area.width - Pad * 2f), h = Mathf.Max(MinHeight, Mathf.Min(ListHeight, area.height - Pad * 2f));
+            return new Rect(Mathf.Round(area.center.x - w * 0.5f), Mathf.Round(area.center.y - h * 0.5f + (1f - appear) * Modal.Rise), w, h);
+        }
+
+        /// <summary>
+        /// 목록 대화상자(시안 '달리는 버스 더 보기'): 머리(아이콘 원 44 · 제목 · 설명)는 In 과 같고, 몸 칸(설명 아래 Gap ~ 발 단추 위 Gap)은 부르는 쪽이 채움(필터 칩 · 스크롤 목록),
+        /// 발은 오른쪽 아래 회색 [close] 하나. 몸 칸을 돌려주고 닫기를 눌러 떼면 closed. 투명도(appear)는 부르는 쪽이 Draw.Opacity 로.
+        /// </summary>
+        public static Rect List(Rect box, string icon, string title, string text, string close, out bool closed)
+        {
+            Head(box, icon, false, title, text);
+            float inner = box.width - Pad * 2f;
+            float top = box.y + TextTop + (string.IsNullOrEmpty(text) ? 0f : Draw.TextHeight(text, TextFont, inner) + Gap);
+            float by = box.yMax - Pad - CSCommonDesign.ActionHeight;
+            float cw = Button.Width(null, close);
+            bool hit = false;
+            Button.In(new Rect(box.xMax - Pad - cw, by, cw, CSCommonDesign.ActionHeight), null, close, null, Tone.Neutral, null, true, () => hit = true);
+            closed = hit;
+            return new Rect(box.x + Pad, top, inner, Mathf.Max(0f, by - Gap - top));
         }
     }
 }
