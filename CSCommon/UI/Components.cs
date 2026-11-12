@@ -2319,18 +2319,30 @@ namespace CSCommonUX
         struct TearState
         {
             public float T, At, Seen;
+            public int Frame;
         }
 
         static readonly Dictionary<int, TearState> tears = new();
 
         /// <summary>
-        /// 뜯어져 나오기 진행도(0 ~ 1): show 쪽으로 TearSeconds 동안 시간 비례로 감(그리기 때만). 0.25초 넘게 안 불렸으면 0 에서 다시 — 다시 생기면 또 뜯어져 나옴.
+        /// 뜯어져 나오기 진행도(0 ~ 1): show 쪽으로 TearSeconds 동안 시간 비례로 감(그리기 때만). 0.25초 넘게 · 한 틀 넘게 안 불렸으면 0 에서 다시 — 다시 생기면 또 뜯어져 나옴.
+        /// 틀 수도 보는 까닭: 한 틀이 0.25초 넘게 걸리면(탭 다시 짓기 · 자동 저장 · GC) 매 틀 불렸는데도 다시 뜯어져 나왔음.
         /// </summary>
         public static float TearProgress(int key, bool show)
         {
             float now = Time.unscaledTime;
-            if (!tears.TryGetValue(key, out var s) || now - s.Seen > 0.25f) s = new TearState { At = now };
+            int frame = Time.frameCount;
+            bool had = tears.TryGetValue(key, out var s);
+            if (had && now - s.Seen > 0.25f)
+            {
+                // 진단(잠시): 서브 알약이 다시 뜯어져 나올 뻔한 때 한 줄 — 긴 한 틀이면 그대로 둠
+                bool gone = frame - s.Frame > 1;
+                if (show) CSCommonLog.Info("[진단] 알약 다시 나옴 " + (gone ? "시작" : "막음(긴 틀)") + " key=" + key + " 쉰 시간=" + (now - s.Seen).ToString("0.00") + "초 쉰 틀=" + (frame - s.Frame));
+                if (gone) had = false;
+            }
+            if (!had) s = new TearState { At = now };
             s.Seen = now;
+            s.Frame = frame;
             if (Event.current == null || Event.current.type == EventType.Repaint)
             {
                 s.T = Mathf.MoveTowards(s.T, show ? 1f : 0f, Mathf.Clamp(now - s.At, 0f, 0.1f) / TearSeconds);

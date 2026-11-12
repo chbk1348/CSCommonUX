@@ -113,15 +113,17 @@ namespace CSCommonUX
         }
 
         /// <summary>
-        /// 등장 전환: 열쇠의 '보이는 상태'가 이번에 켜졌거나(지난번 그린 뒤 gap 초 넘게 안 그림) id 가 바뀌면 처음부터.
+        /// 등장 전환: 열쇠의 '보이는 상태'가 이번에 켜졌거나(지난번 그린 뒤 gap 초 넘게 · 한 틀 넘게 안 그림 — 긴 한 틀은 아님) id 가 바뀌면 처음부터.
         /// 0 → 1 로 duration 초 동안 가는 진행도(ease-out)를 돌려줌.
         /// </summary>
         public static float Appear(int key, int id, float duration = 0.18f, float gap = 0.25f)
         {
             float now = Time.unscaledTime;
-            if (!appear.TryGetValue(key, out var a) || a.Id != id || now - a.Seen > gap)
+            int frame = Time.frameCount;
+            if (!appear.TryGetValue(key, out var a) || a.Id != id || (now - a.Seen > gap && frame - a.Frame > 1))
                 a = new Show { Id = id, Start = now };
             a.Seen = now;
+            a.Frame = frame;
             appear[key] = a;
             return EaseOut((now - a.Start) / duration);
         }
@@ -130,6 +132,7 @@ namespace CSCommonUX
         {
             public int Id;
             public float Start, Seen;
+            public int Frame;
         }
 
         static readonly Dictionary<int, Show> appear = new();
