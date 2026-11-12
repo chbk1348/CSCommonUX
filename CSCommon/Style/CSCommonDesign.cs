@@ -59,6 +59,8 @@ namespace CSCommonUX
         /// <summary>CSCommonUX.Switch 알약 크기(시안 'CSCommonUX.Switch' 48 × 28 — F1 줄 · 설정 패널 · 기상청 설정이 같은 크기).</summary>
         public const float SwitchW = 48f, SwitchH = 28f;
         public const float FabSize = 40f;
+        /// <summary>모드 메인 창 고정 크기(크기 조절 없음 · 화면보다 크면 줄임).</summary>
+        public const float WindowW = 1180f, WindowH = 920f;
         public const float FabMargin = 8f;
 
         /// <summary>지도 마커 화면 크기(px, 줌과 상관없이 같음) S · M · L · 어두운 테두리 두께 · 링 두께.</summary>
