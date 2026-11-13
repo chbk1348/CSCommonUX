@@ -45,6 +45,16 @@ namespace CSCommonUX
         public static Color WecTowerBg = Draw.Hex("#0B1B3A"), WecBand = Draw.Hex("#E4162B"), WecBandEnd = Draw.Hex("#7C0A1A");
         /// <summary>NASCAR 방송 타워: 검정 판 · 짝수 줄 · 순위 칸 · 시리즈 이름 띠(회색) · 바깥 테두리(밝은 초록). 라이트 테마에서도 같음.</summary>
         public static Color NascarTowerBg = Draw.Hex("#101012"), NascarRowAlt = Draw.Hex("#1A1A1D"), NascarPosBg = Draw.Hex("#2B2C30"), NascarBand = Draw.Hex("#3A3C42"), NascarBorder = Draw.Hex("#3DDC4A");
+        /// <summary>
+        /// 방송 연출(결승 전 인트로 — 게임 화면 위 그래픽이라 테마와 상관없이 고정): 섹터 1 · 2 · 3(빨강 · 파랑 · 노랑) · 오버테이크 초록 · 글(흰색),
+        /// 판 남색(정보 판 · 표지) · 짙은 판(지구 장면 목록 카드) · 트랙 몸(남색) · 그리드 장면 바탕 · 가운데 번짐.
+        /// </summary>
+        public static Color FixedSectorRed = Draw.Hex("#FF2A2A"), FixedSectorBlue = Draw.Hex("#33A8FF"), FixedSectorYellow = Draw.Hex("#FFE600"), FixedOvertake = Draw.Hex("#3CFF6E"), FixedBroadcastInk = Draw.Hex("#FFFFFF");
+        public static Color FixedBroadcastPanel = Draw.Hex("#1D1B28"), FixedBroadcastCard = Draw.Hex("#0E0E18"), FixedBroadcastTrack = Draw.Hex("#1C2140"), FixedBroadcastGrid = Draw.Hex("#121318"), FixedBroadcastGridGlow = Draw.Hex("#2A2B33");
+        /// <summary>방송 지구(테마와 상관없이 고정): 깊은 바다 · 밝은 바다 · 땅 · 우주 바탕 · 우주 번짐 · 지구 둘레 빛.</summary>
+        public static Color FixedGlobeSeaDeep = Draw.Hex("#061F55"), FixedGlobeSea = Draw.Hex("#3D93E6"), FixedGlobeLand = Draw.Hex("#5FA548"), FixedGlobeSpace = Draw.Hex("#090C16"), FixedGlobeSpaceGlow = Draw.Hex("#123A7A"), FixedGlobeHalo = Draw.Hex("#3B8CFF");
+        /// <summary>분류 색 넷(빨강 · 보라 · 파랑 · 청록 — 예: 팬 뉴스 분류 점 · 범례). 라이트 값은 CSCommonTheme(흰 바탕 위 3:1 이상).</summary>
+        public static Color CatRed = Draw.Hex("#FF8A80"), CatViolet = Draw.Hex("#C9A6FF"), CatBlue = Draw.Hex("#8FB0FF"), CatTeal = Draw.Hex("#7FD6C8");
         /// <summary>시리즈 옅은 글(Pink 자리) = 시리즈 색과 Strong 을 섞는 비율.</summary>
         /// <summary>시리즈 옅은 글(Pink 자리) = 시리즈 색과 Strong 을 섞는 비율.</summary>
         public const float SeriesTintMix = 0.5f;

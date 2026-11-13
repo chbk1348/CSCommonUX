@@ -173,6 +173,32 @@ namespace CSCommonUX
             Look.HeroFill = light ? Color.Lerp(Color.white, Look.PastelSubFill, 0.6f) : Draw.Alpha(Look.PastelFill, 0.08f);
             Look.OkFill = SeparateOk ? H(light ? "#D6F3EE" : "#B8EFE6") : Look.PastelFill;
             Look.OkInk = SeparateOk ? H(light ? "#0B4F47" : "#0A3D37") : Look.PastelInk;
+            // 히어로 선 · 노랑 · 파랑 파스텔(라이트 = 다크보다 옅은 채움 · 한 단 밝은 글, 히어로 면 = HeroFill 라이트 규칙 서브 채움 60% + 흰색 · 선 = 글 16%) · 잘됨 옅은 판 · 하늘 옅은 면
+            Look.HeroLine = Draw.Alpha(light ? Look.PastelInk : Look.PastelFill, 0.14f);
+            Look.SeriesYellowFill = H(light ? "#FFF0C2" : "#FFE49A");
+            Look.SeriesYellowInk = H(light ? "#5C4300" : "#4A3500");
+            Look.SeriesYellowHero = H(light ? "#FFFAEB" : "#22201A");
+            Look.SeriesYellowHeroLine = Draw.Alpha(H(light ? "#5C4300" : "#FFE49A"), 0.16f);
+            Look.SeriesBlueFill = H(light ? "#DCE7FF" : "#C6D8FF");
+            Look.SeriesBlueInk = H(light ? "#1A3D75" : "#14305C");
+            Look.SeriesBlueHero = H(light ? "#F4F8FF" : "#1A1F2A");
+            Look.SeriesBlueHeroLine = Draw.Alpha(H(light ? "#1A3D75" : "#C6D8FF"), 0.16f);
+            Look.OkSubFill = light ? Draw.Alpha(H("#14A08C"), 0.08f) : Draw.Alpha(H("#7FD6C8"), 0.06f);
+            Look.OkSubLine = Draw.Alpha(H(light ? "#0B4F47" : "#7FD6C8"), 0.18f);
+            Look.SkySubFill = Draw.Alpha(H(light ? "#5B7BB8" : "#8FA8D6"), 0.14f);
+            // 하늘 히어로 면 · 경고 옅은 판(라이트 = 진한 주황 · 글로 흰 바탕 위에서 보이게) · 파스텔 줄 강조(라이트 = 서브 채움)
+            Look.SkyHeroFill = Draw.Alpha(H(light ? "#5B7BB8" : "#8FA8D6"), 0.07f);
+            Look.WarnSubFill = light ? Draw.Alpha(H("#F0A24A"), 0.10f) : Draw.Alpha(H("#FFD9A8"), 0.08f);
+            Look.WarnSubLine = Draw.Alpha(H(light ? "#8A4A00" : "#FFD9A8"), light ? 0.18f : 0.25f);
+            Look.PastelRowFill = light ? Look.PastelSubFill : Draw.Alpha(Look.PastelFill, 0.08f);
+            // 파스텔 고른 칸 면 · 1px 선(라이트 = 서브 채움 · 글 35%) · 값 막대 홈(Look.Pill 칸 위에서 보이게 한 단 진하게) · 분류 색 넷(라이트 = 흰 바탕 위 3:1 이상)
+            Look.PastelPickFill = light ? Look.PastelSubFill : Draw.Alpha(Look.PastelFill, 0.12f);
+            Look.PastelPickLine = Draw.Alpha(light ? Look.PastelInk : Look.PastelFill, 0.35f);
+            Look.MeterTrack = H(light ? "#DADCE0" : "#343A44");
+            Pal.CatRed = H(light ? "#C5221F" : "#FF8A80");
+            Pal.CatViolet = H(light ? "#7B4FD1" : "#C9A6FF");
+            Pal.CatBlue = H(light ? "#2F5BD3" : "#8FB0FF");
+            Pal.CatTeal = H(light ? "#00796B" : "#7FD6C8");
             Look.CountBg = new Color(1f, 169f / 255f, 77f / 255f, 0.22f);
         }
     }

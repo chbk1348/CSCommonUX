@@ -24,6 +24,9 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - **툴바:** `DockTool` 툴팁 문자열을 마우스를 올렸을 때만 조립. `Fab` · `SubChip` · `IconGroup` 애니메이션 키를 자리와 무관하게 바꿔 `slots` · `presses` 가 계속 커지지 않게 함. 네임스페이스 `CSCommon.PillBar` → `CSCommonUX.PillBar`.
 - **Section:** 제목 칩과 본문 사이 `HeadGap` 6 → 8, 칩 오른쪽 안쪽 `ChipPadR` 14 → 16. 옵션 패널의 부연 설명(`desc`)은 제목 줄 맨 오른쪽 회색 보조 알약으로 옮김(제목이 없을 때만 본문에 그림).
 - **입력:** 마우스 뗌 판정 한 프레임 늦춤(`releaseFrame`), `Hover` 가 잘린 영역(`visible`)까지 봄.
+- **토큰 추가(2026-11-13, F1 3.0 보드):** `Look.HeroLine`(히어로 1px 선) · `Look.SeriesYellow*` · `Look.SeriesBlue*`(Fill · Ink · Hero · HeroLine — 팔레트와 상관없는 노랑 · 파랑 파스텔, 모드가 고름) · `Look.OkSubFill` · `OkSubLine`(잘됨 옅은 판, 늘 청록) · `Look.SkySubFill`(하늘 옅은 면), `Button.HCompact` 36, `Chip.View`(보기 칩 28 · 흰 면 변형, 치수 `CSCommonDesign.ViewChip*`), `Badge.Pair`(파스텔 짝을 직접 주는 상태 알약). 추가만 — 기존 이름 · 값은 그대로.
+- **토큰 추가(2026-11-13, F1 4.0 레이스 · 레이더 판):** `Look.WarnSubFill` · `WarnSubLine`(경고 옅은 판 면 · 1px 선, 늘 주황 — 코션 판) · `Look.SkyHeroFill`(하늘 히어로 면, 선은 `SkySubFill` — 레이더 도착 예측) · `Look.PastelRowFill`(파스텔 줄 강조 면 — 타이밍 표 선두 줄). 추가만 — 기존 이름 · 값은 그대로.
+- **토큰 추가(2026-11-13, F1 4.0 방송 연출 · 팬 · 팀 · 설정):** `Pal.Fixed*` 방송 고정색(`FixedSectorRed` · `Blue` · `Yellow` · `FixedOvertake` · `FixedBroadcastInk` · `Panel` · `Card` · `Track` · `Grid` · `GridGlow`, 지구 `FixedGlobeSeaDeep` · `Sea` · `Land` · `Space` · `SpaceGlow` · `Halo` — 테마와 상관없음) · `Pal.CatRed` · `CatViolet` · `CatBlue` · `CatTeal`(분류 색 넷, 라이트 값 따로) · `Look.PastelPickFill` · `PastelPickLine`(파스텔 고른 칸 면 · 선) · `Look.MeterTrack`(값 막대 홈) · `CSCommonDesign.ChartDimAlpha` 0.75(차트 선 흐림). 추가만 — 기존 이름 · 값은 그대로.
 - **공통 부품:** `InputBlocker`(모드 7벌 → 1벌, `Begin(모드 이름)` · 값 바뀔 때만 대입 · 맨 앞은 보일 때와 30틀마다 · `At`), `FontPatch`(F1에서 옮김, 글꼴 재빌드 알림 스택 넘침 · 프리징 방지, 여러 모드가 켜져도 한 번만 붙음), `PerfWatch`(할당 없는 계측, N초 평균 · 최대, 50ms 즉시, 로그 함수 `PerfWatch.Log` 바꿔 끼움), `Scan`(건물 전수 스캔 공유 · 프레임 분할 · 구독, 모드 컨트롤러 Update 에서 `Scan.Tick()`, 자가 검사 포함).
 
 ## UX 1.3 변경 (2026-11-10)

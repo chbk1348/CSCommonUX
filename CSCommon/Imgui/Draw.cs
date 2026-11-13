@@ -534,6 +534,28 @@ namespace CSCommonUX
             }
         }
 
+        static readonly Dictionary<int, Texture2D> softLines = new();
+
+        /// <summary>굵기 w(화소) 선의 세로 띠: 높이 w + 1 화소, 화소당 8행, 행 알파 = 가장자리 덮임 비율. 1/4 화소 단위로 캐시.</summary>
+        static Texture2D SoftLineTexture(float w)
+        {
+            int key = Mathf.Clamp(Mathf.RoundToInt(w * 4f), 8, 256);
+            if (softLines.TryGetValue(key, out var tex) && tex != null) return tex;
+            float width = key / 4f, total = width + 1f;
+            int rows = Mathf.Clamp(Mathf.CeilToInt(total * 8f), 8, 512);
+            tex = new Texture2D(1, rows, TextureFormat.ARGB32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear, hideFlags = HideFlags.HideAndDontSave };
+            var px = new Color32[rows];
+            for (int y = 0; y < rows; y++)
+            {
+                float d = Mathf.Abs((y + 0.5f) / rows * total - total * 0.5f);
+                px[y] = new Color32(255, 255, 255, (byte)(Mathf.Clamp01(0.5f + width * 0.5f - d) * 255f));
+            }
+            tex.SetPixels32(px);
+            tex.Apply(false);
+            softLines[key] = tex;
+            return tex;
+        }
+
         public static void Line(Vector2 a, Vector2 b, float width, Color c)
         {
             if (!Repaint || c.a <= 0f || Off(Rect.MinMaxRect(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y)), width + 2f, width + 2f)) return;
@@ -549,8 +571,10 @@ namespace CSCommonUX
             GUIUtility.RotateAroundPivot(angle, sa);
             // 가장자리를 부드럽게(위아래 1화소 남짓 옅어지는 띠 그림) — 꺾인 선 · 지도 서킷이 계단처럼 보이지 않게.
             // 아주 가는 선(2화소 미만)은 옅어지면 흐려 보여 그대로 흰 사각.
-            float soft = w >= 2f ? 1f : 0f;
-            GUI.DrawTexture(new Rect(sa.x, sa.y - w * 0.5f - soft, len, w + soft * 2f), w >= 2f ? LineTexture : Texture2D.whiteTexture);
+            // 굵기(1/4 화소 단위)마다 가장자리 1화소가 정확히 옅어지는 띠 그림 — 사각형 가장자리는 화소 가운데 표본만 잡아 계단이 되므로
+            // 그림 자체가 가장자리 덮임 비율(0.5 + 반폭 − 중심 거리)을 담음. 아주 가는 선(2화소 미만)은 그대로 흰 사각.
+            if (w >= 2f) GUI.DrawTexture(new Rect(sa.x, sa.y - (w + 1f) * 0.5f, len, w + 1f), SoftLineTexture(w));
+            else GUI.DrawTexture(new Rect(sa.x, sa.y - w * 0.5f, len, w), Texture2D.whiteTexture);
             GUI.matrix = old;
             GUI.color = oldColor;
         }

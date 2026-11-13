@@ -68,6 +68,28 @@ namespace CSCommonUX
         public static Color WarnFill = Draw.Hex("#FFD9A8"), WarnInk = Draw.Hex("#5A3000");
         /// <summary>히어로 면(Section.Hero — 모드 파스텔을 아주 옅게) · 잘됨 알약 면 · 글(청록 파스텔, 팔레트와 상관없음). CSCommonTheme.UsePastel 이 채움.</summary>
         public static Color HeroFill = new(184f / 255f, 239f / 255f, 230f / 255f, 0.08f), OkFill = Draw.Hex("#B8EFE6"), OkInk = Draw.Hex("#0A3D37");
+        /// <summary>히어로 1px 선(모드 파스텔을 옅게 — HeroFill 과 짝). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color HeroLine = new(184f / 255f, 239f / 255f, 230f / 255f, 0.14f);
+        /// <summary>
+        /// 팔레트와 상관없는 노랑 · 파랑 파스텔(모드가 고르는 두 번째 · 세 번째 색 — 예: 시리즈 표시 칩 · 히어로): 채움 · 글(채움 위 4.5:1 이상) · 히어로 면 · 히어로 1px 선.
+        /// 노랑 = CSCommonPalette.Gold 파스텔과 같은 값. CSCommonTheme.UsePastel 이 채움.
+        /// </summary>
+        public static Color SeriesYellowFill = Draw.Hex("#FFE49A"), SeriesYellowInk = Draw.Hex("#4A3500"), SeriesYellowHero = Draw.Hex("#22201A"), SeriesYellowHeroLine = new(1f, 228f / 255f, 154f / 255f, 0.16f);
+        public static Color SeriesBlueFill = Draw.Hex("#C6D8FF"), SeriesBlueInk = Draw.Hex("#14305C"), SeriesBlueHero = Draw.Hex("#1A1F2A"), SeriesBlueHeroLine = new(198f / 255f, 216f / 255f, 1f, 0.16f);
+        /// <summary>'잘됨' 판 옅은 면 · 1px 선(청록, 팔레트 · SeparateOk 와 상관없음 — 예: '열 수 있음' 상태 판).</summary>
+        public static Color OkSubFill = new(127f / 255f, 214f / 255f, 200f / 255f, 0.06f), OkSubLine = new(127f / 255f, 214f / 255f, 200f / 255f, 0.18f);
+        /// <summary>하늘색 옅은 면(뜻: 가까움 · 범위 안 — 예: 노선도 400m 안 역 칸).</summary>
+        public static Color SkySubFill = new(143f / 255f, 168f / 255f, 214f / 255f, 0.14f);
+        /// <summary>하늘 히어로 면(SkySubFill 보다 옅게 — 선은 SkySubFill, 예: 레이더 도착 예측 판). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color SkyHeroFill = new(143f / 255f, 168f / 255f, 214f / 255f, 0.07f);
+        /// <summary>경고 옅은 판 면 · 1px 선(주황, 팔레트와 상관없음 — 예: 코션 판). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color WarnSubFill = new(1f, 217f / 255f, 168f / 255f, 0.08f), WarnSubLine = new(1f, 217f / 255f, 168f / 255f, 0.25f);
+        /// <summary>파스텔 줄 강조 면(모드 파스텔을 옅게 — 예: 타이밍 표 선두 줄). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color PastelRowFill = new(184f / 255f, 239f / 255f, 230f / 255f, 0.08f);
+        /// <summary>파스텔 고른 칸 면 · 1px 선(모드 파스텔 — 예: 대체 출전 좌석 칸). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color PastelPickFill = new(184f / 255f, 239f / 255f, 230f / 255f, 0.12f), PastelPickLine = new(184f / 255f, 239f / 255f, 230f / 255f, 0.35f);
+        /// <summary>값 막대 홈(Look.Pill 칸 안 — 예: 설정 값 막대). CSCommonTheme.UsePastel 이 채움.</summary>
+        public static Color MeterTrack = Draw.Hex("#343A44");
 
         /// <summary>호버 0 ~ 1(서서히).</summary>
         public static float Hover(int key, Rect r, bool enabled = true) => 0f; // 호버 효과 없음(호출부 호환)
@@ -205,6 +227,8 @@ namespace CSCommonUX
         /// <summary>높이 · 좌우 · 아이콘↔글 · 글 · 아이콘(보통 / 작게) · 누름 배율.</summary>
         public const float H = 40f, PadX = 20f, Gap = 8f, Font = 14.5f, Icon = 18f;
         public const float HSmall = 32f, PadXSmall = 16f, GapSmall = 6f, FontSmall = 12.5f, IconSmall = 15f, PressScale = 0.95f;
+        /// <summary>줄 · 타일 안 단추 높이(시안 3.0 '.btn.sm'). 36 이상이라 In 은 보통 글 · 아이콘 — 너비는 Width(icon, label) 로.</summary>
+        public const float HCompact = 36f;
 
         /// <summary>글에 맞춘 너비(small = 높이 32). 글이 없으면 정사각.</summary>
         public static float Width(string icon, string label, bool small = false)
@@ -397,6 +421,35 @@ namespace CSCommonUX
             if (Draw.Button(r)) click?.Invoke();
             return w;
         }
+
+        /// <summary>보기 칩 폭(굵은 글로 재서 켜고 끌 때 안 바뀜).</summary>
+        public static float ViewWidth(string label) => CSCommonDesign.ViewChipPadX * 2f + Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ViewChipFont, true));
+
+        /// <summary>
+        /// 보기 칩(시안 3.0 '.vc' — 판 머리의 보기 켜기 · 끄기): 높이 28 · 좌우 12 · 글 12. 켜짐 = 글색 면(다크 흰 면 · 라이트 짙은 면) + 바탕색 굵은 글,
+        /// 꺼짐 = 면 없이 1px Pal.Line + 글색. 누르면 0.95배. 그린 너비를 돌려줌.
+        /// </summary>
+        public static float View(float x, float cy, string label, bool on, Action click, bool draw = true, string tip = null)
+        {
+            float w = ViewWidth(label), h = CSCommonDesign.ViewChipH;
+            if (!draw) return w;
+            var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
+            int key = Look.Key(r, "viewchip", label);
+            float pr = Look.Press(key, r);
+            float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
+            if (Draw.Repaint)
+            {
+                float rad = h * 0.5f;
+                Draw.BeginScale(r.center, Look.PressScale(pr, CSCommonDesign.ChipPressScale));
+                if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Txt, onT), rad);
+                if (onT < 0.99f) Draw.RoundOutline(r, Draw.Alpha(Pal.Line, 1f - onT), rad);
+                Draw.Text(r, label, CSCommonDesign.ViewChipFont, Color.Lerp(Pal.Txt, Pal.Win, onT), on, TextAnchor.MiddleCenter);
+                Draw.EndScale();
+            }
+            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            if (Draw.Button(r)) click?.Invoke();
+            return w;
+        }
     }
 
     /// <summary>
@@ -424,12 +477,20 @@ namespace CSCommonUX
         /// <param name="minW">최소 폭(글이 자주 바뀌는 알약이 옆을 밀지 않게). 글 · 아이콘 · 점은 가운데.</param>
         public static float At(float x, float cy, string text, Color color, string icon = null, bool draw = true, float height = H, bool dot = false, float minW = 0f)
         {
+            Colors(color, out var fill, out var ink);
+            return Paint(x, cy, text, fill, ink, icon, draw, height, dot, minW);
+        }
+
+        /// <summary>파스텔 짝을 직접 준 상태 알약(모드가 고른 색 짝 — 예: Look.SeriesYellowFill · SeriesYellowInk). 그린 너비를 돌려줌.</summary>
+        public static float Pair(float x, float cy, string text, Color fill, Color ink, bool draw = true) => Paint(x, cy, text, fill, ink, null, draw, H, false, 0f);
+
+        static float Paint(float x, float cy, string text, Color fill, Color ink, string icon, bool draw, float height, bool dot, float minW)
+        {
             float tw = Mathf.Ceil(Draw.TextWidth(text, CSCommonDesign.FontMin, true)), iw = icon != null ? Icon + IconGap : dot ? DotD + IconGap : 0f;
             float w = Mathf.Max(minW, PadX * 2f + iw + tw);
             if (draw && Draw.Repaint)
             {
                 var r = new Rect(x, Mathf.Round(cy - height * 0.5f), w, height);
-                Colors(color, out var fill, out var ink);
                 Draw.Round(r, fill, height * 0.5f);
                 float tx = Mathf.Round(r.center.x - (iw + tw) * 0.5f);
                 if (icon != null) Draw.Icon(icon, new Rect(tx, Mathf.Round(r.center.y - Icon * 0.5f), Icon, Icon), ink, 24f, Stroke);

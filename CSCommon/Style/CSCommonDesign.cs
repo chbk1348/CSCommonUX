@@ -16,6 +16,8 @@ namespace CSCommonUX
         public const float GlassPad = 18f, GlassRadius = 28f, GlassStroke = 1f;
         // 지도 위 건물 표시 원(행정 지정 도구): 건물 한 칸 크기(m) · 여유 · 높이 범위 · 투명도
         public const float OverlayCell = 8f, OverlayPad = 8f, OverlayHeight = 60f, OverlayAlpha = 0.6f;
+        /// <summary>차트 선 흐림 투명도(강조 밖 계열 — 예: 순위 변화 곡선 3위 이하).</summary>
+        public const float ChartDimAlpha = 0.75f;
         // 휴대폰 안쪽 배치(행정 패널 같은 앱 화면): 단추 · 줄 · 카드 · 글 크기
         public const float PhoneBtnH = 44f, PhoneGap = 12f, PhoneBtnGap = 8f, PhoneRowH = 26f, PhoneInset = 4f, PhoneCardPad = 18f, PhoneCardTopGap = 14f;
         public const float PhoneTitleH = 44f, PhoneSubH = 22f, PhoneHeadH = 30f, PhoneNameGap = 32f, PhoneStateW = 100f, PhoneValueW = 90f, PhoneKindCardH = 236f, PhoneMoneyCardH = 170f;
@@ -98,6 +100,8 @@ namespace CSCommonUX
         public const float ToastSafeGap = 16f, FloatingGap = 8f, ToastLife = 2.2f, ToastLifeAction = 5f;
         /// <summary>칩(CSCommonUX.Chip, GLDS 칩 D): 높이 · 좌우 · 글 · ▾ ✕ 크기 · 글 → 아이콘 · 누르면 줄어드는 배.</summary>
         public const float ChipHeight = 32f, ChipPadX = 14f, ChipFont = 13f, ChipIcon = 14f, ChipIconGap = 4f, ChipPressScale = 0.95f;
+        /// <summary>보기 칩(CSCommonUX.Chip.View, 시안 3.0 '.vc' — 흰 면 변형): 높이 · 좌우 · 글.</summary>
+        public const float ViewChipH = 28f, ViewChipPadX = 12f, ViewChipFont = 12f;
         /// <summary>비중 줄(CSCommonUX.ShareRow): 위아래 여백 · 높이(여백 8 + 글 20 + 6 + 막대 8 + 여백 8).</summary>
         public const float ShareRowPad = 8f, ShareRowH = 50f;
         /// <summary>서브라벨이 있는 고르기 칸 높이 · 펼친 목록 묶음 머리 높이.</summary>
