@@ -287,7 +287,7 @@ namespace CSCommonUX.UI
     {
         const float Pad = CSCommonUX.Section.Pad, RowPad = CSCommonDesign.CardRowPad, RowIn = 0f; // 글 · 부품이 제목 칩 왼쪽 끝 선에 맞음(안쪽 여백 없음)
 
-        enum Kind { Toggle, Steps, Slider, Button, Info, Note }
+        enum Kind { Toggle, Steps, Slider, Button, Info, Note, Progress }
 
         sealed class Row
         {
@@ -306,6 +306,8 @@ namespace CSCommonUX.UI
             public Action Act;
             public CSCommonButtonKind ButtonKind;
             public Func<bool> Enabled;
+            public Func<string> GetText;
+            public Func<bool> Busy;
             public string Badge;
             public Color BadgeColor, NoteColor;
         }
@@ -341,6 +343,10 @@ namespace CSCommonUX.UI
         public void Info(string label, string value, string badge = null, Color? badgeColor = null) =>
             rows.Add(new Row { Kind = Kind.Info, Label = label, Text = value, Badge = badge, BadgeColor = badgeColor ?? Pal.Sub });
 
+        /// <summary>진행 막대(CSCommonUX.Progress) + 오른쪽 글. get = 0~1, busy 가 true 인 동안 앞에 스피너. 값은 그릴 때마다 읽음(스레드가 올린 값).</summary>
+        public void Progress(string label, string desc, Func<float> get, Func<string> text, Func<bool> busy = null) =>
+            rows.Add(new Row { Kind = Kind.Progress, Label = label, Desc = desc, GetFloat = get, GetText = text, Busy = busy });
+
         public void Note(string text, Color? color = null) =>
             rows.Add(new Row { Kind = Kind.Note, Desc = text, NoteColor = color ?? Pal.Sub });
 
@@ -351,6 +357,7 @@ namespace CSCommonUX.UI
             Kind.Slider => r.Steps != null && r.Steps.Length > 0 ? 430f : 300f,
             Kind.Button => CSCommonUX.Button.Width(null, r.Text),
             Kind.Info => 220f,
+            Kind.Progress => 300f,
             _ => 0f,
         };
 
@@ -358,6 +365,7 @@ namespace CSCommonUX.UI
         {
             Kind.Toggle => 26f,
             Kind.Info => 24f,
+            Kind.Progress => 24f,
             Kind.Note => 0f,
             _ => CSCommonDesign.ActionHeight,
         };
@@ -499,6 +507,17 @@ namespace CSCommonUX.UI
                     var tone = r.ButtonKind == CSCommonButtonKind.Danger ? Tone.Danger : r.ButtonKind == CSCommonButtonKind.Primary ? Tone.Primary : Tone.Neutral;
                     CSCommonUX.Button.In(new Rect(rx, Mathf.Round(cy - 20f), rw, 40f), null, r.Text, null, tone, null, enabled,
                         () => Safe(r.Act, r.Text));
+                    break;
+                }
+                case Kind.Progress:
+                {
+                    bool busy = r.Busy != null && r.Busy();
+                    const float textW = 84f, spinW = 28f;
+                    float bx = rx + (busy ? spinW : 0f);
+                    if (busy) CSCommonUX.Spinner.At(new Vector2(rx + 10f, cy), 20f);
+                    CSCommonUX.Progress.In(new Rect(bx, cy - 8f, row.xMax - textW - 8f - bx, 16f), r.GetFloat());
+                    if (CSCommonUX.Draw.Repaint)
+                        CSCommonUX.Draw.TextFit(new Rect(row.xMax - textW, cy - 12f, textW, 24f), r.GetText(), 13f, Pal.Txt, true, TextAnchor.MiddleRight);
                     break;
                 }
                 case Kind.Info:
