@@ -781,6 +781,14 @@ namespace CSCommonUX
             GUI.SetNextControlName(name);
             string v = Draw.Field(fr, value, font, maxLength);
             GUI.skin.settings.cursorColor = cursor;
+            // 칸 밖을 누르면 초점을 풂: 단추가 MouseDown 을 먼저 써서(Use) IMGUI 가 못 풀면 초점 · IME · 누름 상태가 남아 이후 클릭이 막힘
+            var ev = Event.current;
+            if (focus && ev.rawType == EventType.MouseDown && ev.button == 0 && !r.Contains(Draw.Mouse) && GUI.GetNameOfFocusedControl() == name)
+            {
+                GUI.FocusControl(null);
+                GUIUtility.keyboardControl = 0;
+                focus = false;
+            }
             // 한글 IME: CS1 은 조합을 꺼 둬서 초점 칸에서만 켜고(조합 창은 글 칸 아래), 초점을 잃으면 되돌림
             if (focus)
             {

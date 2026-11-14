@@ -787,17 +787,23 @@ namespace CSCommonUX
 
         static int Px(float size) => Mathf.Max(6, Mathf.RoundToInt(Mathf.Max(size * TextBoost, MinText) * S));
 
-        /// <summary>글자를 키운 모드(TextBoost · MinText)는 칸보다 긴 한 줄 글을 칸에 맞게 줄여 그림 — 범례 · 칩 · 요약 줄이 글자가 커져도 넘치지 않게.</summary>
-        static bool Fitting => TextBoost > 1f || MinText > 0f;
-
-        /// <summary>칸 폭에 맞춘 글자 크기(화면 px). 원래 크기의 82% 밑으로는 줄이지 않음(그래도 길면 넘쳐 그림).</summary>
+        /// <summary>칸 폭에 맞춘 글자 크기(화면 px): 한 줄 글이 칸보다 길면 칸 밖으로 넘치거나 잘리지 않게 줄임(SqueezePx).</summary>
         static int FitPx(string text, float size, int face, float width)
         {
             int px = Px(size);
-            if (!Fitting || width <= 1f) return px;
-            float w = FaceWidthPx(text, px, face), limit = width * S;
+            return width <= 1f ? px : SqueezePx(text, px, face, width);
+        }
+
+        /// <summary>글이 칸 폭(논리)에 들어가는 화면 px — 넘칠 때만 줄이고, CSCommonDesign.FontSqueezeMin(글자 배율 · 최소 크기와 상관없이) 밑으로는 안 줄임.</summary>
+        static int SqueezePx(string text, int px, int face, float width)
+        {
+            float limit = (width + FitSlack) * S, w = FaceWidthPx(text, px, face);
             if (w <= limit) return px;
-            return Mathf.Max(Mathf.Max(6, Mathf.RoundToInt(px * 0.82f)), Mathf.FloorToInt(px * limit / w));
+            int min = Mathf.Min(px, Mathf.Max(6, Mathf.RoundToInt(CSCommonDesign.FontSqueezeMin * S)));
+            int fit = Mathf.Clamp(Mathf.FloorToInt(px * limit / w), min, px);
+            // 글 폭은 크기에 딱 비례하지 않음(화소 반올림) — 한 단계씩 더 줄여 확인
+            while (fit > min && FaceWidthPx(text, fit, face) > limit) fit--;
+            return fit;
         }
 
         /// <summary>글 한 줄 높이(논리 px): 글자 배율 · 최소 크기를 넣은 실제 크기 기준 — 글이 커지면 줄 칸도 같이 커짐.</summary>
@@ -935,7 +941,7 @@ namespace CSCommonUX
 
         /// <summary>
         /// 칸에 맞춘 글(말줄임표 없음): 넘치면 글 크기를 하한(CSCommonDesign.FontMin, 원래 더 작으면 원래 크기)까지 줄여 한 줄로.
-        /// 하한에서도 넘치면 줄바꿈 없이 하한 크기 한 줄로 잘리지 않게 그대로 그림 — 칸 · 문구를 고치라고 자세한 로그에 한 번 알림.
+        /// 하한에서도 넘치면 칸 밖으로 삐져나가지 않게 FontSqueezeMin 까지 더 줄여 한 줄로 그림 — 칸 · 문구를 고치라고 자세한 로그에 한 번 알림.
         /// </summary>
         public static void TextFit(Rect r, string text, float size, Color c, bool bold = false, TextAnchor anchor = TextAnchor.MiddleLeft)
         {
@@ -947,13 +953,7 @@ namespace CSCommonUX
             if (TextWidth(text, s, bold) <= limit) { Text(r, text, s, c, bold, anchor); return; }
             if (overflowSeen.Count > 2000) overflowSeen.Clear();
             if (overflowSeen.Add(text)) CSCommonLog.Detail($"경고: 글이 칸보다 넓음(칸 {r.width:0} · 글 '{text}') — 칸 폭을 늘리거나 문구를 줄이세요");
-            var style = TextStyle(Px(floor), bold, anchor, false);
-            var clip = style.clipping;
-            style.clipping = TextClipping.Overflow;
-            style.normal.textColor = Op(c);
-            content.text = text;
-            style.Draw(ToScreen(r), content, false, false, false, false);
-            style.clipping = clip;
+            Text(r, text, floor, c, bold, anchor); // Text 가 칸 폭까지 더 줄임(SqueezePx)
         }
 
         /// <summary>넘쳐 알린 글(한 번만 알림).</summary>

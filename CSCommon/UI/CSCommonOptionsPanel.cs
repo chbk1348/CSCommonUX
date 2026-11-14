@@ -356,10 +356,13 @@ namespace CSCommonUX.UI
             Kind.Steps => 220f,
             Kind.Slider => r.Steps != null && r.Steps.Length > 0 ? 430f : 300f,
             Kind.Button => CSCommonUX.Button.Width(null, r.Text),
-            Kind.Info => 220f,
+            Kind.Info => 220f + InfoBadgeWidth(r),
             Kind.Progress => 300f,
             _ => 0f,
         };
+
+        // 값 왼쪽에 붙는 배지 몫(배지 + 8) — 이름 글 폭에서 빼야 값이 이름 위로 겹치지 않음
+        static float InfoBadgeWidth(Row r) => string.IsNullOrEmpty(r.Badge) ? 0f : CSCommonUX.Badge.At(0f, 0f, r.Badge, r.BadgeColor, null, false) + 8f;
 
         static float ControlHeight(Row r) => r.Kind switch
         {

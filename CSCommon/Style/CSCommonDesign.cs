@@ -108,6 +108,8 @@ namespace CSCommonUX
         public const float SegmentTwoH = 52f, MenuHeadH = 28f;
         /// <summary>CSCommon 부품 글자 하한(방송 그래픽 · 지도 표시 밖) — 이보다 작은 글은 쓰지 않음.</summary>
         public const float FontMin = 12f;
+        /// <summary>한 줄 글이 칸 밖으로 넘치지 않게 줄이는 마지막 하한(Draw.Text · TextFit 안전망). 여기까지 줄었다면 칸 폭 · 문구를 고칠 곳(자세한 로그에 알림).</summary>
+        public const float FontSqueezeMin = 9f;
 
         // GLDS 2.1 목록 · 지표 · 글(가이드 '가독성 최소 글자' · '지표' · '목록 · 비중 줄')
         /// <summary>글: 본문 · 줄 제목 14 · 값 15 굵게 · 부제 · 안내 13(보조 · 라벨은 FontMin 12). 줄 높이(한 줄 글 칸) 본문 · 값 20 · 보조 16.</summary>
