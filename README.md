@@ -1,6 +1,6 @@
 # CSCommon UX 3.0
 
-Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
+Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다. 모드마다 git 서브모듈(`CSCommonUX/`)로 가져옵니다. 모양 정본은 디자인 캔버스 "CSCommonUX 3.0"(비공개)이고, 규격을 바꾸면 코드 · 이 문서 · 캔버스 보드를 같이 고칩니다.
 
 - `CSCommon/Style/Pal.cs` — 색 토큰(다크 기본값)
 - `CSCommon/Style/CSCommonTheme.cs` — 다크 · 라이트 테마 값과 모드 팔레트(청록 · F1 빨강 · 하늘 · 보라 · 금색)와 툴바 C안 파스텔
@@ -8,14 +8,19 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - `CSCommon/UI/Components.cs` — IMGUI 컴포넌트(Button · Textfield · Select · Switch · Slider · Toast · Dialog …)
 - `CSCommon/UI/CSCommonKit.cs` · `CSCommonToolbar.cs` — 게임 UI(ColossalFramework) 부품 · 위 판 툴바 · 독(Dockbar)
 - `CSCommon/UI/CSCommonUXToolbar.cs` — 모드 창 하단 Toolbar · SubToolBar
+- `CSCommon/UI/InputBlocker.cs` · `Core/FontPatch.cs` · `Core/PerfWatch.cs` · `Core/Scan.cs` — 입력 막기 · 글꼴 패치 · 계측 · 건물 스캔 공통 부품
 - `CSCommon/DesignCheck.targets` — 모드 코드에 색 값 · 치수 숫자 · 직접 그린 IMGUI 부품이 늘면 빌드 오류(CSC001)
 
 ## 사용하는 모드
 
-- F1 그랑프리 — 개인 사용 / 비공개
+- FIA 월드 모터스포츠 챔피언십(F1) — 개인 사용 / 비공개
+- 날씨 / 기후(기상청) — 개인 사용 / 비공개
+- 주차장 그리기 — 개인 사용 / 비공개
+- 지구 그리기 — 개인 사용 / 비공개
+- 올림픽 — 개인 사용 / 비공개
+- 거버넌스(정치) — 개인 사용 / 비공개
 - 환경음 조절기 — 개인 사용 / 비공개
-- 기상청 — 개인 사용 / 비공개
-- 주차장 — 개인 사용 / 비공개
+- 모드 허브(Yuki Mod Box) — 개인 사용 / 비공개
 - 농장 — 개인 사용 / 비공개
 
 ## UX 3.0 변경 (2026-11-11)
@@ -28,6 +33,11 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다.
 - **토큰 추가(2026-11-13, F1 4.0 레이스 · 레이더 판):** `Look.WarnSubFill` · `WarnSubLine`(경고 옅은 판 면 · 1px 선, 늘 주황 — 코션 판) · `Look.SkyHeroFill`(하늘 히어로 면, 선은 `SkySubFill` — 레이더 도착 예측) · `Look.PastelRowFill`(파스텔 줄 강조 면 — 타이밍 표 선두 줄). 추가만 — 기존 이름 · 값은 그대로.
 - **토큰 추가(2026-11-13, F1 4.0 방송 연출 · 팬 · 팀 · 설정):** `Pal.Fixed*` 방송 고정색(`FixedSectorRed` · `Blue` · `Yellow` · `FixedOvertake` · `FixedBroadcastInk` · `Panel` · `Card` · `Track` · `Grid` · `GridGlow`, 지구 `FixedGlobeSeaDeep` · `Sea` · `Land` · `Space` · `SpaceGlow` · `Halo` — 테마와 상관없음) · `Pal.CatRed` · `CatViolet` · `CatBlue` · `CatTeal`(분류 색 넷, 라이트 값 따로) · `Look.PastelPickFill` · `PastelPickLine`(파스텔 고른 칸 면 · 선) · `Look.MeterTrack`(값 막대 홈) · `CSCommonDesign.ChartDimAlpha` 0.75(차트 선 흐림). 추가만 — 기존 이름 · 값은 그대로.
 - **글 넘침 안전망(2026-11-14):** 한 줄 글(`Draw.Text` · `TextFit` · `TextBrand` · `TextWide`)이 칸보다 길면 칸 밖으로 넘치거나 잘리지 않게 `CSCommonDesign.FontSqueezeMin` 9 까지 줄임(예전엔 `TextFit` 하한에서 칸 밖으로 넘쳐 그림). 하한(`FontMin`) 아래로 줄면 자세한 로그에 칸 · 문구를 고칠 곳으로 남김. 설정 패널 정보 줄은 배지 몫만큼 이름 글 폭을 줄여 값이 이름과 겹치지 않음.
+- **허브 공유(2026-11-12):** 모드 허브가 AppDomain 데이터(`CSCommonUX.Hub.v1`)에 표를 올리면 `InputBlocker` 패널을 허브가 한 벌만 깔고(`Host` · `HostFrame`, 모드는 판 칸만 올림), `Draw.Begin` 이 그린 순서를 남겨 위에 그려진 다른 모드 칸 안에서는 `Hover` · `UnderOverlay` 가 받지 않음. 허브가 없으면 예전처럼 모드 혼자.
+- **서브 툴바 다시 나타남 고침(2026-11-12):** 한 틀이 길어 0.25초 넘게 안 불렸어도 바로 앞 틀에 불렸으면 뜯어져 나오기 · 등장을 처음부터 다시 하지 않음.
+- **Stepper · Badge(2026-11-12):** `Stepper.In` 에 `enabled`(잠금) · `canMinus` · `canPlus`(끝값), `Badge.At` 에 `dot`(상태 점 6) · `minW`(최소 폭). 기본값 = 예전 동작.
+- **설정 패널 진행 막대(2026-11-13):** `CSCommonSection.Progress` — 막대 + 오른쪽 글, 일하는 동안 앞에 스피너, 다른 스레드가 올리는 값도 그릴 때마다 읽음.
+- **코드 칩 국기 · 지도 표식(2026-11-14):** `Section.CodeFlag`(코드 → 국기 그림)를 주면 [국기 + 코드] 칩, 폭은 가장 넓은 코드 기준(`Section.CodeSpan`). `Pal.MapTag` · `MapTagInk` · `MapTagSub` · `MapTagShadow` — 게임 화면 위 흰 표식. 확장점이 없으면 예전 그대로.
 - **공통 부품:** `InputBlocker`(모드 7벌 → 1벌, `Begin(모드 이름)` · 값 바뀔 때만 대입 · 맨 앞은 보일 때와 30틀마다 · `At`), `FontPatch`(F1에서 옮김, 글꼴 재빌드 알림 스택 넘침 · 프리징 방지, 여러 모드가 켜져도 한 번만 붙음), `PerfWatch`(할당 없는 계측, N초 평균 · 최대, 50ms 즉시, 로그 함수 `PerfWatch.Log` 바꿔 끼움), `Scan`(건물 전수 스캔 공유 · 프레임 분할 · 구독, 모드 컨트롤러 Update 에서 `Scan.Tick()`, 자가 검사 포함).
 
 ## UX 1.3 변경 (2026-11-10)
@@ -65,7 +75,14 @@ Dockbar 정리 · Section 접기 제거 · TextPill · RoundBottom · Draw.Block
 
 ## 쓰는 법
 
-모드 저장소 뿌리에 `CSCommon` 폴더를 그대로 복사하고, 모드 `.csproj` 에서 `CSCommon.projitems` 를 가져옵니다. 이 저장소가 원본이며, 모드 쪽 폴더를 고치면 여기에도 같이 올립니다.
+모드 저장소 뿌리에 서브모듈로 넣고, 모드 `.csproj` 에서 `CSCommonUX/CSCommon/CSCommon.projitems` 를 가져옵니다.
+
+```bash
+git submodule add https://github.com/chbk1348/CSCommonUX.git CSCommonUX
+git submodule update --remote CSCommonUX   # 정본 최신으로 올리기
+```
+
+이 저장소가 원본입니다. 공용 부품은 여기서 고치고, 모드는 서브모듈 커밋만 올립니다(모드 안에서 사본을 따로 고치지 않음).
 
 ## 라이선스
 
