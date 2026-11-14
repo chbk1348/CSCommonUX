@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CSCommonUX
 {
@@ -91,6 +91,8 @@ namespace CSCommonUX
         // 지도 마커(서킷 라인 도구 · 디자인 툴킷). 상태 색(선택 · 위험 · 정상)은 다른 뜻으로 쓰지 않음
         /// <summary>모든 마커를 두르는 어두운 테두리(잔디 · 아스팔트 · 눈 · 야간 어디서든 대비).</summary>
         public static Color MapHalo = new(11f / 255f, 13f / 255f, 18f / 255f, 0.82f);
+        /// <summary>지도 위 흰 표식(올림픽 버스 위 표식 · 아래 쉐브론): 판 · 굵은 글 · 보조 글 · 그림자. 라이트 · 다크 같음(게임 화면 위).</summary>
+        public static Color MapTag = Draw.Hex("#FFFFFF"), MapTagInk = Draw.Hex("#14181F"), MapTagSub = Draw.Hex("#5F6368"), MapTagShadow = new(0f, 0f, 0f, 0.28f);
         /// <summary>선택 · 끄는 중 · 깜빡임(예약 — 다른 마커에 쓰지 않음).</summary>
         public static Color MapSelect = Draw.Hex("#FFD166");
         /// <summary>철거 · 실패 · 보행로 미연결(예약).</summary>

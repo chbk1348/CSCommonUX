@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CSCommonUX
 {
@@ -185,14 +185,33 @@ namespace CSCommonUX
         /// <summary>코드 칸 40 × 24(반지름 6 · 글 12 굵게 Look.BarOff): 평소 Look.Pill 면, on(강조 줄 위) = Section.Plate 면. 그린 폭(40)을 돌려줌.</summary>
         public static float Code(float x, float cy, string code, bool on = false)
         {
+            // 확장점: 모드가 코드 → 국기 그림을 주면 [국기 + 코드] 칩(폭은 글자에 맞춰 늘어남)
+            var flag = CodeFlag != null && !string.IsNullOrEmpty(code) ? CodeFlag(code) : null;
+            float w = CodeSpan; // 국기 칩은 폭 고정(가장 넓은 코드 기준) — 줄마다 이름 시작이 같게, 국기가 없는 팀도 같은 폭
             if (Draw.Repaint)
             {
-                var r = new Rect(x, Mathf.Round(cy - CodeH * 0.5f), CodeW, CodeH);
+                var r = new Rect(x, Mathf.Round(cy - CodeH * 0.5f), w, CodeH);
                 Draw.Round(r, on ? Plate : Look.Pill, CodeRadius);
-                Draw.TextPill(r, code ?? "", CodeFont, Look.BarOff, true, TextAnchor.MiddleCenter);
+                if (flag == null) Draw.TextPill(r, code ?? "", CodeFont, Look.BarOff, true, TextAnchor.MiddleCenter);
+                else
+                {
+                    Draw.Image(new Rect(x + CodeFlagPadL, Mathf.Round(cy - CodeFlagH * 0.5f), CodeFlagW, CodeFlagH), flag, 1f, ScaleMode.StretchToFill);
+                    float tx = x + CodeFlagPadL + CodeFlagW + CodeFlagGap;
+                    Draw.TextPill(new Rect(tx, r.y, r.xMax - CodeFlagPadR - tx, r.height), code, CodeFont, Look.BarOff, true, TextAnchor.MiddleCenter);
+                }
             }
-            return CodeW;
+            return w;
         }
+
+        /// <summary>코드 칩이 차지하는 폭: 국기 확장점이 없으면 CodeW, 있으면 왼쪽 · 국기 · 사이 · 가장 넓은 코드("WWW") · 오른쪽.</summary>
+        public static float CodeSpan => CodeFlag == null ? CodeW : CodeFlagPadL + CodeFlagW + CodeFlagGap + (codeTextW > 0f ? codeTextW : codeTextW = Mathf.Ceil(Draw.TextWidth("WWW", CodeFont, true))) + CodeFlagPadR;
+        static float codeTextW;
+
+        /// <summary>코드 칩 국기 확장점(없으면 글자만). 모드가 도시를 불러올 때 넣음 — 예: 올림픽 Flags.Get.</summary>
+        public static System.Func<string, Texture> CodeFlag;
+
+        /// <summary>국기 칩: 왼쪽 4 · 국기 18 × 12 · 사이 5 · 코드 · 오른쪽 7.</summary>
+        public const float CodeFlagW = 18f, CodeFlagH = 12f, CodeFlagGap = 5f, CodeFlagPadL = 4f, CodeFlagPadR = 7f;
 
         /// <summary>고른 칸 막대 바탕(표 위 'n곳 선택됨' 줄): Look.Pill 알약(반지름 = 높이/2).</summary>
         public static void Tray(Rect r)
