@@ -11,11 +11,18 @@ namespace CSCommonUX
         /// <summary>판 모서리 · 도트 칸 · 도트 사이 선 굵기 · 테두리 칸 모서리 · 선 굵기 · 흐르는 글 속도(논리 px/초).</summary>
         public const float Radius = 16f, DotStep = 4f, DotLine = 1.5f, BoxRadius = 8f, BoxLine = 1.5f, TickSpeed = 60f;
 
-        /// <summary>판 배치(캔버스 Main · Connections): 왼쪽 역 목록 폭 · 오른쪽 상세 폭 · 일본식 방면 안내판 폭 · 판 안 여백 · 제목 줄 · 칸 머리 줄 · 줄 · 흐르는 글 줄 · 칸 사이 · 작은 판(도착) 줄 · 칸 머리.</summary>
-        public const float RailW = 300f, SideW = 440f, SignW = 200f, Pad = 24f, HeadH = 64f, ColH = 32f, RowH = 48f, TickH = 40f, ColGap = 12f, SmallRowH = 40f, SmallHeadH = 48f, SmallColH = 28f;
+        /// <summary>판 배치(캔버스 Main · Connections · ModularFlow): 역 묶기 1단계 판 폭 · 왼쪽 역 목록 폭 · 오른쪽 상세 폭 · 일본식 방면 안내판 폭 · 판 안 여백 · 제목 줄 · 칸 머리 줄 · 줄 · 흐르는 글 줄 · 칸 사이 · 작은 판(도착) 줄 · 칸 머리.</summary>
+        public const float FlowW = 520f, RailW = 300f, SideW = 440f, SignW = 200f, Pad = 24f, HeadH = 64f, ColH = 32f, RowH = 48f, TickH = 40f, ColGap = 12f, SmallRowH = 40f, SmallHeadH = 48f, SmallColH = 28f;
 
         /// <summary>글 크기: 판 제목 · 줄 · 칸 머리 · 흐르는 글 · 작은 판 제목 · 작은 판 줄.</summary>
         public const float FontTitle = 26f, FontRow = 20f, FontHead = 13f, FontTick = 18f, FontSmallTitle = 18f, FontSmallRow = 16f;
+
+        /// <summary>역 화면 틀(캔버스 Main): 왼쪽 목록 줄 · 목록 아이콘 · 머리 판 아이콘 칸 · 머리 판 아이콘 · 카드 안 여백 · 카드 모서리 · 노선 줄 · 노선 점.</summary>
+        public const float RailRowH = 56f, RailIcon = 20f, Tile = 48f, TileIcon = 24f, CardPad = 14f, CardRadius = 16f, LineRowH = 60f, LineDot = 10f;
+
+        /// <summary>대시보드 노선도(캔버스 Dashboard): 노선 줄 높이 · 왼쪽 노선 이름 칸 · 선 굵기 · 정류장 · 갈아타는 역 · 차량 칩 높이 · 줄 안 선 위치 · 정류장 이름 위치 · 현황 카드 줄 수 · 막대 굵기.</summary>
+        public const float MapRowH = 88f, MapLabelW = 176f, MapTrack = 6f, MapStop = 16f, MapXfer = 20f, MapVehH = 16f, MapTrackY = 36f, MapNameY = 54f, MapVehY = 12f, BarH = 6f;
+        public const int CardsPerRow = 4;
 
         /// <summary>테두리 칸 최소 폭(번호 한 자리).</summary>
         public const float BoxMinW = 36f;
