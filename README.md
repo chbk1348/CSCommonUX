@@ -1,17 +1,18 @@
 # CSCommon UX 3.0
 
-Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다. 모드마다 git 서브모듈(`CSCommonUX/`)로 가져옵니다. 모양 정본은 디자인 캔버스 "CSCommonUX 3.0"(비공개)이고, 규격을 바꾸면 코드 · 이 문서 · 캔버스 보드를 같이 고칩니다.
+Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다. 모드마다 git 서브모듈(`CSCommonUX/`)로 가져오고, 모드 저장소에 사본을 따로 두지 않습니다. 이 저장소(chbk1348/CSCommonUX)가 정본입니다. 모양 정본은 디자인 캔버스 "CSCommonUX 3.0"(비공개)이고, 규격을 바꾸면 코드 · 이 문서 · 캔버스 보드를 같이 고칩니다.
 
-- `CSCommon/Style/Pal.cs` — 색 토큰(다크 기본값)
-- `CSCommon/Style/CSCommonTheme.cs` — 다크 · 라이트 테마 값과 모드 팔레트(청록 · F1 빨강 · 하늘 · 보라 · 금색)와 툴바 C안 파스텔
-- `CSCommon/Style/CSCommonDesign.cs` — 치수 토큰(높이 · 간격 · 모서리 · 글자)
+- `CSCommon/Style/Pal.cs` — `Pal` 색 토큰(다크 기본값)
+- `CSCommon/Style/CSCommonTheme.cs` — 다크 · 라이트 테마 값과 모드 팔레트(청록 · F1 빨강 · 보라 · 금색 · 하늘 · 초록)와 툴바 C안 파스텔
+- `CSCommon/Style/CSCommonDesign.cs` — `CSCommonDesign` 치수 토큰(높이 · 간격 · 모서리 · 글자)
+- `CSCommon/Imgui/Draw.cs` — 그리기 바탕(`Draw` · 글 칸 · `Draw.Curve` 부드러운 선)
 - `CSCommon/UI/Components.cs` — IMGUI 컴포넌트(Button · Textfield · Select · Switch · Slider · Toast · Dialog …)
 - `CSCommon/UI/CSCommonKit.cs` · `CSCommonToolbar.cs` — 게임 UI(ColossalFramework) 부품 · 위 판 툴바 · 독(Dockbar)
-- `CSCommon/UI/CSCommonUXToolbar.cs` — 모드 창 하단 Toolbar · SubToolBar
+- `CSCommon/UI/CSCommonUXToolbar.cs` — 모드 창 하단 Toolbar · SubToolBar · 상세 화면 뒤로 `Toolbar.BackFab`
 - `CSCommon/UI/InputBlocker.cs` · `Core/FontPatch.cs` · `Core/PerfWatch.cs` · `Core/Scan.cs` — 입력 막기 · 글꼴 패치 · 계측 · 건물 스캔 공통 부품
 - `CSCommon/DesignCheck.targets` — 모드 코드에 색 값 · 치수 숫자 · 직접 그린 IMGUI 부품이 늘면 빌드 오류(CSC001)
 
-## 사용하는 모드
+## 사용하는 모드(9개)
 
 - FIA 월드 모터스포츠 챔피언십(F1) — 개인 사용 / 비공개
 - 날씨 / 기후(기상청) — 개인 사용 / 비공개
@@ -21,7 +22,14 @@ Cities: Skylines 모드가 같이 쓰는 UI 공유 폴더입니다. 모드마다
 - 거버넌스(정치) — 개인 사용 / 비공개
 - 환경음 조절기 — 개인 사용 / 비공개
 - 모드 허브(Yuki Mod Box) — 개인 사용 / 비공개
-- 농장 — 개인 사용 / 비공개
+- 프로야구 리그 — 개인 사용 / 비공개
+
+## UX 3.0 변경 (2026-11-15)
+
+- **상세 화면 뒤로 FAB:** `Toolbar.BackFab` — 탭 메인에서 들어가는 상세 화면의 하단 툴바 왼쪽 뒤로가기 원 버튼(올림픽에서 쓰던 계산을 공용으로). 툴팁은 돌아갈 탭 이름.
+- **곡선 그리기:** `Draw.Curve` + `CSCommonDesign.CurveSteps` — 점 사이 가운데를 조절점으로 쓰는 부드러운 선 그래프.
+- **입력 칸 단축키 막기:** `Draw.Field` · `InputBlocker` — 글 칸에 초점이 있으면 게임 단축키 · 카메라 키를 막음.
+- **야구 토큰:** `CSCommonPalette.Green`(라이트 · 야구 초록) · 팀 색 `Pal.Ball*` · 볼카운트 색 · 화면 치수 토큰. 추가만 — 기존 이름 · 값은 그대로.
 
 ## UX 3.0 변경 (2026-11-11)
 
@@ -75,12 +83,14 @@ Dockbar 정리 · Section 접기 제거 · TextPill · RoundBottom · Draw.Block
 
 ## 쓰는 법
 
-모드 저장소 뿌리에 서브모듈로 넣고, 모드 `.csproj` 에서 `CSCommonUX/CSCommon/CSCommon.projitems` 를 가져옵니다.
+모드 저장소 뿌리에 서브모듈로 넣고, 모드 `.csproj` 에서 `CommonDir` = `..\CSCommonUX\CSCommon\` 로 `CSCommon.projitems` 와 `DesignCheck.targets` 를 가져옵니다. 모드 저장소에 CSCommon 폴더를 복사해 두지 않습니다.
 
 ```bash
 git submodule add https://github.com/chbk1348/CSCommonUX.git CSCommonUX
 git submodule update --remote CSCommonUX   # 정본 최신으로 올리기
 ```
+
+모드를 새로 받을 때는 `git clone --recurse-submodules <모드 저장소>`, 서브모듈 없이 받았다면 `git submodule update --init` 으로 받습니다.
 
 이 저장소가 원본입니다. 공용 부품은 여기서 고치고, 모드는 서브모듈 커밋만 올립니다(모드 안에서 사본을 따로 고치지 않음).
 
