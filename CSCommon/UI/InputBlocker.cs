@@ -16,6 +16,8 @@ namespace CSCommonUX
     public static class InputBlocker
     {
         const string NoOwner = "CSCommonUX";
+        /// <summary>막는 패널 이름 끝(모드 이름 + 이것) — Draw.IsOccludedByGame 이 게임 UI 와 구분.</summary>
+        internal const string PanelSuffix = "InputBlocker";
         static readonly List<UIPanel> panels = new();
         static readonly List<Rect> logicals = new(); // 패널마다 이번 프레임 논리 영역(At 용)
         static int used;
@@ -81,7 +83,7 @@ namespace CSCommonUX
             else
             {
                 p = view.AddUIComponent(typeof(UIPanel)) as UIPanel;
-                p.name = owner + "InputBlocker";
+                p.name = owner + PanelSuffix;
                 p.backgroundSprite = null;
                 p.isInteractive = true;
                 p.canFocus = false;

@@ -71,6 +71,12 @@ namespace CSCommonUX
         public const float MarkS = 10f, MarkM = 14f, MarkL = 22f, MarkHalo = 2f, MarkRing = 2.5f;
         /// <summary>도구를 쓰는 동안 그 도구와 상관없는 시설 표시의 불투명도.</summary>
         public const float MarkDim = 0.35f;
+        /// <summary>
+        /// 지도 표식(CSCommonUX.MapPin — 건물 머리 위 흰 알약): 알약 높이 · 왼쪽 · 오른쪽 여백 · 원 지름 · 원 안 아이콘 · 원 → 글 · 이름 글 · 줄 · 상태 글 · 줄 ·
+        /// 상태 점 · 점 → 글 · 기둥 폭 · 높이 · 발 점 · 발 고리 · 그림자 진하기(겹마다) · 그림자 못 구울 때 내림.
+        /// </summary>
+        public const float PinH = 52f, PinPadL = 6f, PinPadR = 16f, PinIconD = 40f, PinGlyph = 22f, PinGap = 10f, PinNameFont = 14f, PinNameH = 18f, PinStateFont = 12f, PinStateH = 16f;
+        public const float PinDot = 8f, PinDotGap = 6f, PinStemW = 2f, PinStemH = 28f, PinFoot = 12f, PinFootRing = 3f, PinShadow = 0.05f, PinShadowY = 2f;
 
         /// <summary>카드(CSCommonUX.Card, 시안 A 선 카드): 모서리 · 안쪽 여백 · 제목 줄 높이 · 제목→설명 · 머리→내용 간격.</summary>
         public const float CardRadius = 12f, CardPad = 16f, CardTitleH = 28f, CardDescGap = 2f, CardHeadGap = 8f;

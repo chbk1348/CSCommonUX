@@ -93,6 +93,9 @@ namespace CSCommonUX
         public static Color MapHalo = new(11f / 255f, 13f / 255f, 18f / 255f, 0.82f);
         /// <summary>지도 위 흰 표식(올림픽 버스 위 표식 · 아래 쉐브론): 판 · 굵은 글 · 보조 글 · 그림자. 라이트 · 다크 같음(게임 화면 위).</summary>
         public static Color MapTag = Draw.Hex("#FFFFFF"), MapTagInk = Draw.Hex("#14181F"), MapTagSub = Draw.Hex("#5F6368"), MapTagShadow = new(0f, 0f, 0f, 0.28f);
+        /// <summary>지도 표식(CSCommonUX.MapPin): 원 면 · 아이콘 청록 · 주의 주황, 상태 점 정상 · 주의, 알약 1px 선 · 기둥 · 발 고리. 라이트 · 다크 같음(게임 화면 위, 판 · 글은 MapTag*).</summary>
+        public static Color MapPinOkFill = Draw.Hex("#D6F3EE"), MapPinOkInk = Draw.Hex("#0B4F47"), MapPinWarnFill = Draw.Hex("#FFE8CC"), MapPinWarnInk = Draw.Hex("#8A4A00");
+        public static Color MapPinOkDot = Draw.Hex("#1A8F5C"), MapPinWarnDot = Draw.Hex("#C2790A"), MapPinLine = new(20f / 255f, 24f / 255f, 31f / 255f, 0.14f), MapPinStem = new(1f, 1f, 1f, 0.9f), MapPinFootRing = new(11f / 255f, 79f / 255f, 71f / 255f, 0.35f);
         /// <summary>선택 · 끄는 중 · 깜빡임(예약 — 다른 마커에 쓰지 않음).</summary>
         public static Color MapSelect = Draw.Hex("#FFD166");
         /// <summary>철거 · 실패 · 보행로 미연결(예약).</summary>
