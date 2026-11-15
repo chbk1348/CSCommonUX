@@ -18,7 +18,7 @@
 ![.NET Framework 3.5](https://img.shields.io/badge/.NET%20Framework-3.5-512BD4?style=flat-square&logo=dotnet&logoColor=white)
 ![Language](https://img.shields.io/badge/언어-한국어-7F8894?style=flat-square)
 
-[라이선스](#-라이선스) · [구성](#-구성) · [사용하는 모드](#-사용하는-모드) · [부품 규격](#-부품-규격) · [쓰는 법](#-쓰는-법) · [변경 내역](#-변경-내역)
+[라이선스](#-라이선스) · [구성](#-구성) · [사용하는 모드](#-사용하는-모드) · [부품 규격](#-부품-규격) · [변경 내역](#-변경-내역)
 
 </div>
 
@@ -93,21 +93,6 @@
 ### 🏷️ 옵션 패널 머리 마크
 
 - `CSCommonOptionsPanel.LogoIcon`(SVG path, viewBox 24)을 넘기면 로고 그림이 없는 모드 머리에 28px 둥근 타일 + 아이콘이 붙음. 둘 다 없으면 자리를 비움(예전 빨강 "F1" 글 제거).
-
----
-
-## 🔧 쓰는 법
-
-모드 저장소 뿌리에 서브모듈로 넣고, 모드 `.csproj` 에서 `CommonDir` = `..\CSCommonUX\CSCommon\` 로 `CSCommon.projitems` 와 `DesignCheck.targets` 를 가져옵니다. 모드 저장소에 CSCommon 폴더를 복사해 두지 않습니다.
-
-```bash
-git submodule add https://github.com/chbk1348/CSCommonUX.git CSCommonUX
-git submodule update --remote CSCommonUX   # 정본 최신으로 올리기
-```
-
-모드를 새로 받을 때는 `git clone --recurse-submodules <모드 저장소>`, 서브모듈 없이 받았다면 `git submodule update --init` 으로 받습니다.
-
-이 저장소가 원본입니다. 공용 부품은 여기서 고치고, 모드는 서브모듈 커밋만 올립니다(모드 안에서 사본을 따로 고치지 않음).
 
 ---
 
