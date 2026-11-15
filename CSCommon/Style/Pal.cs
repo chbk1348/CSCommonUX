@@ -365,5 +365,7 @@ namespace CSCommonUX
 
         /// <summary>레이더 밝은 지도(기상청 식): 글 · 보조 글 · 실황 · 경고 · 줄무늬.</summary>
         public static Color RadarInk = Draw.Hex("#1E2228"), RadarSub = Draw.Hex("#5A6068"), RadarLive = Draw.Hex("#0A7CC4"), RadarWarn = Draw.Hex("#D9480F"), RadarStreak = Draw.Hex("#2A2E34");
+        /// <summary>정치 시위 군중 팻말(3D 재질 색 · 테마와 상관없음): 판 = 흰 종이 · 막대 = 나무 · 글자 = 먹.</summary>
+        public static readonly Color SignPaper = new(0.94f, 0.93f, 0.89f, 1f), SignWood = new(0.52f, 0.37f, 0.22f, 1f), SignInk = Color.black;
     }
 }

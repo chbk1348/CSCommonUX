@@ -242,6 +242,8 @@ namespace CSCommonUX.UI
                 CSCommonUX.Select.Close();
                 e.Use();
             }
+            var bar = new Rect(inner.x, inner.y, view.xMax - inner.x, inner.height); // 막대는 우물 여백(오른쪽 끝)에
+            if (CSCommonUX.ScrollBar.Handle(bar, contentH, ref scroll)) CSCommonUX.Select.Close();
             scroll = Mathf.Clamp(scroll, 0f, Mathf.Max(0f, contentH - inner.height));
 
             CSCommonUX.Section.Well(view);
@@ -269,13 +271,7 @@ namespace CSCommonUX.UI
             contentH = Mathf.Max(0f, y - gap);
             CSCommonUX.Draw.EndClip();
 
-            // 가는 스크롤 손잡이(넘칠 때만)
-            if (contentH > inner.height && CSCommonUX.Draw.Repaint)
-            {
-                float th = Mathf.Max(30f, inner.height * inner.height / contentH);
-                float t = scroll / (contentH - inner.height);
-                CSCommonUX.Draw.Round(new Rect(view.xMax - 6f, inner.y + (inner.height - th) * t, 4f, th), Pal.Line2, 2f);
-            }
+            CSCommonUX.ScrollBar.Paint(bar, contentH, scroll);
         }
     }
 

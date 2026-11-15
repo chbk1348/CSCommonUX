@@ -130,6 +130,8 @@ namespace CSCommonUX
         public const float SidePanelW = 340f;
         /// <summary>글 칸 앞뒤 단위와 값 사이 · 지우기 ✕ 크기.</summary>
         public const float FieldAffixGap = 4f, FieldClear = 16f;
+        /// <summary>세로 스크롤 막대(CSCommonUX.ScrollBar): 막대 폭 · 칸 끝 → 막대 안쪽 · 막대 최소 길이 · 누름 띠 폭(칸 오른쪽 끝에서, 막대보다 넓게 잡기 쉽게).</summary>
+        public const float ScrollBarW = 4f, ScrollBarInset = 4f, ScrollBarMinH = 30f, ScrollBarHit = 14f;
         /// <summary>입력 칸 · 분절 홈 모서리.</summary>
         public const float RadiusField = 9f;
 

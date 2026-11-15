@@ -342,8 +342,6 @@ namespace CSCommonUX.UI
             bool closing;
             float closeTime;
             UIPanel closingPanel;
-            bool draggingBar;
-            float dragGrabOffset;
 
             public void Init(string dialogTitle, List<LayoutRow> dialogRows, Action onDontShowAgain)
             {
@@ -427,7 +425,7 @@ namespace CSCommonUX.UI
                     return;
                 }
                 // 부드러운 휠 관성 스크롤 보간 (드래그 중에는 즉시 추종)
-                if (!draggingBar && !Mathf.Approximately(scroll, targetScroll))
+                if (!ScrollBar.Dragging && !Mathf.Approximately(scroll, targetScroll))
                 {
                     float dt = Mathf.Min(0.05f, Time.unscaledDeltaTime);
                     scroll = Mathf.Lerp(scroll, targetScroll, 1f - Mathf.Exp(-22f * dt));
@@ -533,7 +531,6 @@ namespace CSCommonUX.UI
 
                 // 본문 스크롤 영역
                 var bodyRect = new Rect(box.x + Pad, box.y + HeadH + CSCommonUX.Modal.BodyTop, box.width - Pad * 2f, bodyH);
-                var barTrack = new Rect(bodyRect.xMax - ScrollBarW, bodyRect.y, ScrollBarW, bodyH);
 
                 // 마우스 휠 스크롤 (가속 · 부드러운 감속)
                 if (e.type == EventType.ScrollWheel && maxScroll > 0f && Draw.Hover(box))
@@ -542,41 +539,8 @@ namespace CSCommonUX.UI
                     e.Use();
                 }
 
-                // 스크롤바 마우스 드래그 · 트랙 클릭 이동
-                if (maxScroll > 0f)
-                {
-                    float thumbH = Mathf.Max(32f, bodyH * bodyH / contentH);
-                    float travel = Mathf.Max(1f, bodyH - thumbH);
-                    float thumbY = barTrack.y + travel * (scroll / maxScroll);
-                    var thumbRect = new Rect(barTrack.x, thumbY, barTrack.width, thumbH);
-
-                    if (e.type == EventType.MouseDown && e.button == 0 && Draw.Hover(barTrack))
-                    {
-                        draggingBar = true;
-                        if (Draw.Hover(thumbRect))
-                        {
-                            dragGrabOffset = Draw.Mouse.y - thumbY;
-                        }
-                        else
-                        {
-                            dragGrabOffset = thumbH * 0.5f;
-                            float ratio = Mathf.Clamp01((Draw.Mouse.y - barTrack.y - dragGrabOffset) / travel);
-                            scroll = targetScroll = ratio * maxScroll;
-                        }
-                        e.Use();
-                    }
-                    else if (e.type == EventType.MouseDrag && draggingBar)
-                    {
-                        float ratio = Mathf.Clamp01((Draw.Mouse.y - barTrack.y - dragGrabOffset) / travel);
-                        scroll = targetScroll = ratio * maxScroll;
-                        e.Use();
-                    }
-                    else if (e.rawType == EventType.MouseUp && draggingBar)
-                    {
-                        draggingBar = false;
-                        e.Use();
-                    }
-                }
+                // 스크롤바 잡고 끌기 · 길 누르기(CSCommonUX.ScrollBar) — 끄는 동안은 보간 없이 바로 따라옴
+                if (ScrollBar.Handle(bodyRect, contentH, ref targetScroll)) scroll = targetScroll;
 
                 // 가상화 본문 렌더링: 현재 화면(scroll ~ scroll + bodyH)에 걸치는 줄만 그림
                 Draw.BeginClip(bodyRect, new Vector2(0f, Mathf.Round(scroll)));
@@ -594,19 +558,8 @@ namespace CSCommonUX.UI
                 }
                 Draw.EndClip();
 
-                // 스크롤바 렌더링 (호버/드래그 시 넓어지고 밝아짐)
-                if (maxScroll > 0f && Draw.Repaint)
-                {
-                    bool barHover = draggingBar;
-                    float thumbH = Mathf.Max(32f, bodyH * bodyH / contentH);
-                    float travel = Mathf.Max(1f, bodyH - thumbH);
-                    float thumbY = barTrack.y + travel * (scroll / maxScroll);
-                    float barW = barHover ? 6f : 4f;
-                    float barX = barTrack.x + (barTrack.width - barW) * 0.5f;
-                    Draw.Round(new Rect(barX, barTrack.y, barW, barTrack.height), Draw.Alpha(Look.Tone0, 0.55f), barW * 0.5f);
-                    Color thumbCol = draggingBar ? Pal.Primary : barHover ? Pal.Sub : Pal.Line2;
-                    Draw.Round(new Rect(barX, thumbY, barW, thumbH), thumbCol, barW * 0.5f);
-                }
+                // 스크롤바(호버 · 끄는 중 색)
+                ScrollBar.Paint(bodyRect, contentH, scroll);
 
                 // 발 단추: 오른쪽부터 [닫기 = 파스텔 알약] [다시 보지 않기 = 회색 알약]
                 float right = 0f;

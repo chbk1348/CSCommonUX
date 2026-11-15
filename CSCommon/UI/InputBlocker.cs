@@ -131,6 +131,7 @@ namespace CSCommonUX
         public static void End()
         {
             Typing(Draw.Typing && !UIView.HasModalInput());
+            if (ScrollBar.Dragging) Add(new Rect(0f, 0f, Draw.Width, Draw.Height)); // 스크롤 막대를 끄는 동안 온 화면을 막음(창 밖으로 끌어도 게임 도구 · 카메라가 안 받음)
             if (hosting) return; // 허브 패널은 HostFrame 이 깔고 숨김
             for (int i = used; i < panels.Count; i++)
                 if (panels[i] != null && panels[i].isVisible) panels[i].Hide();

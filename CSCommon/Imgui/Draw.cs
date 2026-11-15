@@ -49,6 +49,8 @@ namespace CSCommonUX
             guiStart = PerfWatch.Now;
             if (e != null && e.type == EventType.Repaint) InputBlocker.Painted(); // 허브 공유: 그린 순서(모드끼리 가림)
             if (e != null && e.type == EventType.MouseDown) held = false;
+            // 스크롤 막대를 끄는 동안 다른 누름 · 휠은 아무 데도 안 감(뗌 · 끌기는 막대가 받음)
+            if (e != null && ScrollBar.Dragging && (e.type == EventType.MouseDown || e.type == EventType.ScrollWheel)) e.Use();
             // 뗀 다음 프레임에 풂(같은 프레임의 다른 OnGUI 가 먼저 풀면 창 단추가 뗌을 못 봄)
             if (releaseFrame >= 0 && Time.frameCount != releaseFrame) { held = false; releaseFrame = -1; }
             // 열린 고르기 목록이 창보다 먼저 클릭을 받음
@@ -1068,7 +1070,7 @@ namespace CSCommonUX
         static int releaseFrame = -1;
 
         /// <summary>IMGUI 버튼을 누르고 있는 중(지도 도구가 클릭을 가져가지 않게).</summary>
-        public static bool Holding => held && Input.GetMouseButton(0);
+        public static bool Holding => (held || ScrollBar.Dragging) && Input.GetMouseButton(0);
 
         static int ButtonKey(Rect r)
         {
@@ -1144,12 +1146,23 @@ namespace CSCommonUX
             style.normal.textColor = style.focused.textColor = style.hover.textColor = Pal.Txt;
             var sr = ToScreen(r);
             string v = GUI.TextField(sr, value ?? "", maxLength, style);
-            if (!string.IsNullOrEmpty(GUI.GetNameOfFocusedControl())) TypingFrame = Time.frameCount; // 이름 붙은 초점 = 글 칸(Textfield · SheetTitle 이 SetNextControlName)
             // 방금 그린 칸의 편집기는 position == sr(DoTextField 가 넣음) — 이것으로 '이 칸'인지 앎
             int kc = GUIUtility.keyboardControl;
             if (kc != 0 && GUIUtility.QueryStateObject(typeof(TextEditor), kc) is TextEditor te && te.position == sr)
             {
+                // 이 모드의 이 칸에 초점일 때만 '쓰는 중'(초점 이름 · keyboardControl 은 모드 전체 공용 — 다른 모드 칸 초점으로 남의 숨은 칸 · 키 써 버리기가 켜지지 않게)
+                TypingFrame = Time.frameCount;
                 imeField = kc;
+                // GUI.HandleTextFieldEventForDesktop 은 글꼴이 HasCharacter 로 모르는 글자(기본 스킨 글꼴의 한글)를 넣지도 쓰지도 않고 넘김 —
+                // 확정된 음절이 버려져 마지막 조합 글만 남던 것('유키' → '키'). 그 자리에서 Unity 가 하던 대로 넣음(넣었으면 이미 Used 라 두 번 안 들어감)
+                var ke = Event.current;
+                if (ke.type == EventType.KeyDown && ke.character != '\0' && !char.IsControl(ke.character))
+                {
+                    te.Insert(ke.character);
+                    v = maxLength >= 0 && te.text.Length > maxLength ? te.text.Substring(0, maxLength) : te.text;
+                    GUI.changed = true;
+                    ke.Use();
+                }
                 // 한글 IME 켜기(직전에 다른 칸 조합을 끊은 프레임은 한 프레임 쉼). 조합 창 자리는 TextEditor.DrawCursor 가 캐럿에 둠
                 if (imeHold != Time.frameCount && Input.imeCompositionMode != IMECompositionMode.On) Input.imeCompositionMode = IMECompositionMode.On;
             }
