@@ -7,7 +7,7 @@ namespace CSCommonUX
     /// Pal · Look 의 같은 토큰 이름에 테마 값을 넣음 — 부품은 토큰만 읽으므로 그대로 따라감.
     /// 값은 디자인 시스템 토큰(f1-dark · light)과 같음. 지도 마커 · 차트 계열 같은 '뜻 색'은 테마와 상관없이 그대로.
     /// </summary>
-    /// <summary>모드 기본 팔레트(Pal.Primary · PrimaryInk · OnPrimary): 청록(기본 — 주차장 · 농장) · F1 빨강(F1 로고 #E10600) · 하늘(스카이캐스트).</summary>
+    /// <summary>모드 기본 팔레트(Pal.Primary · PrimaryInk · OnPrimary): 청록(기본 — 주차장 · 농장) · F1 빨강(F1 로고 #E10600) · 하늘(스카이캐스트) · 야구 초록(프로야구 리그).</summary>
     internal enum CSCommonPalette
     {
         Teal,
@@ -15,6 +15,7 @@ namespace CSCommonUX
         Violet,
         Gold,
         Sky,
+        Green,
     }
 
     internal static class CSCommonTheme
@@ -23,7 +24,9 @@ namespace CSCommonUX
         public static CSCommonPalette Palette { get; private set; }
 
         /// <summary>잘됨 알약(Look.OkFill · OkInk)을 팔레트와 상관없이 청록 파스텔로(올림픽 — 금색 팔레트에서 '양호'가 모드 색이 되지 않게). 끄면 모드 파스텔과 같음. Use 앞에 정함.</summary>
+        #pragma warning disable 0649 // 모드가 값을 넣는 확장점이라 정본 안에서는 대입이 없음
         public static bool SeparateOk;
+        #pragma warning restore 0649
 
         public static void Use(bool light, CSCommonPalette palette = CSCommonPalette.Teal)
         {
@@ -83,6 +86,13 @@ namespace CSCommonUX
                 Pal.PrimaryInk = H(light ? "#0B57D0" : "#6CB4FF");
                 Pal.OnPrimary = light ? Color.white : Pal.AccentInk;
             }
+            else if (palette == CSCommonPalette.Green)
+            {
+                // 야구 초록(시안 프로야구): 라이트 면 #3F9A52(진행 막대 · 오늘 테두리 · 그 위 흰 글) · 글 #2D7A3E(흰 바탕 5.3:1), 다크 면 #5FBF72 · 글 #8FD69C
+                Pal.Primary = H(light ? "#3F9A52" : "#5FBF72");
+                Pal.PrimaryInk = H(light ? "#2D7A3E" : "#8FD69C");
+                Pal.OnPrimary = light ? Color.white : Pal.AccentInk;
+            }
             else
             {
                 Pal.Primary = Pal.PrimaryInk = Pal.Teal;
@@ -106,6 +116,7 @@ namespace CSCommonUX
                 CSCommonPalette.Sky => new[] { "#D7ECFF", "#0B3A6B", "#E8F4FF", "#0F4C85", "#BFE0FF", "#0A2E55", "#DCEEFF" },
                 CSCommonPalette.Gold => new[] { "#FFF0C2", "#5C4300", "#FFF7DE", "#6B4F00", "#FFE49A", "#4A3500", "#FFF0C2" },
                 CSCommonPalette.Violet => new[] { "#E8E0FF", "#3B2A7A", "#F1ECFF", "#4A3A8A", "#D4C8FF", "#2E1F66", "#E8E0FF" },
+                CSCommonPalette.Green => new[] { "#D9F2D0", "#1F4D14", "#EEF7EA", "#2D7A3E", "#BFE8B0", "#173A0F", "#D9F2D0" },
                 _ => new[] { "#D6F3EE", "#0B4F47", "#E6F7F4", "#0F5E55", "#B8EFE6", "#0A3D37", "#D3F5EF" },
             };
             Look.BarSurface = light ? Color.white : H("#1B1E24");
@@ -175,6 +186,12 @@ namespace CSCommonUX
             Look.OkInk = SeparateOk ? H(light ? "#0B4F47" : "#0A3D37") : Look.PastelInk;
             // 히어로 선 · 노랑 · 파랑 파스텔(라이트 = 다크보다 옅은 채움 · 한 단 밝은 글, 히어로 면 = HeroFill 라이트 규칙 서브 채움 60% + 흰색 · 선 = 글 16%) · 잘됨 옅은 판 · 하늘 옅은 면
             Look.HeroLine = Draw.Alpha(light ? Look.PastelInk : Look.PastelFill, 0.14f);
+            // 야구 초록 라이트 히어로(시안 값): 면 #F0F9EC · 선 = 글 12%
+            if (light && palette == CSCommonPalette.Green)
+            {
+                Look.HeroFill = H("#F0F9EC");
+                Look.HeroLine = Draw.Alpha(Look.PastelInk, 0.12f);
+            }
             Look.SeriesYellowFill = H(light ? "#FFF0C2" : "#FFE49A");
             Look.SeriesYellowInk = H(light ? "#5C4300" : "#4A3500");
             Look.SeriesYellowHero = H(light ? "#FFFAEB" : "#22201A");

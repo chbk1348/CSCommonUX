@@ -70,6 +70,23 @@ namespace CSCommonUX
             Draw.EndOverlay();
             return hit;
         }
+
+        /// <summary>
+        /// 상세 화면 뒤로 FAB: 알약 왼쪽 FabGap 에 지름 FabSize 원(꺾쇠 왼쪽, 설정 FAB 와 대칭). count · selectedLabel 은 Bar 에 넘긴 칸 수 · 고른 칸 이름 —
+        /// 알약 폭은 고른 칸이 다 열린 값으로 셈(상세 안에서는 탭이 안 바뀜). tooltip = 툴팁 · 접근성 이름("○○으로"). Bar 다음에 부를 것. 눌러서 떼면 참.
+        /// </summary>
+        public static bool BackFab(Rect window, int count, string selectedLabel, string tooltip)
+        {
+            if (count <= 0) return false;
+            float sum = PillBar.IdleW * (count - 1) + PillBar.CellW(Mathf.Ceil(Draw.TextWidth(selectedLabel ?? "", PillBar.Font, true)));
+            float left = PillBar.Left(window.center.x, PillBar.Width(sum, count, PillBar.DockGap, PillBar.PadX));
+            var b = new Rect(left - PillBar.FabGap - PillBar.FabSize, Top(window), PillBar.FabSize, PillBar.FabSize);
+            Draw.Block(b);
+            Draw.BeginOverlay();
+            bool hit = Fab.In(b, Icons.Left, FabTone.Plain, false, tooltip);
+            Draw.EndOverlay();
+            return hit;
+        }
     }
 
     /// <summary>

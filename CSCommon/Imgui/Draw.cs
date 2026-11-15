@@ -616,6 +616,20 @@ namespace CSCommonUX
             }
         }
 
+        /// <summary>부드러운 꺾은선(차트): 점 사이마다 가운데 x 를 조절점으로 쓰는 3차 베지어 (mid x, 앞 y) · (mid x, 뒤 y) — 시안 SVG 'C' 와 같음, 점은 그대로 지남.</summary>
+        public static void Curve(List<Vector2> pts, float width, Color c)
+        {
+            if (!Repaint || pts == null || pts.Count < 2) return;
+            var line = new List<Vector2> { pts[0] };
+            for (int i = 1; i < pts.Count; i++)
+            {
+                Vector2 a = pts[i - 1], b = pts[i];
+                float m = (a.x + b.x) * 0.5f;
+                Cubic(line, a, new Vector2(m, a.y), new Vector2(m, b.y), b);
+            }
+            Polyline(line, width, c);
+        }
+
         /// <summary>점 i에서 꺾인 각(도, 0 = 곧게). 열린 끝 · 겹친 점이면 0.</summary>
         static float JoinAngle(List<Vector2> pts, int i, bool closed)
         {
@@ -696,7 +710,9 @@ namespace CSCommonUX
         /// 브랜드 글꼴(이 PC 에 설치된 글꼴 이름 머리, 예 F1 = "Formula1 Display") — 모드가 시작할 때 한 번. 글꼴 파일은 git 에 올리지 않으므로
         /// 설치된 글꼴을 불러 쓰고(굵게 · 보통 · 넓게 = 이름 + " Bold" · " Regular" · " Wide"), 없으면 게임 글꼴. 한글은 맑은 고딕으로 대신 그림.
         /// </summary>
+        #pragma warning disable 0649 // 모드가 값을 넣는 확장점이라 정본 안에서는 대입이 없음
         public static string BrandFont;
+        #pragma warning restore 0649
         static Font brandBold, brandRegular, brandWide;
         static bool brandTried;
 
@@ -780,7 +796,9 @@ namespace CSCommonUX
         }
 
         /// <summary>최소 글자 크기(논리 px, 0 = 없음). 모드가 시작할 때 한 번 — 기상청 13(시인성), F1 0. 글 폭 재기도 같은 크기를 씀.</summary>
+        #pragma warning disable 0649 // 모드가 값을 넣는 확장점이라 정본 안에서는 대입이 없음
         public static float MinText;
+        #pragma warning restore 0649
 
         /// <summary>글자 크기 배율(1 = 그대로). 모드가 시작할 때 한 번 — 기상청 1.08(시인성), F1 1. 게임 UI 글(CSCommonKit.Scale)도 같이 씀.</summary>
         public static float TextBoost = 1f;
@@ -1101,6 +1119,7 @@ namespace CSCommonUX
             guiWatch.End(guiStart); // Begin ~ EndInput(모드 OnGUI 한 번) — 허브 공유 전후 비교 지점
             var e = Event.current;
             if (e != null && e.rawType == EventType.MouseUp && e.button == 0) releaseFrame = Time.frameCount;
+            if (e != null && e.isKey && TypingFrame == Time.frameCount) e.Use(); // 글 칸에 쓰는 동안 키를 뒤 OnGUI(다른 모드 · 단축키)에 넘기지 않음
         }
 
         /// <summary>누르고 있는 동안 true(꾹 누르기).</summary>
@@ -1123,8 +1142,16 @@ namespace CSCommonUX
                 fieldStyles[key] = style;
             }
             style.normal.textColor = style.focused.textColor = style.hover.textColor = Pal.Txt;
-            return GUI.TextField(ToScreen(r), value ?? "", maxLength, style);
+            string v = GUI.TextField(ToScreen(r), value ?? "", maxLength, style);
+            if (!string.IsNullOrEmpty(GUI.GetNameOfFocusedControl())) TypingFrame = Time.frameCount; // 이름 붙은 초점 = 글 칸(Textfield · SheetTitle 이 SetNextControlName)
+            return v;
         }
+
+        /// <summary>글 칸에 키보드 초점이 있던 마지막 프레임: InputBlocker 가 게임 단축키를 막고, EndInput 이 남은 키 이벤트를 써 버림.</summary>
+        public static int TypingFrame = -1;
+
+        /// <summary>이번 · 지난 프레임에 글 칸에 쓰는 중(Update 는 OnGUI 앞이라 지난 프레임까지 봄).</summary>
+        public static bool Typing => TypingFrame >= Time.frameCount - 1;
 
         // ---------------- SVG 경로(탭 아이콘 · 설계 그림) — M L H V C S Q T A Z 지원, 결과는 꺾은선 목록
 
@@ -1133,9 +1160,9 @@ namespace CSCommonUX
         static void Cubic(List<Vector2> into, Vector2 p, Vector2 c1, Vector2 c2, Vector2 e)
         {
             if (into == null) return;
-            for (int k = 1; k <= 12; k++)
+            for (int k = 1; k <= CSCommonDesign.CurveSteps; k++)
             {
-                float t = k / 12f, u = 1f - t;
+                float t = k / (float)CSCommonDesign.CurveSteps, u = 1f - t;
                 into.Add(u * u * u * p + 3f * u * u * t * c1 + 3f * u * t * t * c2 + t * t * t * e);
             }
         }

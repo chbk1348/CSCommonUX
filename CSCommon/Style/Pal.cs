@@ -139,6 +139,16 @@ namespace CSCommonUX
         public static Color OlympicBlue = Draw.Hex("#0081C8");
         /// <summary>메달 점(금 · 은 · 동 — 메달 순위 머리 · 우리 메달 줄). 테마와 상관없는 뜻 색.</summary>
         public static Color MedalGold = Draw.Hex("#D9A92B"), MedalSilver = Draw.Hex("#A8AFB8"), MedalBronze = Draw.Hex("#C2834A");
+        /// <summary>
+        /// 프로야구 리그 팀 색(시안 팀 막대 · 테마와 상관없는 뜻 색): 펠리컨스 하늘 · 팰컨스 빨강 · 볼츠 노랑 · 레이븐스 보라 · 코메츠 청록 · 머스탱스 주황 · 웨일스 검정 ·
+        /// 오터스 초록 · 스톰즈 갈색 · 아이언스 회색 · 돌핀스 남색(시안 홈팀 설정 '남색') · 그리폰스 자주(NPB 12팀만). BallTeams = 팀 번호 차례.
+        /// </summary>
+        public static Color BallPelicans = Draw.Hex("#4FA3E0"), BallFalcons = Draw.Hex("#E0564F"), BallBolts = Draw.Hex("#F2B33D"), BallRavens = Draw.Hex("#8E7CC3");
+        public static Color BallComets = Draw.Hex("#3FBFA8"), BallMustangs = Draw.Hex("#D9774A"), BallWhales = Draw.Hex("#2B2F36"), BallOtters = Draw.Hex("#6FA86B");
+        public static Color BallStorms = Draw.Hex("#A0764A"), BallIrons = Draw.Hex("#5F6368"), BallDolphins = Draw.Hex("#2F4F8F"), BallGriffons = Draw.Hex("#B5478A");
+        public static readonly Color[] BallTeams = { BallPelicans, BallFalcons, BallBolts, BallRavens, BallComets, BallMustangs, BallWhales, BallOtters, BallStorms, BallIrons, BallDolphins, BallGriffons };
+        /// <summary>프로야구 볼카운트 점(시안 GameLive): 스트라이크 노랑 · 아웃 빨강(볼 = Pal.Primary 초록).</summary>
+        public static Color BallStrike = Draw.Hex("#E3A008"), BallOut = Draw.Hex("#D93A2F");
         /// <summary>팬챗(시민 커뮤니티): 보라(인플루언서 인증) · 분홍 · 하늘 · 라임 — 시민 아바타 색은 ChatAvatars 에서 이름 해시로 고름.</summary>
         public static Color ChatViolet = Draw.Hex("#A78BFA"), ChatPink = Draw.Hex("#F472B6"), ChatSky = Draw.Hex("#7DD3FC"), ChatLime = Draw.Hex("#A3E635");
         public static readonly Color[] ChatAvatars = { Teal, Ok, ChatViolet, Warn, ChatPink, Yellow, Green, ChatSky, ChatLime };

@@ -18,6 +18,8 @@ namespace CSCommonUX
         public const float OverlayCell = 8f, OverlayPad = 8f, OverlayHeight = 60f, OverlayAlpha = 0.6f;
         /// <summary>차트 선 흐림 투명도(강조 밖 계열 — 예: 순위 변화 곡선 3위 이하).</summary>
         public const float ChartDimAlpha = 0.75f;
+        /// <summary>3차 베지어 한 구간을 나누는 선분 수(SVG 경로 C · Draw.Curve 차트 곡선).</summary>
+        public const int CurveSteps = 12;
         // 휴대폰 안쪽 배치(행정 패널 같은 앱 화면): 단추 · 줄 · 카드 · 글 크기
         public const float PhoneBtnH = 44f, PhoneGap = 12f, PhoneBtnGap = 8f, PhoneRowH = 26f, PhoneInset = 4f, PhoneCardPad = 18f, PhoneCardTopGap = 14f;
         public const float PhoneTitleH = 44f, PhoneSubH = 22f, PhoneHeadH = 30f, PhoneNameGap = 32f, PhoneStateW = 100f, PhoneValueW = 90f, PhoneKindCardH = 236f, PhoneMoneyCardH = 170f;
@@ -124,6 +126,21 @@ namespace CSCommonUX
         public const float FieldAffixGap = 4f, FieldClear = 16f;
         /// <summary>입력 칸 · 분절 홈 모서리.</summary>
         public const float RadiusField = 9f;
+
+        /// <summary>프로야구 리그(시안 '[CSCommonUX 3.0] 프로야구 리그 모드'): 왼쪽 고정 열(일정 · 팀) · 히어로 오른쪽 타일 폭 · 표 줄(순위 · 팀 목록) · 빠른 실행 타일 높이 · 히어로 큰 숫자(플레이볼까지) 글 · 줄.</summary>
+        public const float SideColW = 300f, HeroSideW = 320f, TableRowH = 40f, ActionTileH = 76f, HeroNumFont = 56f, HeroNumH = 60f;
+        /// <summary>팀 색 막대: 줄 앞(폭 · 높이 · 두 팀 한 줄의 작은 높이) · 히어로 큰 이름 앞(폭 · 높이).</summary>
+        public const float TeamMarkW = 4f, TeamMarkH = 20f, TeamMarkSmallH = 12f, TeamHeroMarkW = 6f, TeamHeroMarkH = 36f;
+        /// <summary>월간 달력(시안 프로야구 일정): 머리 줄(달 넘기기 · 제목) · 제목 글 · 요일 줄 · 칸 높이 · 칸 사이 · 칸 반지름 · 칸 안쪽 · 날짜 원 · 오늘 테두리.</summary>
+        public const float CalendarHeadH = 40f, CalendarTitleFont = 20f, CalendarWeekH = 28f, CalendarCellH = 150f, CalendarGap = 6f, CalendarRadius = 14f, CalendarPad = 10f, CalendarDayD = 24f, CalendarRing = 2f;
+        /// <summary>프로야구 경기 상세(시안 GameLive): 오늘 경기 타일 높이 · 주자 · 볼카운트 칸(폭 · 높이) · 칸 안쪽 · 다이아몬드 · 루 · 루 선 · 볼카운트 점 · 점 고리 · 줄 높이 · 줄 사이 · 히어로 팀 막대(폭 · 높이) · 팀 이름 글 · 줄 · 타석 줄 높이 · 세로 구분선 높이.</summary>
+        public const float LiveTileH = 104f, LiveSideW = 260f, LiveSideH = 120f, FieldGap = 20f, DiamondD = 84f, BaseD = 16f, BaseLine = 2f, CountDot = 14f, CountRing = 1.5f, CountRowH = 20f, CountRowGap = 10f, LiveMarkW = 8f, LiveMarkH = 48f, LiveNameFont = 24f, LiveNameH = 32f, LiveBarH = 56f, DividerH = 24f;
+        /// <summary>이닝 점수 · 경기 기록 · 문자 중계: 머리 줄 · 팀 이름 칸 · R H E B 칸 · 이닝 칸 좌우 · 칸 반지름 · 비교 줄 높이 · 비교 이름 칸 · 중계 이닝 알약 폭.</summary>
+        public const float LineHeadH = 32f, LineNameW = 120f, LineTotW = 40f, LineCellPad = 2f, LineCellRadius = 8f, CompareRowH = 36f, CompareLabelW = 64f, FeedBadgeW = 56f;
+        /// <summary>프로야구 홈 · 기록 · 팀 · 설정 판: 진행 단계 막대 · 월별 관중 막대 칸 높이 · 승률 추이 칸 높이 · 축 이름 폭 · 선 굵기(다른 팀 · 내 팀) · 끝 점 · 선수 표 숫자 칸 · 팀 색 칸 지름 · 설정 스위치 줄.</summary>
+        public const float StepBarH = 6f, CrowdChartH = 220f, TrendH = 240f, TrendAxisW = 48f, TrendLine = 1.6f, TrendLineMine = 3f, TrendDot = 4f, StatColW = 56f, SwatchD = 32f, SettingRowH = 56f;
+        /// <summary>프로야구 알림 카드(시안 Notify): 카드 폭 · 화면 끝 여백 · 닫기 원 · 점수 칸 높이 · 큰 소식 카드 폭 · 위 색 띠 · 아이콘 원 · LIVE 점수판 작은 다이아몬드 폭 · 루.</summary>
+        public const float NotifyW = 380f, NotifyEdge = 24f, NotifyCloseD = 28f, NotifyScoreH = 64f, NotifyBigW = 520f, NotifyBand = 8f, NotifyIconD = 52f, MiniDiamondW = 28f, MiniBaseD = 8f;
 
         public const float RadiusWindow = 14f;
         public const float RadiusTile = 8f;

@@ -128,6 +128,7 @@ namespace CSCommonUX
         /// <summary>프레임 끝: 이번 프레임에 쓰지 않은 패널은 숨김(공유로 바뀐 프레임에는 내 패널을 모두 숨김).</summary>
         public static void End()
         {
+            Typing(Draw.Typing && !UIView.HasModalInput());
             if (hosting) return; // 허브 패널은 HostFrame 이 깔고 숨김
             for (int i = used; i < panels.Count; i++)
                 if (panels[i] != null && panels[i].isVisible) panels[i].Hide();
@@ -147,11 +148,43 @@ namespace CSCommonUX
                 sharedFrame = -1;
             }
             mine = null;
+            if (sink != null) UnityEngine.Object.Destroy(sink.gameObject);
+            sink = null;
             foreach (var p in panels)
                 if (p != null) UnityEngine.Object.Destroy(p.gameObject);
             panels.Clear();
             logicals.Clear();
             used = 0;
+        }
+
+        // ---- 글 칸에 쓰는 동안 게임 단축키 · 카메라 키 막기(Draw.Field 가 Draw.TypingFrame 을 남김)
+
+        static UITextField sink;
+
+        /// <summary>
+        /// 쓰는 동안 보이지 않는 게임 글 칸에 초점을 둠 — 게임이 UIView.HasInputFocus 로 알고 단축키 · 카메라 키를 받지 않음(정치 모드 TypingSink 와 같은 방식).
+        /// shortcut: 게임 쪽에서 HasInputFocus 를 보지 않는 키가 있으면 새어 나감(게임 안에서 확인 못 함), 그러면 그 키를 Harmony 로 막을 것.
+        /// </summary>
+        static void Typing(bool on)
+        {
+            if (!on)
+            {
+                if (sink != null && sink.hasFocus) sink.Unfocus();
+                return;
+            }
+            if (sink == null)
+            {
+                var view = UIView.GetAView();
+                if (view == null) return;
+                sink = view.AddUIComponent(typeof(UITextField)) as UITextField;
+                sink.name = owner + "TypingSink";
+                sink.size = Vector2.one;
+                sink.absolutePosition = -Vector3.one * 10f;
+                sink.canFocus = true;
+                sink.isInteractive = true;
+            }
+            sink.text = "";
+            if (!sink.hasFocus) sink.Focus();
         }
 
         // ---- 허브 쪽(YukiModBox 만 부름)
