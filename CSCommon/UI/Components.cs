@@ -1801,8 +1801,8 @@ namespace CSCommonUX
             return new Rect(Mathf.Round(foot.x - w * 0.5f), Mathf.Round(bottom - h), w, h);
         }
 
-        /// <summary>표식 하나(card = Card 값). dot = 상태 점 색 · tip = 마우스를 올렸을 때(아이콘만일 때 이름 · 상태). 눌렀다 떼면 true.</summary>
-        public static bool In(Rect card, Vector2 foot, string icon, string name, string state, bool warn, Color dot, bool compact, string tip = null)
+        /// <summary>표식 하나(card = Card 값). dot = 상태 점 색 · tip = 마우스를 올렸을 때(아이콘만일 때 이름 · 상태) · image = 아이콘 대신 원 안 그림(로고 등, 흰 원). 눌렀다 떼면 true.</summary>
+        public static bool In(Rect card, Vector2 foot, string icon, string name, string state, bool warn, Color dot, bool compact, string tip = null, Texture image = null)
         {
             if (Draw.Repaint)
             {
@@ -1815,8 +1815,17 @@ namespace CSCommonUX
                 Draw.RoundOutline(card, Pal.MapPinLine, rad);
                 float d = CSCommonDesign.PinIconD, g = CSCommonDesign.PinGlyph;
                 var ic = new Rect(card.x + CSCommonDesign.PinPadL, Mathf.Round(card.center.y - d * 0.5f), d, d);
-                Draw.Round(ic, warn ? Pal.MapPinWarnFill : Pal.MapPinOkFill, d * 0.5f);
-                Draw.Icon(icon, new Rect(Mathf.Round(ic.center.x - g * 0.5f), Mathf.Round(ic.center.y - g * 0.5f), g, g), warn ? Pal.MapPinWarnInk : Pal.MapPinOkInk);
+                if (image != null)
+                {
+                    Draw.Round(ic, Pal.MapTag, d * 0.5f);
+                    Draw.RoundOutline(ic, Pal.MapPinLine, d * 0.5f);
+                    Draw.Image(new Rect(Mathf.Round(ic.center.x - g * 0.5f), Mathf.Round(ic.center.y - g * 0.5f), g, g), image);
+                }
+                else
+                {
+                    Draw.Round(ic, warn ? Pal.MapPinWarnFill : Pal.MapPinOkFill, d * 0.5f);
+                    Draw.Icon(icon, new Rect(Mathf.Round(ic.center.x - g * 0.5f), Mathf.Round(ic.center.y - g * 0.5f), g, g), warn ? Pal.MapPinWarnInk : Pal.MapPinOkInk);
+                }
                 if (!compact)
                 {
                     float x = ic.xMax + CSCommonDesign.PinGap, right = card.xMax - CSCommonDesign.PinPadR + Draw.FitSlack;
