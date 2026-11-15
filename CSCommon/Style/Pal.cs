@@ -156,6 +156,22 @@ namespace CSCommonUX
         public static Color ChatViolet = Draw.Hex("#A78BFA"), ChatPink = Draw.Hex("#F472B6"), ChatSky = Draw.Hex("#7DD3FC"), ChatLime = Draw.Hex("#A3E635");
         public static readonly Color[] ChatAvatars = { Teal, Ok, ChatViolet, Warn, ChatPink, Yellow, Green, ChatSky, ChatLime };
 
+        // ---- 전광판(대중교통 Extension 캔버스): 테마와 상관없이 고정. 실제 LED · LCD 판 색
+        /// <summary>LED 판 바탕 · 테두리 · 도트 격자 그림자(3px 칸 사이).</summary>
+        public static Color BoardLed = Draw.Hex("#060708"), BoardLedLine = Draw.Hex("#1D2026"), BoardDotShade = new(6f / 255f, 7f / 255f, 8f / 255f, 0.55f);
+        /// <summary>기차역 LED 호박색(글 · 머리 · 강조 글).</summary>
+        public static Color BoardAmber = Draw.Hex("#FFB21E"), BoardAmberDim = Draw.Hex("#BF8A26"), BoardAmberHot = Draw.Hex("#FFF1D2");
+        /// <summary>버스터미널 LED 초록(글 · 머리 · 강조 글).</summary>
+        public static Color BoardGreen = Draw.Hex("#62E08C"), BoardGreenDim = Draw.Hex("#46A866"), BoardGreenHot = Draw.Hex("#E6FFEE");
+        /// <summary>일본식 판: 발차 시각 주황 · 행선 크림 · 타는 위치 · 흐르는 글 초록 · 특급 빨강.</summary>
+        public static Color BoardJpTime = Draw.Hex("#FF9A1E"), BoardJpDest = Draw.Hex("#FFE9B0"), BoardJpGreen = Draw.Hex("#9BE35A"), BoardJpLtd = Draw.Hex("#FF5A4F");
+        /// <summary>인천공항식 판: 바탕 남색 · 머리 띠 · 띠 글 · 줄 교차 · 편명 노랑 · 보조 글.</summary>
+        public static Color BoardAirBg = Draw.Hex("#060B14"), BoardAirBar = Draw.Hex("#0F2A55"), BoardAirBarInk = Draw.Hex("#CFE0FF"), BoardAirRowA = Draw.Hex("#0A1426"), BoardAirRowB = Draw.Hex("#070E1B"), BoardAirFlight = Draw.Hex("#FFD23F"), BoardAirSub = Draw.Hex("#8FA6C8");
+        /// <summary>나리타공항식 판: 바탕 검정 · 머리 띠 · 줄 교차 · 편명 하늘색.</summary>
+        public static Color BoardNrtBg = Draw.Hex("#050505"), BoardNrtBar = Draw.Hex("#1D2026"), BoardNrtRowA = Draw.Hex("#0C0C0D"), BoardNrtFlight = Draw.Hex("#8FD0FF");
+        /// <summary>판 위 상태: 탑승 중 · 도착 초록, 흰 글.</summary>
+        public static Color BoardOk = Draw.Hex("#3DDC84"), BoardInk = Draw.Hex("#F2F5FA");
+
         static readonly System.Collections.Generic.Dictionary<string, Color> teams = new()
         {
             { "KOR", Draw.Hex("#CD2E3A") }, { "NED", Draw.Hex("#FF6200") }, { "ITA", Draw.Hex("#0066B3") }, { "AUS", Draw.Hex("#FFCD00") },

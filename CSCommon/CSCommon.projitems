@@ -39,6 +39,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonUXToolbar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAnim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Board.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonSection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonDetail.cs" />
   </ItemGroup>
