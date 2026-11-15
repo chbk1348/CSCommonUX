@@ -1,21 +1,42 @@
-MIT License
+CSCommonUX 이용 허락 (All Rights Reserved)
 
-Copyright (c) 2026 chbk1348
+Copyright (c) 2026 chbk1348. 모든 권리 보유.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+이 저장소의 코드 · 문서 · 리소스(이하 "소프트웨어")의 저작권은 원저작자
+chbk1348 에게 있습니다. 소프트웨어는 오픈소스가 아니며, 원저작자의 서면
+허락 없이 다음을 할 수 없습니다.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. 수정 금지: 소프트웨어의 전부나 일부를 고치거나, 바꾸거나, 이를 바탕으로
+   2차 저작물을 만드는 일.
+2. 배포 금지: 소프트웨어의 전부나 일부를 복사해 다른 사람에게 주거나,
+   다시 올리거나(Steam 창작마당 · 다른 저장소 · 웹사이트 포함), 공개 ·
+   판매 · 재라이선스하는 일. 고친 판을 배포하는 일도 포함합니다.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+허락 없이 할 수 있는 일은 저장소를 열람하고 코드를 읽는 것뿐입니다.
+GitHub 이용 약관에 따라 GitHub 안에서 포크 버튼으로 사본을 만드는 것은
+막지 않지만, 그 사본을 고치거나 다른 곳에 배포할 권리를 주지는 않습니다.
+
+이 판 이전에 MIT 라이선스로 공개된 판에는 그 당시 조건이 적용됩니다.
+
+허락 요청: https://github.com/chbk1348/CSCommonUX/issues
+
+소프트웨어는 "있는 그대로" 제공되며, 원저작자는 어떠한 보증도 하지 않고
+사용으로 생긴 손해에 책임지지 않습니다.
+
+---
+
+English summary (the Korean text above prevails)
+
+Copyright (c) 2026 chbk1348. All rights reserved.
+
+This software is NOT open source. Without prior written permission from the
+copyright holder, you may NOT:
+  1. modify, adapt, or create derivative works of the software, in whole or
+     in part; or
+  2. copy, redistribute, re-upload (including Steam Workshop, other
+     repositories or websites), publish, sell, or sublicense the software or
+     any modified version of it.
+Viewing the source on GitHub is permitted. Forking within GitHub as allowed
+by the GitHub Terms of Service grants no right to modify or redistribute.
+Versions previously released under the MIT License remain under that license.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
