@@ -9,7 +9,7 @@ namespace CSCommonUX
     public static class Board
     {
         /// <summary>판 모서리 · 도트 칸 · 도트 사이 선 굵기 · 테두리 칸 모서리 · 선 굵기 · 흐르는 글 속도(논리 px/초).</summary>
-        public const float Radius = 16f, DotStep = 4f, DotLine = 1.5f, BoxRadius = 8f, BoxLine = 1.5f, TickSpeed = 60f;
+        public const float Radius = 16f, DotStep = 4f, DotLine = 1f, BoxRadius = 8f, BoxLine = 1.5f, TickSpeed = 60f;
 
         /// <summary>판 배치(캔버스 Main · Connections · ModularFlow): 역 묶기 1단계 판 폭 · 왼쪽 역 목록 폭 · 오른쪽 상세 폭 · 일본식 방면 안내판 폭 · 판 안 여백 · 제목 줄 · 칸 머리 줄 · 줄 · 흐르는 글 줄 · 칸 사이 · 작은 판(도착) 줄 · 칸 머리.</summary>
         public const float FlowW = 520f, RailW = 300f, SideW = 440f, SignW = 200f, Pad = 24f, HeadH = 64f, ColH = 32f, RowH = 48f, TickH = 40f, ColGap = 12f, SmallRowH = 40f, SmallHeadH = 48f, SmallColH = 28f;
