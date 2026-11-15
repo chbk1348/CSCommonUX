@@ -158,7 +158,7 @@ namespace CSCommonUX
 
         // ---- 전광판(대중교통 Extension 캔버스): 테마와 상관없이 고정. 실제 LED · LCD 판 색
         /// <summary>LED 판 바탕 · 테두리 · 도트 격자 그림자(3px 칸 사이).</summary>
-        public static Color BoardLed = Draw.Hex("#060708"), BoardLedLine = Draw.Hex("#1D2026"), BoardDotShade = new(6f / 255f, 7f / 255f, 8f / 255f, 0.55f);
+        public static Color BoardLed = Draw.Hex("#060708"), BoardLedLine = Draw.Hex("#1D2026"), BoardDotShade = new(6f / 255f, 7f / 255f, 8f / 255f, 0.85f);
         /// <summary>기차역 LED 호박색(글 · 머리 · 강조 글).</summary>
         public static Color BoardAmber = Draw.Hex("#FFB21E"), BoardAmberDim = Draw.Hex("#BF8A26"), BoardAmberHot = Draw.Hex("#FFF1D2");
         /// <summary>버스터미널 LED 초록(글 · 머리 · 강조 글).</summary>
