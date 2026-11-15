@@ -1142,10 +1142,47 @@ namespace CSCommonUX
                 fieldStyles[key] = style;
             }
             style.normal.textColor = style.focused.textColor = style.hover.textColor = Pal.Txt;
-            string v = GUI.TextField(ToScreen(r), value ?? "", maxLength, style);
+            var sr = ToScreen(r);
+            string v = GUI.TextField(sr, value ?? "", maxLength, style);
             if (!string.IsNullOrEmpty(GUI.GetNameOfFocusedControl())) TypingFrame = Time.frameCount; // 이름 붙은 초점 = 글 칸(Textfield · SheetTitle 이 SetNextControlName)
+            // 방금 그린 칸의 편집기는 position == sr(DoTextField 가 넣음) — 이것으로 '이 칸'인지 앎
+            int kc = GUIUtility.keyboardControl;
+            if (kc != 0 && GUIUtility.QueryStateObject(typeof(TextEditor), kc) is TextEditor te && te.position == sr)
+            {
+                imeField = kc;
+                // 한글 IME 켜기(직전에 다른 칸 조합을 끊은 프레임은 한 프레임 쉼). 조합 창 자리는 TextEditor.DrawCursor 가 캐럿에 둠
+                if (imeHold != Time.frameCount && Input.imeCompositionMode != IMECompositionMode.On) Input.imeCompositionMode = IMECompositionMode.On;
+            }
+            else if (imeField != 0 && kc != imeField && GUIUtility.QueryStateObject(typeof(TextEditor), imeField) is TextEditor old && old.position == sr)
+            {
+                // 이 칸이 조합 중에 초점을 잃음(밖 클릭 · 다른 칸 · FocusControl): 조합 글을 이 칸에 넣고, IME 를 한 프레임 꺼 OS 조합을 끊어 다음 칸으로 새지 않게
+                imeField = 0;
+                string comp = Input.compositionString;
+                if (comp.Length > 0)
+                {
+                    v = Commit(v, comp, old.cursorIndex, old.selectIndex, maxLength);
+                    Input.imeCompositionMode = IMECompositionMode.Off;
+                    imeHold = Time.frameCount;
+                }
+                else if (kc == 0) Input.imeCompositionMode = IMECompositionMode.Auto;
+            }
             return v;
         }
+
+        // 초점 글 칸 IMGUI id(0 = 없음) · IME 를 끊은 프레임
+        static int imeField, imeHold = -1;
+
+        /// <summary>조합 글 comp 를 선택 [a, b) 자리에 넣음(maxLength 넘으면 자름, 음수 = 끝없음). 순수 — 검사용 internal.</summary>
+        internal static string Commit(string v, string comp, int a, int b, int maxLength)
+        {
+            v ??= "";
+            int lo = Mathf.Clamp(Mathf.Min(a, b), 0, v.Length), hi = Mathf.Clamp(Mathf.Max(a, b), 0, v.Length);
+            string s = v.Substring(0, lo) + comp + v.Substring(hi);
+            return maxLength >= 0 && s.Length > maxLength ? s.Substring(0, maxLength) : s;
+        }
+
+        /// <summary>지금 IME 조합 중인 글이 있음(자리 글을 숨길 때).</summary>
+        public static bool Composing => !string.IsNullOrEmpty(Input.compositionString);
 
         /// <summary>글 칸에 키보드 초점이 있던 마지막 프레임: InputBlocker 가 게임 단축키를 막고, EndInput 이 남은 키 이벤트를 써 버림.</summary>
         public static int TypingFrame = -1;

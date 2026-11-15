@@ -773,7 +773,8 @@ namespace CSCommonUX
                 // 누름 영역 = 원부터 칸 오른쪽 끝까지(칸 높이 전체), 눌림 표시 없음
                 if (Draw.Button(new Rect(clearR.x, r.y, r.xMax - clearR.x, r.height))) return "";
             }
-            if (!has && !string.IsNullOrEmpty(placeholder) && Draw.Repaint)
+            // 조합 중엔 값이 아직 비어도 자리 글을 숨김(조합 글이 칸 맨 앞 자리 글 위에 겹쳐 보였음)
+            if (!has && !(focus && Draw.Composing) && !string.IsNullOrEmpty(placeholder) && Draw.Repaint)
                 Draw.TextFit(new Rect(tx, r.y, Mathf.Max(0f, right - tx), r.height), placeholder, font, Look.OffText);
             // 커서 색 = 초점 테두리 색(파스텔)
             var cursor = GUI.skin.settings.cursorColor;
@@ -789,24 +790,9 @@ namespace CSCommonUX
                 GUIUtility.keyboardControl = 0;
                 focus = false;
             }
-            // 한글 IME: CS1 은 조합을 꺼 둬서 초점 칸에서만 켜고(조합 창은 글 칸 아래), 초점을 잃으면 되돌림
-            if (focus)
-            {
-                imeOwner = name;
-                Input.imeCompositionMode = IMECompositionMode.On;
-                var sr = Draw.ToScreen(fr);
-                Input.compositionCursorPos = new Vector2(sr.x + FieldInset, sr.yMax);
-            }
-            else if (imeOwner == name)
-            {
-                imeOwner = null;
-                Input.imeCompositionMode = IMECompositionMode.Auto;
-            }
+            // 한글 IME 켜기 · 끄기 · 조합 끊기는 Draw.Field(조합 창 자리는 캐럿)
             return v;
         }
-
-        // shortcut: 초점인 채로 칸이 사라지면(창 닫기) 다음 글 칸이 그려질 때까지 조합이 켜져 있음 — 문제되면 창 닫을 때 Release 호출로.
-        static string imeOwner;
 
         /// <summary>이름(위, 12 보조색) · 칸(40) · 도움말(아래 12 · 높이 18 고정, 잘못이면 빨강).</summary>
         public static string Labeled(Rect r, string label, string value, int maxLength, string help = null, string placeholder = null, bool error = false, bool enabled = true, string name = null)
@@ -1167,6 +1153,8 @@ namespace CSCommonUX
                 float t = on ? Modal.Ease(mv, X1, Y1, X2, Y2) : 1f - Modal.Ease(1f - mv, X1, Y1, X2, Y2);
                 Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
                 Draw.Round(r, !enabled ? Look.BtnOff : Color.Lerp(Look.PillNeutral, Look.PastelFill, c), r.height * 0.5f);
+                // 켜짐 테두리 = 손잡이 색(PastelInk): 같은 PastelFill 알약 · 판 위에서도 바탕 모양이 보이게
+                if (enabled && c > 0.01f) Draw.RoundOutline(r, Draw.Alpha(Look.PastelInk, c), r.height * 0.5f, CSCommonDesign.SwitchRing);
                 float cx = Mathf.LerpUnclamped(r.x + Inset + k * 0.5f, r.xMax - Inset - k * 0.5f, t);
                 Draw.Dot(new Vector2(cx, r.center.y), k * 0.5f, !enabled ? Look.IconOffInk : Color.Lerp(Look.KnobOff, Look.PastelInk, c));
                 Draw.EndScale();
@@ -2051,7 +2039,7 @@ namespace CSCommonUX
             {
                 Draw.Fill(new Rect(r.x, r.yMax - SheetLine, r.width, SheetLine), Look.TitleLine);
                 if (fo > 0.01f) Draw.Fill(new Rect(r.x, r.yMax - SheetLineFocus, r.width, SheetLineFocus), Draw.Alpha(Look.PastelRing, fo));
-                if (value.Length == 0 && !string.IsNullOrEmpty(placeholder)) Draw.TextFit(new Rect(r.x, r.y, r.width, r.height - SheetLineFocus), placeholder, SheetTitleFont, Look.OffText);
+                if (value.Length == 0 && !(focus && Draw.Composing) && !string.IsNullOrEmpty(placeholder)) Draw.TextFit(new Rect(r.x, r.y, r.width, r.height - SheetLineFocus), placeholder, SheetTitleFont, Look.OffText);
             }
             var cursor = GUI.skin.settings.cursorColor;
             GUI.skin.settings.cursorColor = Look.PastelRing;
