@@ -77,6 +77,21 @@ namespace CSCommonUX
         /// </summary>
         public const float PinH = 52f, PinPadL = 6f, PinPadR = 16f, PinIconD = 40f, PinGlyph = 22f, PinGap = 10f, PinNameFont = 14f, PinNameH = 18f, PinStateFont = 12f, PinStateH = 16f;
         public const float PinDot = 8f, PinDotGap = 6f, PinStemW = 2f, PinStemH = 28f, PinFoot = 12f, PinFootRing = 3f, PinShadow = 0.05f, PinShadowY = 2f;
+        /// <summary>
+        /// 열차 표식(CSCommonUX.TrainTag · 대중교통 캔버스 TrainOverlay): 카드 높이 · 모서리 · 왼쪽 · 오른쪽 여백 · 색 띠 폭 · 높이 · 띠 → 글 · 두 줄 사이 · 윗줄 · 아랫줄 높이 ·
+        /// 이름 · 보조 글 크기 · 칸 사이 · 칩 높이 · 칩 옆 여백 · 칩 글 · 종별 높이 · 종별 옆 여백 · 종별 글 · 기둥 · 발.
+        /// </summary>
+        public const float TagH = 56f, TagRadius = 16f, TagPadL = 8f, TagPadR = 14f, TagBarW = 6f, TagBarH = 40f, TagGap = 10f, TagRowGap = 4f, TagLine1H = 20f, TagLine2H = 16f;
+        /// <summary>
+        /// 도로 표지판(CSCommonUX.RoadSign · 대중교통 캔버스 RoadSigns · 일본 고속도로 안내 표지 기준): 위 작은 판 높이 · 판 높이 · 판 안 여백 · 판 모서리 · 흰 테 안쪽 · 흰 테 굵기 ·
+        /// 행선지 한자(로마자는 1/2) · 위 판 이름(로마자 1/2) · 번호 · 노선 상자 높이 · 상자 글 · 노선 이름 · 화살표 칸 폭 · 높이 · 굵기 · 칸 사이 · 판 사이 · 요금소 판 폭 · 높이 · 노선 표식 높이.
+        /// </summary>
+        public const float SignPlateH = 26f, SignPanelH = 116f, SignPad = 10f, SignRadius = 6f, SignRimInset = 2f, SignRim = 1.5f;
+        public const float SignDestFont = 18f, SignPlateFont = 14f, SignBoxH = 16f, SignBoxFont = 10f, SignRouteFont = 11f, SignArrowW = 26f, SignArrowH = 34f, SignArrowStroke = 5f;
+        public const float SignGap = 8f, SignPanelGap = 6f, SignTollW = 220f, SignTollH = 84f, SignMarkH = 22f;
+        /// <summary>활주로 표지(CSCommonUX.RunwaySign · 공항 의무 안내 표지): 높이 · 좌우 여백 · 글 · 모서리 · 검은 테 굵기.</summary>
+        public const float RunwaySignH = 28f, RunwaySignPad = 10f, RunwaySignFont = 15f, RunwaySignRadius = 3f, RunwaySignEdge = 2f;
+        public const float TagNameFont = 14f, TagSubFont = 12f, TagItemGap = 6f, TagChipH = 20f, TagChipPadX = 8f, TagChipFont = 11.5f, TagKindH = 18f, TagKindPadX = 6f, TagKindFont = 11f, TagStemH = 20f, TagFoot = 10f;
 
         /// <summary>카드(CSCommonUX.Card, 시안 A 선 카드): 모서리 · 안쪽 여백 · 제목 줄 높이 · 제목→설명 · 머리→내용 간격.</summary>
         public const float CardRadius = 12f, CardPad = 16f, CardTitleH = 28f, CardDescGap = 2f, CardHeadGap = 8f;

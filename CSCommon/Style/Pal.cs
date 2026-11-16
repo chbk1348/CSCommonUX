@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace CSCommonUX
 {
@@ -95,6 +95,14 @@ namespace CSCommonUX
         public static Color MapTag = Draw.Hex("#FFFFFF"), MapTagInk = Draw.Hex("#14181F"), MapTagSub = Draw.Hex("#5F6368"), MapTagShadow = new(0f, 0f, 0f, 0.28f);
         /// <summary>지도 표식(CSCommonUX.MapPin): 원 면 · 아이콘 청록 · 주의 주황, 상태 점 정상 · 주의, 알약 1px 선 · 기둥 · 발 고리. 라이트 · 다크 같음(게임 화면 위, 판 · 글은 MapTag*).</summary>
         public static Color MapPinOkFill = Draw.Hex("#D6F3EE"), MapPinOkInk = Draw.Hex("#0B4F47"), MapPinWarnFill = Draw.Hex("#FFE8CC"), MapPinWarnInk = Draw.Hex("#8A4A00");
+        /// <summary>지도 표식 종류별 원(면 · 아이콘) — 같은 지도에 여러 종류가 섞일 때 가르기: 기차(하늘) · 버스(초록) · 비행기(보라).</summary>
+        public static Color MapPinTrainFill = Draw.Hex("#D7E9FF"), MapPinTrainInk = Draw.Hex("#0B3354"), MapPinBusFill = Draw.Hex("#D6F3DD"), MapPinBusInk = Draw.Hex("#0E5A2B"), MapPinPlaneFill = Draw.Hex("#E8E0FF"), MapPinPlaneInk = Draw.Hex("#3A2A78");
+        /// <summary>열차 표식(CSCommonUX.TrainTag): 신호 대기 점 · 시외 칩 · 칸 사이 점 · 급행 · 완행 종별(바탕 · 글). 정시 · 지연 점은 MapPinOkDot · MapPinWarnDot.</summary>
+        /// <summary>도로 표지판(CSCommonUX.RoadSign): 고속도로 초록 · 흰 글자 · 테 · ETC 전용 보라 · 일반 차로 진한 초록.</summary>
+        public static Color RoadSignGreen = Draw.Hex("#0D6A3A"), RoadSignInk = Draw.Hex("#FFFFFF"), RoadSignEtc = Draw.Hex("#6D3FA0"), RoadSignGeneral = Draw.Hex("#0A5A30");
+        /// <summary>활주로 표지(CSCommonUX.RunwaySign · ICAO 의무 안내 표지): 빨강 바탕 · 흰 글자 · 검은 테.</summary>
+        public static Color RunwaySignRed = Draw.Hex("#C8102E"), RunwaySignInk = Draw.Hex("#FFFFFF"), RunwaySignEdge = Draw.Hex("#111111");
+        public static Color MapPinHoldDot = Draw.Hex("#D93A32"), TagIntercity = Draw.Hex("#5F6873"), TagSep = Draw.Hex("#B0B5BC"), TagExpressBg = new(1f, 107f / 255f, 94f / 255f, 0.16f), TagExpressInk = Draw.Hex("#C2392D"), TagLocalBg = new(26f / 255f, 143f / 255f, 92f / 255f, 0.14f), TagLocalInk = Draw.Hex("#127048");
         public static Color MapPinOkDot = Draw.Hex("#1A8F5C"), MapPinWarnDot = Draw.Hex("#C2790A"), MapPinLine = new(20f / 255f, 24f / 255f, 31f / 255f, 0.14f), MapPinStem = new(1f, 1f, 1f, 0.9f), MapPinFootRing = new(11f / 255f, 79f / 255f, 71f / 255f, 0.35f);
         /// <summary>선택 · 끄는 중 · 깜빡임(예약 — 다른 마커에 쓰지 않음).</summary>
         public static Color MapSelect = Draw.Hex("#FFD166");
@@ -164,6 +172,8 @@ namespace CSCommonUX
         /// <summary>버스터미널 LED 초록(글 · 머리 · 강조 글).</summary>
         public static Color BoardGreen = Draw.Hex("#62E08C"), BoardGreenDim = Draw.Hex("#46A866"), BoardGreenHot = Draw.Hex("#E6FFEE");
         /// <summary>일본식 판: 발차 시각 주황 · 행선 크림 · 타는 위치 · 흐르는 글 초록 · 특급 빨강.</summary>
+        /// <summary>일본형 버스터미널 판(버스타 신주쿠식 남색 LED): 판 · 글 · 영어 · 지연 · 승차홈 칸 · 노선 칩 기본 · 줄 선.</summary>
+        public static Color BoardJpBusBg = Draw.Hex("#070B16"), BoardJpBusInk = Draw.Hex("#F4F6FB"), BoardJpBusSub = Draw.Hex("#8D97AD"), BoardJpBusLate = Draw.Hex("#FFB02E"), BoardJpBusBay = Draw.Hex("#2F6FDC"), BoardJpBusChip = Draw.Hex("#5B6577"), BoardJpBusRule = new(150f / 255f, 170f / 255f, 210f / 255f, 0.22f);
         public static Color BoardJpTime = Draw.Hex("#FF9A1E"), BoardJpDest = Draw.Hex("#FFE9B0"), BoardJpGreen = Draw.Hex("#9BE35A"), BoardJpLtd = Draw.Hex("#FF5A4F");
         /// <summary>인천공항식 판: 바탕 남색 · 머리 띠 · 띠 글 · 줄 교차 · 편명 노랑 · 보조 글.</summary>
         public static Color BoardAirBg = Draw.Hex("#060B14"), BoardAirBar = Draw.Hex("#0F2A55"), BoardAirBarInk = Draw.Hex("#CFE0FF"), BoardAirRowA = Draw.Hex("#0A1426"), BoardAirRowB = Draw.Hex("#070E1B"), BoardAirFlight = Draw.Hex("#FFD23F"), BoardAirSub = Draw.Hex("#8FA6C8");
@@ -171,6 +181,8 @@ namespace CSCommonUX
         public static Color BoardNrtBg = Draw.Hex("#050505"), BoardNrtBar = Draw.Hex("#1D2026"), BoardNrtRowA = Draw.Hex("#0C0C0D"), BoardNrtFlight = Draw.Hex("#8FD0FF");
         /// <summary>판 위 상태: 탑승 중 · 도착 초록, 흰 글.</summary>
         public static Color BoardOk = Draw.Hex("#3DDC84"), BoardInk = Draw.Hex("#F2F5FA");
+        /// <summary>기차 신호기(Board.Signal · 대중교통 캔버스 TrainSignals): 녹 · 황 · 적 등 · 꺼진 등 · 몸통 · 몸통 1px 테 · 기둥 · 발.</summary>
+        public static Color SignalGreen = Draw.Hex("#3DDC84"), SignalYellow = Draw.Hex("#FFC233"), SignalRed = Draw.Hex("#FF5A52"), SignalOff = Draw.Hex("#262A32"), SignalHousing = Draw.Hex("#0A0B0D"), SignalRing = new(1f, 1f, 1f, 0.22f), SignalMast = Draw.Hex("#C9CFD8");
 
         static readonly System.Collections.Generic.Dictionary<string, Color> teams = new()
         {

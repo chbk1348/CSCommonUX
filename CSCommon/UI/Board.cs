@@ -18,11 +18,18 @@ namespace CSCommonUX
         public const float FontTitle = 26f, FontRow = 20f, FontHead = 13f, FontTick = 18f, FontSmallTitle = 18f, FontSmallRow = 16f;
 
         /// <summary>역 화면 틀(캔버스 Main): 왼쪽 목록 줄 · 목록 아이콘 · 머리 판 아이콘 칸 · 머리 판 아이콘 · 카드 안 여백 · 카드 모서리 · 노선 줄 · 노선 점.</summary>
+        /// <summary>역 묶기 아래 시트(대중교통 캔버스 ModularFlow · ModularFlow2): 시트 높이 · 왼쪽 단계 칸 폭 · 오른쪽 칸 폭 · 단계 줄 · 건물 · 선로 줄 · 단계 번호 원 · 방향 칸 폭.</summary>
+        public const float SheetH = 396f, SheetStepW = 240f, SheetSideW = 320f, SheetStepH = 60f, SheetRowH = 52f, SheetNo = 28f, SheetDirW = 180f;
         public const float RailRowH = 56f, RailIcon = 20f, Tile = 48f, TileIcon = 24f, CardPad = 14f, CardRadius = 16f, LineRowH = 60f, LineDot = 10f;
 
         /// <summary>대시보드 노선도(캔버스 Dashboard): 노선 줄 높이 · 왼쪽 노선 이름 칸 · 선 굵기 · 정류장 · 갈아타는 역 · 차량 칩 높이 · 줄 안 선 위치 · 정류장 이름 위치 · 현황 카드 줄 수 · 막대 굵기.</summary>
         public const float MapRowH = 88f, MapLabelW = 176f, MapTrack = 6f, MapStop = 16f, MapXfer = 20f, MapVehH = 16f, MapTrackY = 36f, MapNameY = 54f, MapVehY = 12f, BarH = 6f;
         public const int CardsPerRow = 4;
+
+        /// <summary>기차 신호기(캔버스 TrainSignals): 몸통 폭 · 몸통 안 여백 · 등 지름 · 등 사이 · 기둥 높이 · 기둥 굵기 · 발 지름 · 몸통 테.</summary>
+        public const float SigW = 20f, SigPad = 4f, SigLamp = 12f, SigGap = 4f, SigMast = 16f, SigMastW = 2f, SigFoot = 8f, SigRing = 1f;
+        /// <summary>신호기 전체 높이(발 아래 끝 ~ 몸통 위 끝).</summary>
+        public const float SigH = SigPad * 2f + SigLamp * 4f + SigGap * 3f + SigMast + SigFoot;
 
         /// <summary>테두리 칸 최소 폭(번호 한 자리).</summary>
         public const float BoxMinW = 36f;
@@ -35,6 +42,26 @@ namespace CSCommonUX
 
         /// <summary>깜박임 켜진 차례.</summary>
         public static bool BlinkOn => Mathf.FloorToInt(Time.realtimeSinceStartup / (BlinkSeconds * 0.5f)) % 2 == 0;
+
+        /// <summary>
+        /// 기차 신호기: 등 4개 세로(위부터 황 · 녹 · 적 · 황) + 기둥 + 발. foot = 발 가운데 아래 끝(논리 좌표).
+        /// lit 의 비트 0 ~ 3 이 위에서부터 켜진 등(진행 0b0010 · 감속 0b0011 · 주의 0b0001 · 경계 0b1001 · 정지 0b0100).
+        /// </summary>
+        public static void Signal(Vector2 foot, int lit)
+        {
+            if (!Draw.Repaint) return;
+            Draw.Dot(new Vector2(foot.x, foot.y - SigFoot * 0.5f), SigFoot * 0.5f, Pal.SignalMast);
+            Draw.Fill(new Rect(foot.x - SigMastW * 0.5f, foot.y - SigFoot - SigMast, SigMastW, SigMast + SigFoot * 0.5f), Pal.SignalMast);
+            float bodyH = SigPad * 2f + SigLamp * 4f + SigGap * 3f;
+            var body = new Rect(foot.x - SigW * 0.5f, foot.y - SigH, SigW, bodyH);
+            Draw.Round(new Rect(body.x - SigRing, body.y - SigRing, body.width + SigRing * 2f, body.height + SigRing * 2f), Pal.SignalRing, SigW * 0.5f + SigRing);
+            Draw.Round(body, Pal.SignalHousing, SigW * 0.5f);
+            for (int i = 0; i < 4; i++)
+            {
+                var c = (lit & (1 << i)) == 0 ? Pal.SignalOff : i == 1 ? Pal.SignalGreen : i == 2 ? Pal.SignalRed : Pal.SignalYellow;
+                Draw.Dot(new Vector2(foot.x, body.y + SigPad + SigLamp * 0.5f + i * (SigLamp + SigGap)), SigLamp * 0.5f, c);
+            }
+        }
 
         /// <summary>판 바탕(둥근 칸 + 1px 테두리).</summary>
         public static void Panel(Rect r, Color fill)
