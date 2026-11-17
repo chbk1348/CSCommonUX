@@ -1118,8 +1118,9 @@ namespace CSCommonUX
         /// <summary>마우스를 떼면(어느 버튼에도 안 걸려도) 누른 상태를 풂 — OnGUI 끝에 한 번.</summary>
         public static void EndInput()
         {
-            guiWatch.End(guiStart); // Begin ~ EndInput(모드 OnGUI 한 번) — 허브 공유 전후 비교 지점
             var e = Event.current;
+            // Begin ~ EndInput(모드 OnGUI 한 번) — 허브 공유 전후 비교 지점. 그리기(Repaint)만 재요: 가벼운 Layout · 마우스 호출이 평균을 낮추지 않게(rawType 은 Use() 뒤에도 그대로예요)
+            if (e != null && e.rawType == EventType.Repaint) guiWatch.End(guiStart);
             if (e != null && e.rawType == EventType.MouseUp && e.button == 0) releaseFrame = Time.frameCount;
             if (e != null && e.isKey && TypingFrame == Time.frameCount) e.Use(); // 글 칸에 쓰는 동안 키를 뒤 OnGUI(다른 모드 · 단축키)에 넘기지 않음
         }

@@ -104,6 +104,36 @@ namespace CSCommonUX
         public static Color RunwaySignRed = Draw.Hex("#C8102E"), RunwaySignInk = Draw.Hex("#FFFFFF"), RunwaySignEdge = Draw.Hex("#111111");
         public static Color MapPinHoldDot = Draw.Hex("#D93A32"), TagIntercity = Draw.Hex("#5F6873"), TagSep = Draw.Hex("#B0B5BC"), TagExpressBg = new(1f, 107f / 255f, 94f / 255f, 0.16f), TagExpressInk = Draw.Hex("#C2392D"), TagLocalBg = new(26f / 255f, 143f / 255f, 92f / 255f, 0.14f), TagLocalInk = Draw.Hex("#127048");
         public static Color MapPinOkDot = Draw.Hex("#1A8F5C"), MapPinWarnDot = Draw.Hex("#C2790A"), MapPinLine = new(20f / 255f, 24f / 255f, 31f / 255f, 0.14f), MapPinStem = new(1f, 1f, 1f, 0.9f), MapPinFootRing = new(11f / 255f, 79f / 255f, 71f / 255f, 0.35f);
+        /// <summary>
+        /// 비행기 카드(CSCommonUX.TrainTag 의 Phase 모양 · 대중교통 캔버스 Runways): 상태 알약 정상(면 · 글) · 주의(면 · 글), 단계 막대 · 승객 막대 빈 칸, 단계 라벨, 순번 칩 면.
+        /// 점 · 채운 칸은 MapPinOkDot · MapPinWarnDot, 굵은 글은 MapTagInk, 보조 글 · 승객 채움은 TagIntercity(#5F6873).
+        /// </summary>
+        public static Color FlightOkBg = Draw.Hex("#E1F3EA"), FlightOkInk = Draw.Hex("#0B5B3B"), FlightWarnBg = Draw.Hex("#FBECD0"), FlightWarnInk = Draw.Hex("#7A4A00");
+        public static Color FlightTrack = Draw.Hex("#E3E7EC"), FlightLabel = Draw.Hex("#8A929D"), FlightRankBg = Draw.Hex("#EEF1F5");
+
+        // 항공사 대표색(편명 칩 면). JL · NH · KE · OZ · 7C 는 시안 값, 나머지는 근사값 · 공식 가이드 미확인.
+        // 흰 글자와 대비 4.5:1 이상인 색만 흰 글자, 밝은 색(OZ · 7C · GK · HD · 5J)은 어두운 글자(MapTagInk)와 대비 5.8:1 이상.
+        static readonly System.Collections.Generic.Dictionary<string, Color> airline = new()
+        {
+            ["JL"] = Draw.Hex("#C8102E"), ["NH"] = Draw.Hex("#13448F"), ["KE"] = Draw.Hex("#00256C"), ["OZ"] = Draw.Hex("#C9A227"), ["7C"] = Draw.Hex("#F26B21"),
+            ["BC"] = Draw.Hex("#1E3C8C"), ["MM"] = Draw.Hex("#C8007A"), ["GK"] = Draw.Hex("#F96B00"), ["HD"] = Draw.Hex("#2DA8E0"), ["NU"] = Draw.Hex("#C8102E"),
+            ["BX"] = Draw.Hex("#1C3F94"), ["CA"] = Draw.Hex("#C8161D"), ["MU"] = Draw.Hex("#00387B"), ["FM"] = Draw.Hex("#B5121B"), ["CZ"] = Draw.Hex("#00599F"),
+            ["CX"] = Draw.Hex("#006564"), ["UO"] = Draw.Hex("#5E2A84"), ["CI"] = Draw.Hex("#1B3A6B"), ["BR"] = Draw.Hex("#006A4E"), ["SQ"] = Draw.Hex("#00266B"),
+            ["TG"] = Draw.Hex("#51247A"), ["PR"] = Draw.Hex("#003F87"), ["5J"] = Draw.Hex("#FFD200"), ["AA"] = Draw.Hex("#0061AB"), ["UA"] = Draw.Hex("#002244"),
+            ["DL"] = Draw.Hex("#003A70"), ["HA"] = Draw.Hex("#413691"), ["BA"] = Draw.Hex("#075AAA"), ["AF"] = Draw.Hex("#002157"), ["LH"] = Draw.Hex("#05164D"),
+            ["EK"] = Draw.Hex("#D71921"), ["QF"] = Draw.Hex("#CC0000"),
+        };
+        /// <summary>표에 없는 항공사 칩 면(흰 글자 대비 5.65:1).</summary>
+        public static Color AirlineDefault = Draw.Hex("#5F6873");
+
+        /// <summary>항공사 코드(예 "JL") → 편명 칩 면 · 글자색(fg = 흰색 또는 MapTagInk). 표에 없으면 AirlineDefault + 흰 글자. 도시 항공사 색은 모드가 직접 넘겨요.</summary>
+        public static Color AirlineChip(string code, out Color fg)
+        {
+            fg = MapTag;
+            if (code == null || !airline.TryGetValue(code, out var bg)) return AirlineDefault;
+            if (code == "OZ" || code == "7C" || code == "GK" || code == "HD" || code == "5J") fg = MapTagInk;
+            return bg;
+        }
         /// <summary>선택 · 끄는 중 · 깜빡임(예약 — 다른 마커에 쓰지 않음).</summary>
         public static Color MapSelect = Draw.Hex("#FFD166");
         /// <summary>철거 · 실패 · 보행로 미연결(예약).</summary>
