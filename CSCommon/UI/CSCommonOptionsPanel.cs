@@ -335,6 +335,10 @@ namespace CSCommonUX.UI
         public void Button(string label, string desc, string text, Action act, CSCommonButtonKind kind = CSCommonButtonKind.Outline, Func<bool> enabled = null) =>
             rows.Add(new Row { Kind = Kind.Button, Label = label, Desc = desc, Text = text, Act = act, ButtonKind = kind, Enabled = enabled });
 
+        /// <summary>단추 줄 + 단추 왼쪽에 지금 값 글(12 · 흐림 · 그릴 때마다 읽음). value 가 null 이거나 빈 글이면 위 단추 줄과 같은 모양이에요.</summary>
+        public void Button(string label, string desc, string text, Func<string> value, Action act, CSCommonButtonKind kind = CSCommonButtonKind.Outline, Func<bool> enabled = null) =>
+            rows.Add(new Row { Kind = Kind.Button, Label = label, Desc = desc, Text = text, GetText = value, Act = act, ButtonKind = kind, Enabled = enabled });
+
         /// <summary>이름 · 오른쪽 값(· 색 배지).</summary>
         public void Info(string label, string value, string badge = null, Color? badgeColor = null) =>
             rows.Add(new Row { Kind = Kind.Info, Label = label, Text = value, Badge = badge, BadgeColor = badgeColor ?? Pal.Sub });
@@ -351,7 +355,7 @@ namespace CSCommonUX.UI
             Kind.Toggle => 46f,
             Kind.Steps => 220f,
             Kind.Slider => r.Steps != null && r.Steps.Length > 0 ? 430f : 300f,
-            Kind.Button => CSCommonUX.Button.Width(null, r.Text),
+            Kind.Button => CSCommonUX.Button.Width(null, r.Text) + ButtonValueWidth(r),
             Kind.Info => 220f + InfoBadgeWidth(r),
             Kind.Progress => 300f,
             _ => 0f,
@@ -359,6 +363,15 @@ namespace CSCommonUX.UI
 
         // 값 왼쪽에 붙는 배지 몫(배지 + 8) — 이름 글 폭에서 빼야 값이 이름 위로 겹치지 않음
         static float InfoBadgeWidth(Row r) => string.IsNullOrEmpty(r.Badge) ? 0f : CSCommonUX.Badge.At(0f, 0f, r.Badge, r.BadgeColor, null, false) + 8f;
+
+        // 단추 왼쪽 값 글 몫(글 폭 + 12, 막대 · 값 알약 사이와 같음) — 값이 없으면 0 이라 예전 단추 줄과 같아요
+        const float ButtonValueGap = 12f, ButtonValueFont = 12f;
+        static string ButtonValue(Row r) => r.Kind == Kind.Button && r.GetText != null ? r.GetText() : null;
+        static float ButtonValueWidth(Row r)
+        {
+            string v = ButtonValue(r);
+            return string.IsNullOrEmpty(v) ? 0f : Mathf.Ceil(CSCommonUX.Draw.TextWidth(v, ButtonValueFont, false)) + ButtonValueGap;
+        }
 
         static float ControlHeight(Row r) => r.Kind switch
         {
@@ -504,7 +517,10 @@ namespace CSCommonUX.UI
                 {
                     bool enabled = r.Act != null && (r.Enabled == null || r.Enabled());
                     var tone = r.ButtonKind == CSCommonButtonKind.Danger ? Tone.Danger : r.ButtonKind == CSCommonButtonKind.Primary ? Tone.Primary : Tone.Neutral;
-                    CSCommonUX.Button.In(new Rect(rx, Mathf.Round(cy - 20f), rw, 40f), null, r.Text, null, tone, null, enabled,
+                    float vw = ButtonValueWidth(r);
+                    if (vw > 0f && CSCommonUX.Draw.Repaint)
+                        CSCommonUX.Draw.TextFit(new Rect(rx, cy - 12f, vw - ButtonValueGap, 24f), ButtonValue(r), ButtonValueFont, Pal.Sub, false, TextAnchor.MiddleRight);
+                    CSCommonUX.Button.In(new Rect(rx + vw, Mathf.Round(cy - 20f), rw - vw, 40f), null, r.Text, null, tone, null, enabled,
                         () => Safe(r.Act, r.Text));
                     break;
                 }

@@ -92,6 +92,17 @@ namespace CSCommonUX
         /// <summary>활주로 표지(CSCommonUX.RunwaySign · 공항 의무 안내 표지): 높이 · 좌우 여백 · 글 · 모서리 · 검은 테 굵기.</summary>
         public const float RunwaySignH = 28f, RunwaySignPad = 10f, RunwaySignFont = 15f, RunwaySignRadius = 3f, RunwaySignEdge = 2f;
         public const float TagNameFont = 14f, TagSubFont = 12f, TagItemGap = 6f, TagChipH = 20f, TagChipPadX = 8f, TagChipFont = 11.5f, TagKindH = 18f, TagKindPadX = 6f, TagKindFont = 11f, TagStemH = 20f, TagFoot = 10f;
+        /// <summary>
+        /// 비행기 카드(CSCommonUX.TrainTag 의 Phase 모양 · 대중교통 캔버스 Runways): 카드 폭 · 좌우 · 위아래 여백 · 줄 사이 · 칸 사이 · 윗줄 높이 ·
+        /// 편명 칩 모서리 · 좌우 · 글 · 상태 알약 높이 · 왼쪽 · 오른쪽 · 글 · 단계 막대 높이 · 모서리 · 칸 사이 · 막대 → 라벨 · 라벨 높이 · 글 ·
+        /// 아랫줄 높이 · 순번 칩 좌우 · 승객 막대 폭 · 높이. 모서리는 TagRadius, 행선 · 크기 글은 TagNameFont · TagSubFont, 알약 점은 PinDot · PinDotGap.
+        /// </summary>
+        public const float FlightW = 348f, FlightPadX = 14f, FlightPadY = 12f, FlightRowGap = 8f, FlightItemGap = 8f, FlightLine1H = 24f;
+        public const float FlightCodeRadius = 8f, FlightCodePadX = 9f, FlightCodeFont = 12f, FlightPillH = 24f, FlightPillPadL = 8f, FlightPillPadR = 10f, FlightPillFont = 12f;
+        public const float FlightTrackH = 4f, FlightTrackRadius = 2f, FlightTrackGap = 4f, FlightLabelGap = 4f, FlightLabelH = 14f, FlightLabelFont = 11f;
+        public const float FlightLine3H = 20f, FlightRankPadX = 8f, FlightPaxW = 56f, FlightPaxH = 4f;
+        /// <summary>비행기 카드 높이(= 12 + 24 + 8 + 22 + 8 + 20 + 12 = 106).</summary>
+        public const float FlightH = FlightPadY * 2f + FlightLine1H + FlightRowGap * 2f + FlightTrackH + FlightLabelGap + FlightLabelH + FlightLine3H;
 
         /// <summary>카드(CSCommonUX.Card, 시안 A 선 카드): 모서리 · 안쪽 여백 · 제목 줄 높이 · 제목→설명 · 머리→내용 간격.</summary>
         public const float CardRadius = 12f, CardPad = 16f, CardTitleH = 28f, CardDescGap = 2f, CardHeadGap = 8f;
