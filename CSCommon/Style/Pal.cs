@@ -215,6 +215,20 @@ namespace CSCommonUX
         public static Color BoardCtcBg = Draw.Hex("#05070A"), BoardCtcTrack = Draw.Hex("#D9DEE6"), BoardCtcBusy = Draw.Hex("#FF4A3F"), BoardCtcRoute = Draw.Hex("#3DDC84"), BoardCtcTick = Draw.Hex("#5B6672"), BoardCtcStation = Draw.Hex("#5AA9E6"), BoardCtcStationInk = Draw.Hex("#BFE0FF");
         /// <summary>기차 신호기(Board.Signal · 대중교통 캔버스 TrainSignals): 녹 · 황 · 적 등 · 꺼진 등 · 몸통 · 몸통 1px 테 · 기둥 · 발.</summary>
         public static Color SignalGreen = Draw.Hex("#3DDC84"), SignalYellow = Draw.Hex("#FFC233"), SignalRed = Draw.Hex("#FF5A52"), SignalOff = Draw.Hex("#262A32"), SignalHousing = Draw.Hex("#0A0B0D"), SignalRing = new(1f, 1f, 1f, 0.22f), SignalMast = Draw.Hex("#C9CFD8");
+        /// <summary>공연 장면(Concert · 콘서트 확장판 캔버스): 밤 무대 바탕 · 트러스 · 조명 기구 · LED 화면 · 무대 바닥 · 관객 실루엣 · 휴대폰 불빛 · 레코드판 · 홈.</summary>
+        public static Color ConcertScene = Draw.Hex("#07080C"), ConcertTruss = Draw.Hex("#1C2029"), ConcertLamp = Draw.Hex("#2A2F38"), ConcertLed = Draw.Hex("#15111A"), ConcertFloor = Draw.Hex("#14171E"), ConcertCrowd = Draw.Hex("#000000"), ConcertPhone = Draw.Hex("#FFF5C2"), ConcertVinyl = Draw.Hex("#0D0E12"), ConcertGroove = Draw.Hex("#1D2028"), ConcertCurtain = Draw.Hex("#3A0D14"), ConcertCurtainLight = Draw.Hex("#5A1520"), ConcertPosterSub = Draw.Hex("#D6DBE2");
+        /// <summary>가상 예매 사이트 화면(콘서트 예매 오픈 전 · 대기줄): 브라우저 머리 · 주소 칸 · 사이트 바탕 · 카드 · 선 · 글 · 보조 글 · 흐린 글 · 사이트 강조 · 안내 바탕 · 안내 글 · 막힌 단추.</summary>
+        public static Color SiteChrome = Draw.Hex("#1C2029"), SiteAddress = Draw.Hex("#11141A"), SiteBg = Draw.Hex("#F5F6F8"), SiteCard = Draw.Hex("#FFFFFF"), SiteLine = Draw.Hex("#E4E6EA"), SiteInk = Draw.Hex("#14171A"), SiteSub = Draw.Hex("#5F6368"), SiteMuted = Draw.Hex("#80868E"), SiteAccent = Draw.Hex("#FF4F6D"), SiteNoteBg = Draw.Hex("#FFF7E6"), SiteNoteInk = Draw.Hex("#8A5A00"), SiteOff = Draw.Hex("#E4E6EA");
+        /// <summary>공연 숫자: 인기 오름 · 내림 · 좌석 등급 VIP · R · S · 일반 · 팔린 자리.</summary>
+        public static Color ConcertUp =Draw.Hex("#7BE0B0"), ConcertDown = Draw.Hex("#FF8A7A"), ConcertSeatVip = Draw.Hex("#C9A6FF"), ConcertSeatR = Draw.Hex("#6FB7FF"), ConcertSeatS = Draw.Hex("#7BE0B0"), ConcertSeatA = Draw.Hex("#FFC857"), ConcertSold = Draw.Hex("#2A2F38");
+        /// <summary>공연개최의향서(Concert.Letter · 캔버스 Letter): 문서 종류(0 공문 · 1 서한 · 2 레터헤드 · 3 메모)마다 종이 · 글 · 보조 글 · 칸 바탕 · 선.</summary>
+        public static readonly Color[] LetterPaper = { Draw.Hex("#FBFAF6"), Draw.Hex("#F6F0E2"), Draw.Hex("#FFFFFF"), Draw.Hex("#EFEDE7") },
+            LetterInk = { Draw.Hex("#1E1B16"), Draw.Hex("#2A2116"), Draw.Hex("#14171A"), Draw.Hex("#1D1D1B") },
+            LetterSub = { Draw.Hex("#6B665C"), Draw.Hex("#7A6A52"), Draw.Hex("#5F6368"), Draw.Hex("#5C5A55") },
+            LetterCell = { Draw.Hex("#EFECE4"), Draw.Hex("#EDE3CC"), Draw.Hex("#F3F5F8"), Draw.Hex("#E2DFD7") },
+            LetterLine = { Draw.Hex("#BDB7AA"), Draw.Hex("#A8957A"), Draw.Hex("#E4E6EA"), Draw.Hex("#1D1D1B") };
+        /// <summary>의향서 인장 · 레터헤드: 붉은 인주 · 머리 남색 · 머리 보조 글 · 금박 · 금박 밝은 금 · 금박 어두운 리본.</summary>
+        public static Color LetterSeal = Draw.Hex("#C8261D"), LetterHead = Draw.Hex("#0F1B2D"), LetterHeadSub = Draw.Hex("#9FB0C8"), LetterGold = Draw.Hex("#C9A24A"), LetterGoldLight = Draw.Hex("#F3E2B0"), LetterGoldDark = Draw.Hex("#A8842F");
 
         static readonly System.Collections.Generic.Dictionary<string, Color> teams = new()
         {
