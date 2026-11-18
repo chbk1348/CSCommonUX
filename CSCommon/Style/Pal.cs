@@ -211,6 +211,8 @@ namespace CSCommonUX
         public static Color BoardNrtBg = Draw.Hex("#050505"), BoardNrtBar = Draw.Hex("#1D2026"), BoardNrtRowA = Draw.Hex("#0C0C0D"), BoardNrtFlight = Draw.Hex("#8FD0FF");
         /// <summary>판 위 상태: 탑승 중 · 도착 초록, 흰 글.</summary>
         public static Color BoardOk = Draw.Hex("#3DDC84"), BoardInk = Draw.Hex("#F2F5FA");
+        /// <summary>선로 관제 판(Board · 대중교통 캔버스 TrackCtc): 바탕 · 빈 구간 · 점유 · 진로 · 구간 경계 금 · 역 이름 테 · 역 이름 글.</summary>
+        public static Color BoardCtcBg = Draw.Hex("#05070A"), BoardCtcTrack = Draw.Hex("#D9DEE6"), BoardCtcBusy = Draw.Hex("#FF4A3F"), BoardCtcRoute = Draw.Hex("#3DDC84"), BoardCtcTick = Draw.Hex("#5B6672"), BoardCtcStation = Draw.Hex("#5AA9E6"), BoardCtcStationInk = Draw.Hex("#BFE0FF");
         /// <summary>기차 신호기(Board.Signal · 대중교통 캔버스 TrainSignals): 녹 · 황 · 적 등 · 꺼진 등 · 몸통 · 몸통 1px 테 · 기둥 · 발.</summary>
         public static Color SignalGreen = Draw.Hex("#3DDC84"), SignalYellow = Draw.Hex("#FFC233"), SignalRed = Draw.Hex("#FF5A52"), SignalOff = Draw.Hex("#262A32"), SignalHousing = Draw.Hex("#0A0B0D"), SignalRing = new(1f, 1f, 1f, 0.22f), SignalMast = Draw.Hex("#C9CFD8");
 

@@ -31,6 +31,9 @@ namespace CSCommonUX
         /// <summary>신호기 전체 높이(발 아래 끝 ~ 몸통 위 끝).</summary>
         public const float SigH = SigPad * 2f + SigLamp * 4f + SigGap * 3f + SigMast + SigFoot;
 
+        /// <summary>선로 관제 판(캔버스 TrackCtc): 판 높이 · 도식 칸 가로 · 세로(가장 가까운 두 선로 사이) · 선 굵기 · 구간 경계 금 길이 · 신호 점 반지름 · 신호 점 띄움 · 열차 표 높이 · 판 안 여백 · 확대 한계.</summary>
+        public const float CtcH = 760f, CtcCellX = 48f, CtcCellY = 40f, CtcTrack = 3f, CtcTick = 20f, CtcSig = 4f, CtcSigOff = 8f, CtcTag = 16f, CtcPad = 24f, CtcZoomMin = 0.1f, CtcZoomMax = 4f;
+
         /// <summary>테두리 칸 최소 폭(번호 한 자리).</summary>
         public const float BoxMinW = 36f;
 
@@ -63,6 +66,34 @@ namespace CSCommonUX
             }
         }
 
+        /// <summary>분기 진로 표시기(캔버스 TrainSignals): 칸 지름 · 칸 사이 · 판 모서리 · 신호기 몸통 위로 띄우는 간격.</summary>
+        public const float RouteCell = SigLamp, RouteGap = SigGap, RouteRadius = 4f, RouteLift = SigGap;
+
+        const string ArrowLeft = "M18 20L6 8M6 15V8h7", ArrowStraight = "M12 20V4M6 10l6-6 6 6", ArrowRight = "M6 20L18 8M11 8h7v7";
+
+        /// <summary>
+        /// 분기 진로 표시기: 신호기 몸통 위의 작은 판에 갈 수 있는 갈래 화살표(왼쪽 · 직진 · 오른쪽 차례).
+        /// dirs · on 의 비트 0 왼쪽 · 1 직진 · 2 오른쪽. dirs = 있는 갈래, on = 그중 들어갈 수 있는 갈래(녹색), 나머지는 꺼진 등 색.
+        /// foot = Signal 과 같은 발 자리.
+        /// </summary>
+        public static void SignalRoute(Vector2 foot, int dirs, int on)
+        {
+            if (!Draw.Repaint) return;
+            int n = ((dirs & 1) != 0 ? 1 : 0) + ((dirs & 2) != 0 ? 1 : 0) + ((dirs & 4) != 0 ? 1 : 0);
+            if (n < 2) return;
+            float w = SigPad * 2f + RouteCell * n + RouteGap * (n - 1), h = SigPad * 2f + RouteCell;
+            var plate = new Rect(foot.x - w * 0.5f, foot.y - SigH - RouteLift - h, w, h);
+            Draw.Round(new Rect(plate.x - SigRing, plate.y - SigRing, plate.width + SigRing * 2f, plate.height + SigRing * 2f), Pal.SignalRing, RouteRadius + SigRing);
+            Draw.Round(plate, Pal.SignalHousing, RouteRadius);
+            float x = plate.x + SigPad;
+            for (int i = 0; i < 3; i++)
+            {
+                if ((dirs & (1 << i)) == 0) continue;
+                Draw.Icon(i == 0 ? ArrowLeft : i == 1 ? ArrowStraight : ArrowRight, new Rect(x, plate.y + SigPad, RouteCell, RouteCell), (on & (1 << i)) != 0 ? Pal.SignalGreen : Pal.SignalOff);
+                x += RouteCell + RouteGap;
+            }
+        }
+
         /// <summary>판 바탕(둥근 칸 + 1px 테두리).</summary>
         public static void Panel(Rect r, Color fill)
         {
@@ -86,6 +117,19 @@ namespace CSCommonUX
         {
             if (!Draw.Repaint) return;
             Draw.TextFit(r, English && !string.IsNullOrEmpty(en) ? en : ko, size, c, bold, anchor);
+        }
+
+        /// <summary>한 · 일 · 영 교차(일본식 판): 7초씩 한글 → 일본어 → 영어. 빈 말은 한글로(모든 판이 같은 박자).</summary>
+        public static string Pick3(string ko, string ja, string en)
+        {
+            int k = Mathf.FloorToInt(Time.realtimeSinceStartup / SwapSeconds) % 3;
+            string s = k == 1 ? ja : k == 2 ? en : ko;
+            return string.IsNullOrEmpty(s) ? ko : s;
+        }
+
+        public static void Text(Rect r, string ko, string ja, string en, float size, Color c, bool bold = true, TextAnchor anchor = TextAnchor.MiddleLeft)
+        {
+            if (Draw.Repaint) Draw.TextFit(r, Pick3(ko, ja, en), size, c, bold, anchor);
         }
 
         /// <summary>테두리 칸(타는곳 · 승차홈 · 탑승구 번호): 가운데 글 + 둥근 테두리.</summary>

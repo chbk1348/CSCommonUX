@@ -1157,7 +1157,14 @@ namespace CSCommonUX
                 // GUI.HandleTextFieldEventForDesktop 은 글꼴이 HasCharacter 로 모르는 글자(기본 스킨 글꼴의 한글)를 넣지도 쓰지도 않고 넘김 —
                 // 확정된 음절이 버려져 마지막 조합 글만 남던 것('유키' → '키'). 그 자리에서 Unity 가 하던 대로 넣음(넣었으면 이미 Used 라 두 번 안 들어감)
                 var ke = Event.current;
-                if (ke.type == EventType.KeyDown && ke.character != '\0' && !char.IsControl(ke.character))
+                // Ctrl · Cmd 조합(AltGr = Ctrl + Alt 는 글자)은 글자가 아니라 단축키: Ctrl+A 뒤 따라오는 'a' 글자 이벤트를 넣어 고른 글이 'a' 로 바뀌던 것
+                bool shortcut = (ke.control || ke.command) && !ke.alt;
+                if (ke.type == EventType.KeyDown && shortcut && ke.keyCode == KeyCode.A)
+                {
+                    te.SelectAll();
+                    ke.Use();
+                }
+                else if (ke.type == EventType.KeyDown && !shortcut && ke.character != '\0' && !char.IsControl(ke.character))
                 {
                     te.Insert(ke.character);
                     v = maxLength >= 0 && te.text.Length > maxLength ? te.text.Substring(0, maxLength) : te.text;
