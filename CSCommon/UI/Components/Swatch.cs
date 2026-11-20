@@ -30,7 +30,7 @@ namespace CSCommonUX
                 if (onT < 0.99f) Draw.RoundOutline(r, Draw.Alpha(Look.SwatchLine, 1f - onT), rad);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return Draw.Button(r);
         }
     }

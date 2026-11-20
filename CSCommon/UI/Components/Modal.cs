@@ -131,7 +131,7 @@ namespace CSCommonUX
                 Draw.Icon(Icons.Close, new Rect(Mathf.Round(c.center.x - CloseIcon * 0.5f), Mathf.Round(c.center.y - CloseIcon * 0.5f), CloseIcon, CloseIcon), Look.BarOff, 24f, 2f);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(c, "닫기(Esc)");
+            CSCommonUX.CSCommonToolbar.Tip(c, "닫기(Esc)");
             return Draw.Button(c);
         }
 
@@ -163,7 +163,7 @@ namespace CSCommonUX
                 if (tw > 0f) Draw.TextFit(new Rect(x + iw, b.y, Mathf.Max(0f, b.xMax - x - iw), b.height), label, BtnFont, ink, primary);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(b, tip);
+            CSCommonUX.CSCommonToolbar.Tip(b, tip);
             return enabled && Draw.Button(b);
         }
 

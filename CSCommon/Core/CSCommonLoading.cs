@@ -1,5 +1,5 @@
 using System;
-using CSCommonUX.UI;
+using CSCommonUX;
 using ICities;
 
 namespace CSCommonUX

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CSCommonUX.UI
+namespace CSCommonUX
 {
     /// <summary>
     /// 주차장 그리기 모드(Parking Lot Tool) 및 F1 서킷 툴킷 표준 머티리얼 상단 플로팅 툴바 엔진:

@@ -47,7 +47,7 @@ namespace CSCommonUX
                 if (!string.IsNullOrEmpty(icon)) Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - s * 0.5f), Mathf.Round(r.center.y - s * 0.5f), s, s), ink, 24f, PillBar.Stroke);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return Draw.Button(r);
         }
 

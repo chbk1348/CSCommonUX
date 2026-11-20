@@ -51,7 +51,7 @@ namespace CSCommonUX
                 }
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             // ✕ 자리를 먼저(칩 오른쪽 끝 · 아이콘보다 넓게)
             if (canClear && Draw.Button(new Rect(r.xMax - CSCommonDesign.ChipPadX - CSCommonDesign.ChipIcon - 4f, r.y, CSCommonDesign.ChipPadX + CSCommonDesign.ChipIcon + 4f, h)))
             {
@@ -86,7 +86,7 @@ namespace CSCommonUX
                 Draw.Text(r, label, CSCommonDesign.ViewChipFont, Color.Lerp(Pal.Txt, Pal.Win, onT), on, TextAnchor.MiddleCenter);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (Draw.Button(r)) click?.Invoke();
             return w;
         }

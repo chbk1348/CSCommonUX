@@ -21,7 +21,7 @@ namespace CSCommonUX
                 float rad = r.height * 0.5f;
                 if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Look.PastelFill, onT), rad);
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
 

@@ -84,7 +84,7 @@ namespace CSCommonUX
                 }
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (live && Draw.Button(r)) click?.Invoke();
         }
 

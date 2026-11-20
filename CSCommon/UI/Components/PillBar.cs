@@ -204,7 +204,7 @@ namespace CSCommonUX
             var r = new Rect(x, Mathf.Round(cy - SubCellH * 0.5f), w, SubCellH);
             int key = CSCommonAnim.Key("pillbar.subchip", label); // 자리와 무관(움직이는 막대에서 presses · slots 가 쌓이지 않게)
             SubCell(r, label, on, !enabled, Look.Press(key, r, enabled));
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (Draw.Button(r) && enabled) click?.Invoke();
             return w;
         }
@@ -241,7 +241,7 @@ namespace CSCommonUX
                 int k = CSCommonAnim.Key("pillbar.icongroup", icons[i]); // 자리와 무관
                 bool sel = on != null && on(i);
                 Cell(c, icons[i], null, 0f, sel ? 1f : 0f, Look.Press(k, c));
-                CSCommonUX.UI.CSCommonToolbar.Tip(c, tips != null && i < tips.Length ? tips[i] : null);
+                CSCommonUX.CSCommonToolbar.Tip(c, tips != null && i < tips.Length ? tips[i] : null);
                 if (Draw.Button(c)) pick?.Invoke(i);
             }
             return w;

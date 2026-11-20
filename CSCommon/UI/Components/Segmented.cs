@@ -52,7 +52,7 @@ namespace CSCommonUX
                 }
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(c, tip);
+            CSCommonUX.CSCommonToolbar.Tip(c, tip);
             return Draw.Button(c);
         }
 

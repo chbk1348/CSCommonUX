@@ -143,7 +143,7 @@ namespace CSCommonUX
                 GUI.matrix = m;
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (!enabled) return;
             bool hit = Draw.Button(r);
             if (hit && open)

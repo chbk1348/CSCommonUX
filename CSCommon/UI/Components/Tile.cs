@@ -37,7 +37,7 @@ namespace CSCommonUX
             Back(r, key, on, enabled, danger);
             content?.Invoke();
             if (paint) Draw.EndScale();
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
 

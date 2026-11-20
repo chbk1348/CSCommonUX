@@ -73,7 +73,7 @@ namespace CSCommonUX
                 if (hasBadge) Badge.Count(x + iw + lw + CountGap, c.center.y, badge, true, false, CountH, badgeColor);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(c, tip);
+            CSCommonUX.CSCommonToolbar.Tip(c, tip);
             return Draw.Button(c);
         }
     }

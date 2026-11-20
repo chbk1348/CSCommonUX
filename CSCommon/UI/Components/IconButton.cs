@@ -29,7 +29,7 @@ namespace CSCommonUX
                 Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - IconSize * 0.5f), Mathf.Round(r.center.y - IconSize * 0.5f), IconSize, IconSize), fg, 24f, 1.9f);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (enabled && Draw.Button(r)) click?.Invoke();
             return Size;
         }
