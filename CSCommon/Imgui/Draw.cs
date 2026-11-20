@@ -21,7 +21,7 @@ namespace CSCommonUX
         static readonly Dictionary<int, GUIStyle> textStyles = new();
         static readonly Dictionary<int, GUIStyle> roundStyles = new();
         static readonly Dictionary<long, GUIStyle> outlineStyles = new();
-        static readonly Dictionary<long, Texture2D> rings = new();
+        static readonly TexCache<long, Texture2D> rings = new(256, t => t);
         static Texture2D disc;
         static readonly GUIContent content = new();
         static readonly PerfWatch guiWatch = new("OnGUI");
@@ -490,7 +490,7 @@ namespace CSCommonUX
             int d = Mathf.Max(2, Mathf.RoundToInt(radius * 2f * S));
             int w = Mathf.Max(1, Mathf.RoundToInt(width * S));
             long key = ((long)d << 16) | (uint)w;
-            if (!rings.TryGetValue(key, out var tex))
+            if (!rings.TryGet(key, out var tex))
             {
                 tex = new Texture2D(d, d, TextureFormat.ARGB32, false) { wrapMode = TextureWrapMode.Clamp, hideFlags = HideFlags.HideAndDontSave };
                 var px = new Color32[d * d];
@@ -504,7 +504,7 @@ namespace CSCommonUX
                 }
                 tex.SetPixels32(px);
                 tex.Apply();
-                rings[key] = tex;
+                rings.Put(key, tex);
             }
             Color old = GUI.color;
             GUI.color = Op(c);
@@ -1419,10 +1419,90 @@ namespace CSCommonUX
             }
         }
 
+        // ---------------- 구운 텍스처 캐시(3.1): 상한이 있고, 넘치면 오래 안 쓴 것부터 1/4 을 지움(텍스처 Destroy)
+        // 예전: 아이콘 · 고리는 상한 없이 쌓였고(크기가 움직이면 끝없이), 그림 · 호는 상한에서 통째로 비워 다음 틀에 전부 다시 구움(틀 튐).
+
+        sealed class TexCache<TKey, TValue>
+        {
+            struct Entry
+            {
+                public TValue Value;
+                public int Used;
+            }
+
+            readonly Dictionary<TKey, Entry> map;
+            readonly int cap;
+            readonly Func<TValue, Texture2D> texOf;
+            readonly List<KeyValuePair<int, TKey>> order = new();
+
+            public TexCache(int cap, Func<TValue, Texture2D> texOf, IEqualityComparer<TKey> cmp = null)
+            {
+                this.cap = cap;
+                this.texOf = texOf;
+                map = cmp != null ? new Dictionary<TKey, Entry>(cmp) : new Dictionary<TKey, Entry>();
+            }
+
+            public int Count => map.Count;
+
+            public bool TryGet(TKey key, out TValue value)
+            {
+                if (map.TryGetValue(key, out var e) && texOf(e.Value) != null)
+                {
+                    e.Used = Time.frameCount;
+                    map[key] = e;
+                    value = e.Value;
+                    return true;
+                }
+                value = default;
+                return false;
+            }
+
+            public void Put(TKey key, TValue value)
+            {
+                if (map.Count >= cap && !map.ContainsKey(key)) Evict();
+                map[key] = new Entry { Value = value, Used = Time.frameCount };
+            }
+
+            /// <summary>가장 오래 안 쓴 1/4 을 지움(이번 틀에 쓴 것은 남김).</summary>
+            void Evict()
+            {
+                order.Clear();
+                foreach (var kv in map) order.Add(new KeyValuePair<int, TKey>(kv.Value.Used, kv.Key));
+                order.Sort((a, b) => a.Key.CompareTo(b.Key));
+                int n = Mathf.Max(1, map.Count / 4), frame = Time.frameCount;
+                for (int i = 0; i < n && i < order.Count && order[i].Key != frame; i++)
+                {
+                    var t = texOf(map[order[i].Value].Value);
+                    if (t != null) UnityEngine.Object.Destroy(t);
+                    map.Remove(order[i].Value);
+                }
+                order.Clear();
+            }
+
+            public void Clear()
+            {
+                foreach (var e in map.Values)
+                {
+                    var t = texOf(e.Value);
+                    if (t != null) UnityEngine.Object.Destroy(t);
+                }
+                map.Clear();
+            }
+        }
+
         // ---------------- 선명한 아이콘 · 그림
 
+        /// <summary>
+        /// 한 틀에 새로 굽는 아이콘 수 상한(3.1): 넘치면 같은 아이콘의 다른 크기 구운 것을 늘려 찍고 다음 틀에 구움 — 크기가 움직이는 아이콘이 한 틀에 여러 장 굽지 않게.
+        /// 처음 보는 아이콘(다른 크기도 없음)은 상한과 상관없이 바로 구움(빈칸이 보이지 않게).
+        /// </summary>
+        const int IconBakesPerFrame = 6;
+        static int iconBakeFrame = -1, iconBakes;
+        /// <summary>경로 글 → 가장 최근에 구운 텍스처(늘려 찍을 대신 그림).</summary>
+        static readonly Dictionary<string, Texture2D> iconAny = new();
+
         // 키 = (경로 글, 화소, 선 굵기 · viewBox 를 1/10000 단위 정수로) — 예전 문자열 이어 붙인 키와 같은 구분, 찾을 때 쓰레기 없음
-        static readonly Dictionary<TextKey, Texture2D> iconCache = new(TextKeyComparer.I);
+        static readonly TexCache<TextKey, Texture2D> iconCache = new(1024, t => t, TextKeyComparer.I);
 
         /// <summary>
         /// 아웃라인 아이콘(SVG 경로, viewBox 0 ~ viewBox 정사각): 화면 화소 크기에 맞춰 선까지 거리로 한 번 구운 텍스처(둥근 끝 · 둥근 이음)를
@@ -1434,10 +1514,26 @@ namespace CSCommonUX
             Rect sr = ToScreen(r);
             int px = Mathf.Max(4, Mathf.RoundToInt(sr.width));
             var key = new TextKey(d, px, Mathf.RoundToInt(stroke * 10000f), Mathf.RoundToInt(viewBox * 10000f));
-            if (!iconCache.TryGetValue(key, out var tex) || tex == null)
+            if (!iconCache.TryGet(key, out var tex))
             {
+                if (iconBakeFrame != Time.frameCount)
+                {
+                    iconBakeFrame = Time.frameCount;
+                    iconBakes = 0;
+                }
+                if (iconBakes >= IconBakesPerFrame && iconAny.TryGetValue(d, out var any) && any != null)
+                {
+                    // 이번 틀 굽기 몫을 다 씀: 다른 크기 것을 늘려 찍고 다음 틀에 구움
+                    Color o = GUI.color;
+                    GUI.color = Op(c);
+                    GUI.DrawTexture(new Rect(Mathf.Round(sr.x), Mathf.Round(sr.y), px, px), any);
+                    GUI.color = o;
+                    return;
+                }
+                iconBakes++;
                 tex = BakeIcon(d, px, viewBox, stroke);
-                iconCache[key] = tex;
+                iconCache.Put(key, tex);
+                iconAny[d] = tex;
             }
             Color old = GUI.color;
             GUI.color = Op(c);
@@ -1479,7 +1575,7 @@ namespace CSCommonUX
             return tex;
         }
 
-        static readonly Dictionary<long, Texture2D> sharpCache = new();
+        static readonly TexCache<long, Texture2D> sharpCache = new(200, t => t);
 
         /// <summary>
         /// 그림을 화면 화소 크기로 미리 줄여(넓이 평균, 투명도 곱해 섞음) 정수 화소 자리에 찍음 — 큰 로고를 작게 그릴 때 흐려지지 않게.
@@ -1495,18 +1591,12 @@ namespace CSCommonUX
             if (w / h > aspect) w = h * aspect; else h = w / aspect;
             int pw = Mathf.Max(1, Mathf.RoundToInt(w)), ph = Mathf.Max(1, Mathf.RoundToInt(h));
             long key = ((long)src.GetInstanceID() << 24) ^ ((long)pw << 12) ^ ph;
-            if (!sharpCache.TryGetValue(key, out var tex) || tex == null)
+            if (!sharpCache.TryGet(key, out var tex))
             {
                 tex = Downscale(src, pw, ph);
                 if (tex == null) { sharpFailed.Add(src.GetInstanceID()); ImageRaw(r, src, alpha, ScaleMode.ScaleToFit); return; }
-                // 크기가 계속 바뀌는 그림(움직임)이 줄인 그림을 끝없이 쌓지 않게
-                if (sharpCache.Count > 200)
-                {
-                    foreach (var t in sharpCache.Values)
-                        if (t != null) UnityEngine.Object.Destroy(t);
-                    sharpCache.Clear();
-                }
-                sharpCache[key] = tex;
+                // 크기가 계속 바뀌는 그림(움직임)이 줄인 그림을 끝없이 쌓지 않게: 상한에서 오래 안 쓴 것부터 지움(TexCache)
+                sharpCache.Put(key, tex);
             }
             Color old = GUI.color;
             GUI.color = new Color(1f, 1f, 1f, alpha * old.a * Opacity);
@@ -1549,7 +1639,7 @@ namespace CSCommonUX
 
         // ---------------- 호 · 빛 번짐(계기판)
 
-        static readonly Dictionary<long, BakedArc> arcCache = new();
+        static readonly TexCache<long, BakedArc> arcCache = new(400, a => a.Tex);
         static Texture2D glowTex;
 
         /// <summary>
@@ -1572,17 +1662,11 @@ namespace CSCommonUX
             int wq = Mathf.Clamp(Mathf.RoundToInt(width * S * 4f), 1, 4095);
             int fq = Mathf.Clamp(Mathf.RoundToInt(feather * S * 2f), 0, 511);
             long key = ((long)rq << 42) | ((long)wq << 30) | ((long)fq << 21) | ((long)a0 << 11) | (uint)a1;
-            if (!arcCache.TryGetValue(key, out var baked) || baked.Tex == null)
+            if (!arcCache.TryGet(key, out var baked))
             {
-                if (arcCache.Count > 400)
-                {
-                    foreach (var t in arcCache.Values)
-                        if (t.Tex != null) UnityEngine.Object.Destroy(t.Tex);
-                    arcCache.Clear();
-                }
                 var tex = BakeArc(rq / 4f, wq / 4f, fq / 2f, a0 * 0.5f, a1 * 0.5f, out int ox, out int oy);
                 baked = new BakedArc { Tex = tex, Ox = ox, Oy = oy };
-                arcCache[key] = baked;
+                arcCache.Put(key, baked);
             }
             Vector2 sc = ToScreen(center);
             Color old = GUI.color;
