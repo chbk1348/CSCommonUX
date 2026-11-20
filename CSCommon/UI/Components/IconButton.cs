@@ -18,15 +18,14 @@ namespace CSCommonUX
             if (!draw) return Size;
             var r = new Rect(x, Mathf.Round(cy - Size * 0.5f), Size, Size);
             int key = Look.Key(r, icon, tip) ^ 0x4cf5ad43;
-            float hv = 0f, pr = Look.Press(key, r, enabled);
+            float pr = Look.Press(key, r, enabled);
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 9f);
             if (Draw.Repaint)
             {
                 float rad = Size * 0.5f;
                 Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
-                if (hv * (1f - onT) > 0.01f) Draw.Round(r, Draw.Alpha(Look.PillNeutral, hv * (1f - onT)), rad);
-                if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Color.Lerp(Look.PastelFill, Look.PastelHover, hv), onT), rad);
-                Color fg = !enabled ? Look.IconOffInk : Color.Lerp(color ?? Color.Lerp(Look.BarOff, Look.BarInk, hv), Look.PastelInk, onT);
+                if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Look.PastelFill, onT), rad);
+                Color fg = !enabled ? Look.IconOffInk : Color.Lerp(color ?? Look.BarOff, Look.PastelInk, onT);
                 Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - IconSize * 0.5f), Mathf.Round(r.center.y - IconSize * 0.5f), IconSize, IconSize), fg, 24f, 1.9f);
                 Draw.EndScale();
             }

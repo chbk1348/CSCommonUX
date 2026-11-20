@@ -60,7 +60,7 @@ namespace CSCommonUX
                 bool sel = i == cur;
                 int k = tabKey ^ (i + 1) * 7919;
                 string name = label(i);
-                PillBar.Cell(c, icon?.Invoke(i), name, lwBuf[i], PillBar.Open(wBuf[i], PillBar.CellW(lwBuf[i])), 0f, Look.Press(k, c));
+                PillBar.Cell(c, icon?.Invoke(i), name, lwBuf[i], PillBar.Open(wBuf[i], PillBar.CellW(lwBuf[i])), Look.Press(k, c));
                 extra?.Invoke(i, c, sel);
                 if (!sel) CSCommonUX.UI.CSCommonToolbar.Tip(c, name);
                 if (Draw.Button(c)) hit = i;
@@ -154,7 +154,7 @@ namespace CSCommonUX
                 bool sel = i == s.Cur;
                 int k = key ^ (i + 1) * 7919;
                 float ew = on ? (extraW?.Invoke(i) ?? 0f) : 0f;
-                PillBar.SubCell(c, s.Labels[i], sel, on && !sel && dim != null && dim(i), 0f, Look.Press(k, c, live), ew);
+                PillBar.SubCell(c, s.Labels[i], sel, on && !sel && dim != null && dim(i), Look.Press(k, c, live), ew);
                 // 이름이 있으면 [이름 · 뱃지] 의 오른쪽 끝, 이름이 없으면(아이콘만 — 언론 탭 인스타그램) 칸 가운데
                 float ex = string.IsNullOrEmpty(s.Labels[i]) ? Mathf.Round(c.center.x - ew * 0.5f) : c.xMax - PillBar.SubCellPadX - ew;
                 if (ew > 0f) extra?.Invoke(i, new Rect(ex, c.y, ew, c.height));

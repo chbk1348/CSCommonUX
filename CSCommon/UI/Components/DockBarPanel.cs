@@ -94,7 +94,7 @@ namespace CSCommonUX
                 var r = new Rect(x, y, w, TabH);
                 bool sel = i == cur;
                 int k = Look.Key(r, "dockbarpanel.tab", labels[i]);
-                float hv = 0f, pr = Look.Press(k, r);
+                float pr = Look.Press(k, r);
                 if (Draw.Repaint)
                 {
                     float rad = TabH * 0.5f;
@@ -102,7 +102,6 @@ namespace CSCommonUX
                     if (sel) Draw.Round(r, Look.PastelFill, rad);
                     else
                     {
-                        if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), rad);
                         Draw.RoundOutline(r, Look.BarLine, rad);
                     }
                     Draw.Text(r, labels[i], TabFont, sel ? Look.PastelInk : Look.BarInk, true, TextAnchor.MiddleCenter);

@@ -25,7 +25,7 @@ namespace CSCommonUX
             if (!draw) return w;
             var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
             int key = Look.Key(r, "chip", label);
-            float hv = 0f, pr = Look.Press(key, r);
+            float pr = Look.Press(key, r);
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {
@@ -39,7 +39,7 @@ namespace CSCommonUX
                     ink = Draw.Shade(color.Value, light ? TeamInkLight : TeamInkDark);
                     fill.a = ink.a = 1f;
                 }
-                Draw.Round(r, Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), fill, onT), rad);
+                Draw.Round(r, Color.Lerp(Look.Pill, fill, onT), rad);
                 if (onT < 0.99f) Draw.RoundOutline(r, Draw.Alpha(Look.PillLine, 1f - onT), rad);
                 Color fg = Color.Lerp(Look.BarInk, ink, onT);
                 float tx = r.x + CSCommonDesign.ChipPadX, tw = Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ChipFont, true));

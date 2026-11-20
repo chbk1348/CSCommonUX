@@ -24,7 +24,7 @@ namespace CSCommonUX
         /// <summary>뜯어져 나오기: 걸리는 초 · 투명도 0→1 초 · 숨은 가로 · 세로 배율.</summary>
         public const float TearSeconds = 0.46f, TearFade = 0.22f, TearSx = 0.62f, TearSy = 0.55f;
         /// <summary>안 고른 칸 호버 바탕 알파(Pal.Haze) · 아이콘 선 두께.</summary>
-        public const float HoverAlpha = 0.06f, Stroke = 1.7f;
+        public const float Stroke = 1.7f;
 
         // ---- 순수 계산(SelfCheck)
 
@@ -161,13 +161,12 @@ namespace CSCommonUX
         /// 알약 칸(그리기만): open = 열린 정도(Open) — 열린 만큼 파스텔 채움 · 아이콘 색 · 이름이 나타남. 안 고른 칸은 hover 때 옅은 알약 바탕.
         /// [아이콘 + 8 + 이름] 한 덩어리를 칸 가운데(아이콘이 없으면 이름만 가운데), 누르면(press 0 ~ 1) 0.96배.
         /// </summary>
-        public static void Cell(Rect cell, string icon, string label, float labelW, float open, float hover, float press)
+        public static void Cell(Rect cell, string icon, string label, float labelW, float open, float press)
         {
             if (!Draw.Repaint) return;
             float rad = cell.height * 0.5f;
             Draw.BeginScale(cell.center, Look.PressScale(press, PressScale));
             if (open > 0.01f) Draw.Round(cell, Draw.Alpha(Look.PastelFill, open), rad);
-            if (hover > 0.01f) Draw.Round(cell, Draw.Alpha(Pal.Haze, HoverAlpha * hover), rad);
             bool hasIcon = !string.IsNullOrEmpty(icon);
             Color ink = Color.Lerp(Look.BarOff, Look.PastelInk, open);
             // 이름이 없는 칸(독 설정 막대)은 아이콘만 가운데
@@ -181,16 +180,15 @@ namespace CSCommonUX
         }
 
         /// <summary>
-        /// 서브 칸(그리기만): 고름 = 서브 파스텔 채움 + 서브 파스텔 글(굵게), 안 고름 = 보조 글(dim 이면 흐린 글) · hover 때 옅은 바탕. 누르면 0.96배.
+        /// 서브 칸(그리기만): 고름 = 서브 파스텔 채움 + 서브 파스텔 글(굵게), 안 고름 = 보조 글(dim 이면 흐린 글). 누르면 0.96배.
         /// 글은 (칸 − 오른쪽 뱃지 extraW) 가운데.
         /// </summary>
-        public static void SubCell(Rect cell, string label, bool sel, bool dim, float hover, float press, float extraW = 0f)
+        public static void SubCell(Rect cell, string label, bool sel, bool dim, float press, float extraW = 0f)
         {
             if (!Draw.Repaint) return;
             float rad = cell.height * 0.5f;
             Draw.BeginScale(cell.center, Look.PressScale(press, PressScale));
             if (sel) Draw.Round(cell, Look.PastelSubFill, rad);
-            else if (hover > 0.01f) Draw.Round(cell, Draw.Alpha(Pal.Haze, HoverAlpha * hover), rad);
             Draw.Text(new Rect(cell.x, cell.y, cell.width - extraW, cell.height), label, SubFont, sel ? Look.PastelSubInk : dim ? Pal.Dim : Look.BarOff, sel, TextAnchor.MiddleCenter);
             Draw.EndScale();
         }
@@ -205,7 +203,7 @@ namespace CSCommonUX
             if (!draw) return w;
             var r = new Rect(x, Mathf.Round(cy - SubCellH * 0.5f), w, SubCellH);
             int key = CSCommonAnim.Key("pillbar.subchip", label); // 자리와 무관(움직이는 막대에서 presses · slots 가 쌓이지 않게)
-            SubCell(r, label, on, !enabled, 0f, Look.Press(key, r, enabled));
+            SubCell(r, label, on, !enabled, Look.Press(key, r, enabled));
             CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
             if (Draw.Button(r) && enabled) click?.Invoke();
             return w;
@@ -242,7 +240,7 @@ namespace CSCommonUX
                 var c = new Rect(bar.x + PadX + i * (CellH + DockGap), bar.y + Pad, CellH, CellH);
                 int k = CSCommonAnim.Key("pillbar.icongroup", icons[i]); // 자리와 무관
                 bool sel = on != null && on(i);
-                Cell(c, icons[i], null, 0f, sel ? 1f : 0f, 0f, Look.Press(k, c));
+                Cell(c, icons[i], null, 0f, sel ? 1f : 0f, Look.Press(k, c));
                 CSCommonUX.UI.CSCommonToolbar.Tip(c, tips != null && i < tips.Length ? tips[i] : null);
                 if (Draw.Button(c)) pick?.Invoke(i);
             }

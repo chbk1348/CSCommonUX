@@ -41,7 +41,7 @@ namespace CSCommonUX
         {
             int key = Look.Key(r, icon, label) ^ 0x2f9a6b1d;
             bool live = enabled && !loading;
-            float hv = 0f, pr = Look.Press(key, r, live);
+            float pr = Look.Press(key, r, live);
             if (Draw.Repaint)
             {
                 Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
@@ -56,10 +56,10 @@ namespace CSCommonUX
                 {
                     switch (tone)
                     {
-                        case Tone.Primary: bg = Tri(Look.PastelFill, Look.PastelHover, Look.PastelPress, hv, pr); ink = Look.PastelInk; break;
-                        case Tone.Danger: bg = Tri(Look.FabCancelFill, Look.DangerHover, Look.DangerPress, hv, pr); ink = Look.FabCancelInk; break;
-                        case Tone.Text: bg = Tri(Color.clear, Look.TextHover, Look.TextPress, hv, pr); ink = Look.PastelLink; break;
-                        default: bg = Tri(Look.PillNeutral, Look.NeutralHover, Look.NeutralPress, hv, pr); ink = Look.PillNeutralInk; break;
+                        case Tone.Primary: bg = Color.Lerp(Look.PastelFill, Look.PastelPress, pr); ink = Look.PastelInk; break;
+                        case Tone.Danger: bg = Color.Lerp(Look.FabCancelFill, Look.DangerPress, pr); ink = Look.FabCancelInk; break;
+                        case Tone.Text: bg = Color.Lerp(Color.clear, Look.TextPress, pr); ink = Look.PastelLink; break;
+                        default: bg = Color.Lerp(Look.PillNeutral, Look.NeutralPress, pr); ink = Look.PillNeutralInk; break;
                     }
                 }
                 if (bg.a > 0f) Draw.Round(r, bg, Mathf.Min(r.width, r.height) * 0.5f);
@@ -89,7 +89,6 @@ namespace CSCommonUX
         }
 
         /// <summary>평소 → 호버 → 누름 면(한 단씩 진하게).</summary>
-        static Color Tri(Color idle, Color hover, Color press, float hv, float pr) => Color.Lerp(Color.Lerp(idle, hover, hv), press, pr);
 
         /// <summary>아이콘만 정사각 단추(− · + · 지우기 · 닫기 · ‹ ›). 누르면 true.</summary>
         public static bool Square(Rect r, string icon, string tip = null, Tone tone = Tone.Neutral, bool enabled = true, Color? iconColor = null)

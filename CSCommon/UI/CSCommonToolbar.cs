@@ -142,7 +142,7 @@ namespace CSCommonUX.UI
                 float h = CSCommonUX.PillBar.CellH;
                 var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
                 float open = CSCommonUX.PillBar.Open(w, selW);
-                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, 0f, CSCommonUX.Look.Press(key, r));
+                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, CSCommonUX.Look.Press(key, r));
                 if (bw > 0f && open > 0.98f)
                 {
                     string count = badge.ToString();
