@@ -10,7 +10,7 @@ namespace CSCommonUX
     /// 게임 UI(UIView)에 보이지 않는 패널을 IMGUI 영역마다 깔아, 게임이 "UI 위"로 알게 함.
     /// 매 프레임(모드 컨트롤러 Update) Begin(모드 이름) → Add(영역마다) → End, 쓰지 않은 패널은 숨김. 모드를 내릴 때 Release.
     /// 모드마다 자기 DLL에 한 벌씩 들어가므로(정적 상태도 모드별) 패널 이름만 모드 이름으로 나눔.
-    /// 허브 공유(성능 3-4): 모드 허브(YukiModBox)가 Host 로 공유 표를 올려 두면 모드는 패널 대신 표에 칸만 올리고(허브가 패널 한 벌을 깖),
+    /// 허브 공유(성능 3-4): 모드 허브(ModHub)가 Host 로 공유 표를 올려 두면 모드는 패널 대신 표에 칸만 올리고(허브가 패널 한 벌을 깖),
     /// 다른 모드 창이 위에 그려진 자리는 Draw.Hover 가 받지 않음(Covered). 표가 없으면 지금처럼 혼자.
     /// </summary>
     public static class InputBlocker
@@ -190,7 +190,7 @@ namespace CSCommonUX
             if (!sink.hasFocus) sink.Focus();
         }
 
-        // ---- 허브 쪽(YukiModBox 만 부름)
+        // ---- 허브 쪽(ModHub 만 부름)
 
         /// <summary>허브 본체가 붙을 때 한 번: 공유 표를 올림. 이 DLL 의 패널 목록이 허브 패널이 됨. 내릴 때는 Release.</summary>
         public static void Host()
