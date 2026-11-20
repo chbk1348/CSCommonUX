@@ -82,6 +82,9 @@ namespace CSCommonUX
             return s.Value;
         }
 
+        /// <summary>그 열쇠 값을 바로 value 로(다가가지 않음) — 스크롤 막대를 끄는 동안 · 자리를 처음으로 되돌릴 때.</summary>
+        public static void Set(int key, float value) => slots[key] = new Slot { Value = value, At = Time.unscaledTime };
+
         // ---------------- 모달(IMGUI 창) 열림 · 닫힘
 
         static float modalOpacity, modalShift;
