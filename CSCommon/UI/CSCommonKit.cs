@@ -231,57 +231,5 @@ namespace CSCommonUX.UI
             return true;
         }
 
-        /// <summary>
-        /// 글 속 목록 한 줄(GLDS): 앞 공백 두 칸마다 한 단 들임 · 점은 글자 • 대신 도형(지름 = 글 크기 × 0.38, 깊이 0 ● → 1 ○ → 2 ■ → 다시 ●, 글과 같은 색).
-        /// 「1. 」로 시작하면 번호를 적은 그대로 두고 점 없음. 쓴 높이를 돌려줌.
-        /// </summary>
-        public static float ListItem(UIComponent parent, string line, float px, Color color, float x, float y, float width)
-        {
-            line ??= "";
-            int depth = 0;
-            while (line.StartsWith("  ")) { line = line.Substring(2); depth++; }
-            float indent = x + depth * 18f;
-            bool numbered = System.Text.RegularExpressions.Regex.IsMatch(line, @"^\d+\.\s");
-            float textX = indent + 15f;
-            if (!numbered)
-            {
-                float d = px * 0.38f, cy = y + px * 0.72f;
-                if (depth % 3 == 2) d *= 0.86f;
-                string sprite = depth % 3 == 1 ? CSCommonAtlas.Ring : depth % 3 == 2 ? CSCommonAtlas.White : CSCommonAtlas.Disc;
-                Panel(parent, sprite, color, indent + 4f - d * 0.5f, cy - d * 0.5f, d, d).isInteractive = false;
-            }
-            var l = Label(parent, line, px, color, numbered ? indent : textX, y, width - (numbered ? indent : textX) + x);
-            l.PerformLayout();
-            return Mathf.Max(l.height, px * 1.4f);
-        }
-
-        /// <summary>세로 스크롤 막대(가는 회색 손잡이, F1 창과 같음).</summary>
-        public static UIScrollbar Scrollbar(UIComponent parent, UIScrollablePanel scroll)
-        {
-            var bar = parent.AddUIComponent<UIScrollbar>();
-            bar.orientation = UIOrientation.Vertical;
-            bar.size = new Vector2(10f, scroll.height);
-            bar.relativePosition = new Vector3(scroll.relativePosition.x + scroll.width + 2f, scroll.relativePosition.y);
-            bar.minValue = 0f;
-            bar.value = 0f;
-            bar.incrementAmount = 40f;
-            bar.autoHide = true;
-            var track = bar.AddUIComponent<UISlicedSprite>();
-            track.atlas = CSCommonAtlas.Atlas;
-            track.spriteName = CSCommonAtlas.White;
-            track.color = Pal.Win;  // 알파를 버리므로 투명 대신 창 바탕색
-            track.size = bar.size;
-            track.relativePosition = Vector3.zero;
-            bar.trackObject = track;
-            var thumb = track.AddUIComponent<UISlicedSprite>();
-            thumb.atlas = CSCommonAtlas.Atlas;
-            thumb.spriteName = CSCommonAtlas.Thin;
-            thumb.color = Pal.Line2;
-            thumb.width = 4f;
-            thumb.relativePosition = new Vector3(3f, 0f);
-            bar.thumbObject = thumb;
-            scroll.verticalScrollbar = bar;
-            return bar;
-        }
     }
 }

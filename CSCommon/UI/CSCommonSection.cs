@@ -58,15 +58,11 @@ namespace CSCommonUX
 
         // ---------------- 색(시안 값, 테마를 따라감 — 칩 · 행 글 · 순번은 Look 의 파스텔 · 알약 토큰)
 
-        static readonly Color WellLight = Draw.Hex("#EEF0F2"), WellDark = Draw.Hex("#0E1014");
-        static readonly Color PlateLight = Draw.Hex("#FEFEFE"), PlateDark = Draw.Hex("#1B1F26");
-        static readonly Color LineLight = Draw.Hex("#E4E6EA"), LineDark = Draw.Hex("#2A2F38");
-        static readonly Color SubInkLight = Draw.Hex("#5F6368"), SubInkDark = Draw.Hex("#9AA3AF");
 
-        public static Color WellFill => CSCommonTheme.Light ? WellLight : WellDark;
-        public static Color Plate => CSCommonTheme.Light ? PlateLight : PlateDark;
-        public static Color PlateLine => CSCommonTheme.Light ? LineLight : LineDark;
-        public static Color SubInk => CSCommonTheme.Light ? SubInkLight : SubInkDark;
+        public static Color WellFill => CSCommonTheme.Light ? Pal.SectionWellLight : Pal.SectionWellDark;
+        public static Color Plate => CSCommonTheme.Light ? Pal.SectionPlateLight : Pal.SectionPlateDark;
+        public static Color PlateLine => CSCommonTheme.Light ? Pal.SectionLineLight : Pal.SectionLineDark;
+        public static Color SubInk => CSCommonTheme.Light ? Pal.SectionSubInkLight : Pal.SectionSubInkDark;
 
         // ---------------- 판
 
@@ -478,14 +474,13 @@ namespace CSCommonUX
 
         public enum State { Next, Live, Done }
 
-        static readonly Color MedalDoneLight = Draw.Hex("#F0DFA6"), MedalInkLight = Draw.Hex("#2F2200"), MedalDoneInkLight = Draw.Hex("#5C4300");
 
         public static Color Grid => Section.WellFill;
         /// <summary>메달 결정전 면 · 글(진행 전 · 중 / 끝남) — 히어로 '메달 결정전' 알약도 같은 색.</summary>
         public static Color MedalFill => Pal.MedalGold;
-        public static Color MedalInk => MedalInkLight;
-        public static Color MedalDoneFill => MedalDoneLight;
-        public static Color MedalDoneInk => MedalDoneInkLight;
+        public static Color MedalInk => Pal.GanttMedalInkLight;
+        public static Color MedalDoneFill => Pal.GanttMedalDoneLight;
+        public static Color MedalDoneInk => Pal.GanttMedalDoneInkLight;
 
         public static Color Fill(State st, bool medal) => medal ? (st == State.Done ? MedalDoneFill : MedalFill) : st == State.Done ? Section.WellFill : st == State.Live ? Section.Plate : Look.PillNeutral;
 

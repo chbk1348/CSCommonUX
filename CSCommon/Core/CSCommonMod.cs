@@ -49,15 +49,6 @@ namespace CSCommonUX
             }
         }
 
-        public string ReleaseDate
-        {
-            get
-            {
-                var r = Releases;
-                return r != null && r.Length > 0 ? r[0].Date : "";
-            }
-        }
-
         /// <summary>이 어셈블리가 든 모드 폴더(없으면 null).</summary>
         public static string Folder()
         {

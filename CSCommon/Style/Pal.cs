@@ -8,12 +8,6 @@ namespace CSCommonUX
         public static Color Win = Draw.Hex("#14171C");
         /// <summary>고른 칸(떠오른 면) 바탕 · 그 위 글 · 아이콘(다크 #3A404B · 흰 글 / 라이트 흰 바탕 · 짙은 글).</summary>
         public static Color Selected = Draw.Hex("#3A404B"), OnSelected = Color.white;
-        /// <summary>휴대폰 틀(CSCommonUX.Phone): 티타늄 테두리 · 화면 바탕 · 번지는 색, 리퀴드 글라스 면(바탕 · 위 반짝임 · 테두리 · 위 1px 빛).</summary>
-        public static Color PhoneBezel = Draw.Hex("#2E3035"), PhoneBezelEdge = Draw.Hex("#5A5E66"), PhoneWall = Color.white;
-        public static Color PhoneGlowA = new(0.18f, 0.42f, 1f, 0.5f), PhoneGlowB = new(0.62f, 0.25f, 0.95f, 0.45f);
-        public static Color GlassFill = new(0.93f, 0.95f, 0.98f, 0.85f), GlassSheen = new(1f, 1f, 1f, 0.6f), GlassEdge = new(0f, 0f, 0f, 0.10f), GlassShine = new(1f, 1f, 1f, 1f);
-        /// <summary>휴대폰 화면(흰색 고정) 위 글: 짙은 글 · 옅은 글.</summary>
-        public static Color PhoneInk = Draw.Hex("#1C1C1E"), PhoneInkSub = new(0.11f, 0.11f, 0.12f, 0.6f);
         /// <summary>가장 진한 글(호버 · 강조 — 다크 흰색 / 라이트 거의 검정).</summary>
         public static Color Strong = Color.white;
         /// <summary>호버 · 판 가장자리 살짝 덮는 색(알파는 쓰는 곳에서 — 다크 흰색 / 라이트 검정).</summary>
@@ -173,7 +167,7 @@ namespace CSCommonUX
         /// <summary>레드 플래그 · 가장 나쁨(차트 띠).</summary>
         public static Color Flag = Draw.Hex("#FF5A4E");
         /// <summary>일정: 스프린트(주황) · 퀄리파잉(하늘) 글 · 스프린트 막대 · 밝은 알약 위 글.</summary>
-        public static Color SprintInk = Draw.Hex("#FFB060"), QualiInk = Draw.Hex("#7FD3FF"), Sprint = Draw.Hex("#FF8000"), OnLight = Draw.Hex("#14141A");
+        public static Color QualiInk = Draw.Hex("#7FD3FF"), Sprint = Draw.Hex("#FF8000"), OnLight = Draw.Hex("#14141A");
         /// <summary>시즌 차트 계열 넷(점수 · 승 · 포디움 · 폴).</summary>
         public static readonly Color[] Series = { Draw.Hex("#6366F1"), Draw.Hex("#3B82F6"), Draw.Hex("#1E3A8A"), Draw.Hex("#EC4899") };
         /// <summary>올림픽: 오륜 파랑(대표색 없는 팀 · 난민 선수단) · 나라 스포츠 대표색(선수단 버스).</summary>
@@ -210,7 +204,7 @@ namespace CSCommonUX
         /// <summary>나리타공항식 판: 바탕 검정 · 머리 띠 · 줄 교차 · 편명 하늘색.</summary>
         public static Color BoardNrtBg = Draw.Hex("#050505"), BoardNrtBar = Draw.Hex("#1D2026"), BoardNrtRowA = Draw.Hex("#0C0C0D"), BoardNrtFlight = Draw.Hex("#8FD0FF");
         /// <summary>판 위 상태: 탑승 중 · 도착 초록, 흰 글.</summary>
-        public static Color BoardOk = Draw.Hex("#3DDC84"), BoardInk = Draw.Hex("#F2F5FA");
+        public static Color BoardInk = Draw.Hex("#F2F5FA");
         /// <summary>선로 관제 판(Board · 대중교통 캔버스 TrackCtc): 바탕 · 빈 구간 · 점유 · 진로 · 구간 경계 금 · 역 이름 테 · 역 이름 글.</summary>
         public static Color BoardCtcBg = Draw.Hex("#05070A"), BoardCtcTrack = Draw.Hex("#D9DEE6"), BoardCtcBusy = Draw.Hex("#FF4A3F"), BoardCtcRoute = Draw.Hex("#3DDC84"), BoardCtcTick = Draw.Hex("#5B6672"), BoardCtcStation = Draw.Hex("#5AA9E6"), BoardCtcStationInk = Draw.Hex("#BFE0FF");
         /// <summary>기차 신호기(Board.Signal · 대중교통 캔버스 TrainSignals): 녹 · 황 · 적 등 · 꺼진 등 · 몸통 · 몸통 1px 테 · 기둥 · 발.</summary>
@@ -441,5 +435,14 @@ namespace CSCommonUX
         public static Color RadarInk = Draw.Hex("#1E2228"), RadarSub = Draw.Hex("#5A6068"), RadarLive = Draw.Hex("#0A7CC4"), RadarWarn = Draw.Hex("#D9480F"), RadarStreak = Draw.Hex("#2A2E34");
         /// <summary>정치 시위 군중 팻말(3D 재질 색 · 테마와 상관없음): 판 = 흰 종이 · 막대 = 나무 · 글자 = 먹.</summary>
         public static readonly Color SignPaper = new(0.94f, 0.93f, 0.89f, 1f), SignWood = new(0.52f, 0.37f, 0.22f, 1f), SignInk = Color.black;
+        /// <summary>Section 우물 · 판 · 판 선 · 보조 글의 라이트 / 다크 값(Section.WellFill · Plate · PlateLine · SubInk 가 테마로 고름).</summary>
+        public static readonly Color SectionWellLight = Draw.Hex("#EEF0F2"), SectionWellDark = Draw.Hex("#0E1014");
+        public static readonly Color SectionPlateLight = Draw.Hex("#FEFEFE"), SectionPlateDark = Draw.Hex("#1B1F26");
+        public static readonly Color SectionLineLight = Draw.Hex("#E4E6EA"), SectionLineDark = Draw.Hex("#2A2F38");
+        public static readonly Color SectionSubInkLight = Draw.Hex("#5F6368"), SectionSubInkDark = Draw.Hex("#9AA3AF");
+        /// <summary>Gantt 메달 결정전 면 · 글(라이트 값).</summary>
+        public static readonly Color GanttMedalDoneLight = Draw.Hex("#F0DFA6"), GanttMedalInkLight = Draw.Hex("#2F2200"), GanttMedalDoneInkLight = Draw.Hex("#5C4300");
+        /// <summary>CSCommonUX.Dialog 라이트 판 면(다크는 Pal.Card).</summary>
+        public static readonly Color DialogSurfaceLight = Draw.Hex("#FEFEFE");
     }
 }

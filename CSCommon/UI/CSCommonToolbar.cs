@@ -12,7 +12,6 @@ namespace CSCommonUX.UI
     {
         public const float DefaultY = CSCommonDesign.BarTop;
         public const float DefaultHeight = CSCommonDesign.BarHeight;
-        public const float DefaultBtnH = CSCommonDesign.BtnHeight;
         public const float Gap = CSCommonDesign.Gap;
 
         static string tip, tipShown;
@@ -143,7 +142,7 @@ namespace CSCommonUX.UI
                 float h = CSCommonUX.PillBar.CellH;
                 var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
                 float open = CSCommonUX.PillBar.Open(w, selW);
-                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, CSCommonUX.Look.Hover(key, r, !on), CSCommonUX.Look.Press(key, r));
+                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, 0f, CSCommonUX.Look.Press(key, r));
                 if (bw > 0f && open > 0.98f)
                 {
                     string count = badge.ToString();
@@ -159,12 +158,6 @@ namespace CSCommonUX.UI
                 if (Draw.Button(r)) pick?.Invoke();
             }
             return w;
-        }
-
-        /// <summary>위 판 아이콘 단추(정사각 IconBtnSize): 켜지면 Inset 바탕 + 테두리, 호버 · 누름 애니메이션. 툴팁에 이름.</summary>
-        public static float IconToggle(float x, float cy, string icon, bool on, string tipText, bool draw, Action click, Color? color = null, bool enabled = true)
-        {
-            return CSCommonUX.IconButton.At(x, cy, icon, on, tipText, draw, click, color, enabled);
         }
 
         // 독 옵션 막대 크기: 지난 그림의 것으로 막대를 잡음(옵션은 그리면서 크기가 정해짐) · 숨는 동안은 마지막 크기
