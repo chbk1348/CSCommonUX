@@ -14,7 +14,7 @@ namespace CSCommonUX.UI
         const float Margin = 10f;
 
         static UIScrollablePanel parent;
-        static UIPanel gameOptions;
+        static UIComponent gameOptions;
         static GameObject host;
         static TPanel panel;
 
@@ -64,7 +64,7 @@ namespace CSCommonUX.UI
 
         public static void Hook()
         {
-            var found = UIView.library?.Get<UIPanel>("OptionsPanel");
+            var found = UIView.library?.Get("OptionsPanel"); // Get<UIPanel> 은 시작 · 불러오기마다 null(로그 1.2.0) — 게임은 이 패널을 Get<OptionsMainPanel> 로 찾음, 뿌리 컴포넌트를 그대로 받음
             if (found == null)
             {
                 CSCommonLog.Warn("게임 설정 화면(OptionsPanel)을 찾지 못함");

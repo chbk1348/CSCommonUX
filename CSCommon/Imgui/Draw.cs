@@ -1850,17 +1850,24 @@ namespace CSCommonUX
             if (view == null || view.uiCamera == null) return false;
             Vector2 res = view.GetScreenResolution();
             Ray ray = view.uiCamera.ScreenPointToRay(new Vector3(screenPoint.x, screenPoint.y, 0f));
-            using var hits = view.RaycastAll(ray);
-            for (int i = 0; i < hits.Count; i++)
+            try
             {
-                var c = hits[i].component;
-                if (c == null || !c.isVisible || c.opacity <= 0.01f) continue;
-                if (gameOnly && c.name != null && c.name.EndsWith(InputBlocker.PanelSuffix, StringComparison.Ordinal)) continue;
-                if (c.size.x >= res.x - 10f && c.size.y >= res.y - 10f)
+                using var hits = view.RaycastAll(ray);
+                for (int i = 0; i < hits.Count; i++)
                 {
-                    if (!UIView.HasModalInput()) continue;
+                    var c = hits[i].component;
+                    if (c == null || !c.isVisible || c.opacity <= 0.01f) continue;
+                    if (gameOnly && c.name != null && c.name.EndsWith(InputBlocker.PanelSuffix, StringComparison.Ordinal)) continue;
+                    if (c.size.x >= res.x - 10f && c.size.y >= res.y - 10f)
+                    {
+                        if (!UIView.HasModalInput()) continue;
+                    }
+                    return true;
                 }
-                return true;
+            }
+            catch (NullReferenceException)
+            {
+                // 게임 UI 가 이 프레임에 지워지는 중이면 RaycastAll 이 NRE(로그 1.2.0 · 1초 안 3번) — 안 가린 것으로 보고 다음 0.2초 캐시 때 다시 잼
             }
             return false;
         }
