@@ -98,14 +98,5 @@ namespace CSCommonUX
             return v;
         }
 
-        /// <summary>이름(위, 12 보조색) · 칸(40) · 도움말(아래 12 · 높이 18 고정, 잘못이면 빨강).</summary>
-        public static string Labeled(Rect r, string label, string value, int maxLength, string help = null, string placeholder = null, bool error = false, bool enabled = true, string name = null)
-        {
-            if (Draw.Repaint) Draw.Text(new Rect(r.x, r.y, r.width, 16f), label, CSCommonDesign.FontMin, Pal.Sub);
-            var box = new Rect(r.x, r.y + 20f, r.width, CSCommonDesign.ActionHeight);
-            string v = In(box, value, maxLength, placeholder, null, error, enabled, name);
-            if (!string.IsNullOrEmpty(help) && Draw.Repaint) Draw.TextFit(new Rect(r.x, box.yMax + Gap, r.width, HelpH), help, CSCommonDesign.FontMin, error ? Pal.Red : Pal.Dim);
-            return v;
-        }
     }
 }

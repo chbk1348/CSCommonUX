@@ -7,30 +7,18 @@ namespace CSCommonUX
     /// </summary>
     internal static class CSCommonDesign
     {
-        /// <summary>디자인 규격 이름 · 판(공개 저장소 CSCommonUX 와 같음).</summary>
-        public const string Ux = "CSCommon UX 1.1";
-
-        // 휴대폰 틀(CSCommonUX.Phone — 아이폰 프로 맥스 440×956, 다이나믹 아일랜드, 리퀴드 글라스): 크기 고정
-        public const float PhoneW = 440f, PhoneH = 956f, PhoneMargin = 24f, PhoneBezel = 10f, PhoneRadius = 64f, ScreenRadius = 54f;
-        public const float IslandW = 126f, IslandH = 37f, IslandTop = 11f, IslandMaxW = 300f, StatusH = 60f, HomeH = 34f, HomeBarW = 134f;
-        public const float GlassPad = 18f, GlassRadius = 28f, GlassStroke = 1f;
         // 지도 위 건물 표시 원(행정 지정 도구): 건물 한 칸 크기(m) · 여유 · 높이 범위 · 투명도
         public const float OverlayCell = 8f, OverlayPad = 8f, OverlayHeight = 60f, OverlayAlpha = 0.6f;
         /// <summary>차트 선 흐림 투명도(강조 밖 계열 — 예: 순위 변화 곡선 3위 이하).</summary>
         public const float ChartDimAlpha = 0.75f;
         /// <summary>3차 베지어 한 구간을 나누는 선분 수(SVG 경로 C · Draw.Curve 차트 곡선).</summary>
         public const int CurveSteps = 12;
-        // 휴대폰 안쪽 배치(행정 패널 같은 앱 화면): 단추 · 줄 · 카드 · 글 크기
-        public const float PhoneBtnH = 44f, PhoneGap = 12f, PhoneBtnGap = 8f, PhoneRowH = 26f, PhoneInset = 4f, PhoneCardPad = 18f, PhoneCardTopGap = 14f;
-        public const float PhoneTitleH = 44f, PhoneSubH = 22f, PhoneHeadH = 30f, PhoneNameGap = 32f, PhoneStateW = 100f, PhoneValueW = 90f, PhoneKindCardH = 236f, PhoneMoneyCardH = 170f;
-        public const float PhoneFontTitle = 34f, PhoneFontMoney = 30f, PhoneFontHead = 20f, PhoneFontBody = 14f, PhoneFontSmall = 13f;
 
         public const float BarTop = 14f;
         public const float BarHeight = 68f;
         public const float BtnHeight = 32f;
         /// <summary>툴바 도구 버튼(아이콘 위 · 이름 아래) 높이 · 최소 너비 · 이름 양옆 여백 · 이름 글자 크기 · 모서리 · 버튼 사이.</summary>
         // 서킷 디자인 에디터 새 틀: 위 판(묶음 탭 · 아이콘 단추) · 아래 도구 독 · 안내 한 줄
-        public const float TopBarHeight = 56f;
         public const float IconBtnSize = 38f;
         public const float DockToolsHeight = 56f;
         public const float DockBottomGap = 16f;
@@ -47,14 +35,11 @@ namespace CSCommonUX
         public const float ActionHeight = 40f;
         public const float ActionIcon = 18f;
         public const float ActionGap = 8f;
-        public const float ActionRadius = 7f;
         public const float ActionHeightSmall = 32f;
         public const float ActionIconSmall = 15f;
         public const float IconBtnRadius = 10f;
         public const float IconBtnGap = 2f;
-        public const float LogoWidth = 72f;
         public const float BarPad = 12f;
-        public const float BtnPad = 10f;
         public const float Gap = 4f;
         public const float Icon = 14f;
         public const float IconGap = 5f;
@@ -139,7 +124,7 @@ namespace CSCommonUX
         /// <summary>비중 줄(CSCommonUX.ShareRow): 위아래 여백 · 높이(여백 8 + 글 20 + 6 + 막대 8 + 여백 8).</summary>
         public const float ShareRowPad = 8f, ShareRowH = 50f;
         /// <summary>서브라벨이 있는 고르기 칸 높이 · 펼친 목록 묶음 머리 높이.</summary>
-        public const float SegmentTwoH = 52f, MenuHeadH = 28f;
+        public const float MenuHeadH = 28f;
         /// <summary>CSCommon 부품 글자 하한(방송 그래픽 · 지도 표시 밖) — 이보다 작은 글은 쓰지 않음.</summary>
         public const float FontMin = 12f;
         /// <summary>한 줄 글이 칸 밖으로 넘치지 않게 줄이는 마지막 하한(Draw.Text · TextFit 안전망). 여기까지 줄었다면 칸 폭 · 문구를 고칠 곳(자세한 로그에 알림).</summary>
@@ -155,7 +140,7 @@ namespace CSCommonUX
         /// <summary>게임 정보 창 옆에 붙는 떠 있는 판 폭.</summary>
         public const float SidePanelW = 340f;
         /// <summary>글 칸 앞뒤 단위와 값 사이 · 지우기 ✕ 크기.</summary>
-        public const float FieldAffixGap = 4f, FieldClear = 16f;
+        public const float FieldClear = 16f;
         /// <summary>세로 스크롤 막대(CSCommonUX.ScrollBar): 막대 폭 · 칸 끝 → 막대 안쪽 · 막대 최소 길이 · 누름 띠 폭(칸 오른쪽 끝에서, 막대보다 넓게 잡기 쉽게).</summary>
         public const float ScrollBarW = 4f, ScrollBarInset = 4f, ScrollBarMinH = 30f, ScrollBarHit = 14f;
         /// <summary>입력 칸 · 분절 홈 모서리.</summary>

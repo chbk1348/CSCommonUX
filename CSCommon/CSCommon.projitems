@@ -64,7 +64,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Metric.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Modal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Panel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Phone.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\PillBar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Progress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\RoadSign.cs" />
