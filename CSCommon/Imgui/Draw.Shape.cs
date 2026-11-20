@@ -117,6 +117,8 @@ namespace CSCommonUX
         public static void Line(Vector2 a, Vector2 b, float width, Color c)
         {
             if (!Repaint || c.a <= 0f || Off(Rect.MinMaxRect(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y)), width + 2f, width + 2f)) return;
+            // 돌려 그리는 띠는 GUI.matrix 회전 때문에 BeginClip 잘라내기가 먹지 않음 — 보이는 영역(visible)으로 선분을 직접 잘라 판 밖으로 새지 않게
+            if (!ClipSegment(visible, ref a, ref b)) return;
             Vector2 sa = ToScreen(a), sb = ToScreen(b);
             Vector2 d = sb - sa;
             float len = d.magnitude;
@@ -135,6 +137,25 @@ namespace CSCommonUX
             else GUI.DrawTexture(new Rect(sa.x, sa.y - w * 0.5f, len, w), Texture2D.whiteTexture);
             GUI.matrix = old;
             GUI.color = oldColor;
+        }
+
+        /// <summary>선분 a–b 를 사각 r 안쪽 부분으로 줄임(리앙-바스키). 다 밖이면 false.</summary>
+        internal static bool ClipSegment(Rect r, ref Vector2 a, ref Vector2 b)
+        {
+            float t0 = 0f, t1 = 1f, dx = b.x - a.x, dy = b.y - a.y;
+            bool Edge(float p, float q)
+            {
+                if (Mathf.Abs(p) < 1e-6f) return q >= 0f; // 그 가장자리와 나란함: 안쪽이면 그대로
+                float t = q / p;
+                if (p < 0f) { if (t > t1) return false; if (t > t0) t0 = t; }
+                else { if (t < t0) return false; if (t < t1) t1 = t; }
+                return true;
+            }
+            if (!Edge(-dx, a.x - r.xMin) || !Edge(dx, r.xMax - a.x) || !Edge(-dy, a.y - r.yMin) || !Edge(dy, r.yMax - a.y)) return false;
+            var a0 = a;
+            if (t1 < 1f) b = a0 + new Vector2(dx, dy) * t1;
+            if (t0 > 0f) a = a0 + new Vector2(dx, dy) * t0;
+            return true;
         }
 
         /// <summary>굵은 선은 끝을 둥글게(stroke-linecap: round).</summary>
