@@ -435,5 +435,14 @@ namespace CSCommonUX
         public static Color RadarInk = Draw.Hex("#1E2228"), RadarSub = Draw.Hex("#5A6068"), RadarLive = Draw.Hex("#0A7CC4"), RadarWarn = Draw.Hex("#D9480F"), RadarStreak = Draw.Hex("#2A2E34");
         /// <summary>정치 시위 군중 팻말(3D 재질 색 · 테마와 상관없음): 판 = 흰 종이 · 막대 = 나무 · 글자 = 먹.</summary>
         public static readonly Color SignPaper = new(0.94f, 0.93f, 0.89f, 1f), SignWood = new(0.52f, 0.37f, 0.22f, 1f), SignInk = Color.black;
+        /// <summary>Section 우물 · 판 · 판 선 · 보조 글의 라이트 / 다크 값(Section.WellFill · Plate · PlateLine · SubInk 가 테마로 고름).</summary>
+        public static readonly Color SectionWellLight = Draw.Hex("#EEF0F2"), SectionWellDark = Draw.Hex("#0E1014");
+        public static readonly Color SectionPlateLight = Draw.Hex("#FEFEFE"), SectionPlateDark = Draw.Hex("#1B1F26");
+        public static readonly Color SectionLineLight = Draw.Hex("#E4E6EA"), SectionLineDark = Draw.Hex("#2A2F38");
+        public static readonly Color SectionSubInkLight = Draw.Hex("#5F6368"), SectionSubInkDark = Draw.Hex("#9AA3AF");
+        /// <summary>Gantt 메달 결정전 면 · 글(라이트 값).</summary>
+        public static readonly Color GanttMedalDoneLight = Draw.Hex("#F0DFA6"), GanttMedalInkLight = Draw.Hex("#2F2200"), GanttMedalDoneInkLight = Draw.Hex("#5C4300");
+        /// <summary>CSCommonUX.Dialog 라이트 판 면(다크는 Pal.Card).</summary>
+        public static readonly Color DialogSurfaceLight = Draw.Hex("#FEFEFE");
     }
 }

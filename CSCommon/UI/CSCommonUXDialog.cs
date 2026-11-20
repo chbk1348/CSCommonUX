@@ -11,10 +11,9 @@ namespace CSCommonUX
         public const float Radius = 20f, PadX = 18f, PadTop = 14f, PadBottom = 8f, HeadGap = 8f, RowH = 36f;
         public const float TitleFont = 14f, SubFont = 12f, LabelFont = 12.5f, TitleSubGap = 10f, TailSide = 12f, TailEdge = 1f;
 
-        static readonly Color LightSurface = Draw.Hex("#FEFEFE");
 
         /// <summary>카드 · 판 면(Dialog 도 같이 씀).</summary>
-        public static Color Surface => CSCommonTheme.Light ? LightSurface : Pal.Card;
+        public static Color Surface => CSCommonTheme.Light ? Pal.DialogSurfaceLight : Pal.Card;
 
         /// <summary>카드 바탕 + 선 + 꼬리(tailX 에서 아래 변 — tailBelow = false 면 위 변을 가리킴).</summary>
         public static void Frame(Rect r, float tailX, bool tailBelow = true)

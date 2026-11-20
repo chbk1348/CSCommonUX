@@ -39,6 +39,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Style\Pal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonDesign.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonTheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Style\Look.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAtlas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonUXDialog.cs" />
