@@ -87,7 +87,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\TrainTag.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Well.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Board.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Concert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonSection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonDetail.cs" />
   </ItemGroup>
