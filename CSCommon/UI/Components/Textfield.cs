@@ -13,7 +13,7 @@ namespace CSCommonUX
     public static class Textfield
     {
         /// <summary>안쪽 왼쪽 · 오른쪽 · 요소 사이 · 앞 아이콘 · 지우기 원 · 지우기 아이콘 · 호버 선 · 초점/오류 선 · 전환 초 · Draw.Field 안쪽 여백(글 시작 맞춤) · 도움말 줄 높이.</summary>
-        public const float PadL = 16f, PadR = 8f, Gap = 4f, Icon = 16f, ClearD = 28f, ClearIcon = 14f, HoverW = 1f, RingW = 1.5f, FadeSeconds = 0.12f, FieldInset = 10f, HelpH = 18f;
+        public const float PadL = 16f, PadR = 8f, Gap = 4f, Icon = 16f, ClearD = 28f, ClearIcon = 14f, RingW = 1.5f, FadeSeconds = 0.12f, FieldInset = 10f, HelpH = 18f;
 
         /// <summary>글 칸(name = 초점 이름, 없으면 칸 자리로). 바뀐 글을 돌려줌.</summary>
         public static string In(Rect r, string value, int maxLength, string placeholder = null, string icon = null, bool error = false, bool enabled = true, string name = null, float font = 14.5f,
@@ -24,7 +24,6 @@ namespace CSCommonUX
             bool focus = GUI.GetNameOfFocusedControl() == name;
             bool has = value.Length > 0;
             int key = CSCommonAnim.Key("textfield", name);
-            float hv = 0f; // 호버 효과 없음
             float fo = CSCommonAnim.Toward(key ^ 0x3b9ac9ff, enabled && focus ? 1f : 0f, 1f / FadeSeconds);
             float rad = r.height * 0.5f;
             if (Draw.Repaint)
@@ -34,7 +33,6 @@ namespace CSCommonUX
                 else if (error) Draw.RoundOutline(r, Pal.Red, rad, RingW);
                 else
                 {
-                    if (hv * (1f - fo) > 0.01f) Draw.RoundOutline(r, Draw.Alpha(Look.PillHoverLine, hv * (1f - fo)), rad, HoverW);
                     if (fo > 0.01f) Draw.RoundOutline(r, Draw.Alpha(Look.PastelRing, fo), rad, RingW);
                 }
             }

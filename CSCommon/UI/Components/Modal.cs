@@ -122,17 +122,16 @@ namespace CSCommonUX
         public static bool CloseButton(Rect c, bool filled = true)
         {
             int key = CSCommonAnim.Key("modal.close", filled ? "f" : "b");
-            float hv = 0f, pr = Look.Press(key, c);
+            float pr = Look.Press(key, c);
             if (Draw.Repaint)
             {
                 float rad = c.height * 0.5f;
                 Draw.BeginScale(c.center, Look.PressScale(pr, PillBar.PressScale));
                 if (filled) Draw.Round(c, Look.PillNeutral, rad);
-                if (hv > 0.01f) Draw.Round(c, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), rad);
                 Draw.Icon(Icons.Close, new Rect(Mathf.Round(c.center.x - CloseIcon * 0.5f), Mathf.Round(c.center.y - CloseIcon * 0.5f), CloseIcon, CloseIcon), Look.BarOff, 24f, 2f);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(c, "닫기(Esc)");
+            CSCommonUX.CSCommonToolbar.Tip(c, "닫기(Esc)");
             return Draw.Button(c);
         }
 
@@ -149,13 +148,12 @@ namespace CSCommonUX
         public static bool Button(Rect b, string icon, string label, bool primary, bool enabled = true, string tip = null)
         {
             int key = Look.Key(b, "modal.btn", label);
-            float hv = 0f, pr = Look.Press(key, b, enabled);
+            float pr = Look.Press(key, b, enabled);
             if (Draw.Repaint)
             {
                 float rad = b.height * 0.5f;
                 Draw.BeginScale(b.center, Look.PressScale(pr, PillBar.PressScale));
                 Draw.Round(b, !enabled ? Look.Off : primary ? Look.PastelFill : Look.PillNeutral, rad);
-                if (enabled && hv > 0.01f) Draw.Round(b, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), rad);
                 Color ink = !enabled ? Look.OffText : primary ? Look.PastelInk : Look.PillNeutralInk;
                 Color iconInk = !enabled ? Look.OffInk : primary ? Look.PastelInk : Pal.Dim;
                 float tw = string.IsNullOrEmpty(label) ? 0f : Mathf.Ceil(Draw.TextWidth(label, BtnFont, primary));
@@ -165,7 +163,7 @@ namespace CSCommonUX
                 if (tw > 0f) Draw.TextFit(new Rect(x + iw, b.y, Mathf.Max(0f, b.xMax - x - iw), b.height), label, BtnFont, ink, primary);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(b, tip);
+            CSCommonUX.CSCommonToolbar.Tip(b, tip);
             return enabled && Draw.Button(b);
         }
 
@@ -280,10 +278,8 @@ namespace CSCommonUX
         public static bool SheetRow(Rect r, string icon, string text, string sub = null, Color? dot = null, bool enabled = true)
         {
             int key = CSCommonAnim.Key("sheet.row", text) ^ Mathf.RoundToInt(r.y) * 31;
-            float hv = 0f; // 호버 효과 없음
             if (Draw.Repaint)
             {
-                if (hv > 0.01f) Draw.Round(r, Draw.Alpha(Look.Pill, hv), SheetRowRadius);
                 var col = new Rect(r.x, r.y, SheetRowIconW, r.height);
                 if (dot.HasValue) Draw.Dot(col.center, SheetDot * 0.5f, dot.Value);
                 else if (!string.IsNullOrEmpty(icon)) Draw.Icon(icon, new Rect(Mathf.Round(col.center.x - SheetRowIcon * 0.5f), Mathf.Round(col.center.y - SheetRowIcon * 0.5f), SheetRowIcon, SheetRowIcon), Pal.Sub, 24f, 1.8f);
@@ -303,11 +299,10 @@ namespace CSCommonUX
             var b = new Rect(sheet.x + SheetFootPadL, Mathf.Round(FooterCy(sheet) - BtnH * 0.5f), LinkPadL + tw + LinkGap + Chevron + LinkPadR, BtnH);
             // 폭이 움직이는 동안에도 같은 열쇠(자리로 만들면 호버가 끊김)
             int key = CSCommonAnim.Key("sheet.more", "link");
-            float hv = 0f, pr = Look.Press(key, b);
+            float pr = Look.Press(key, b);
             if (Draw.Repaint)
             {
                 Draw.BeginScale(b.center, Look.PressScale(pr, PillBar.PressScale));
-                if (hv > 0.01f) Draw.Round(b, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hv), BtnH * 0.5f);
                 Draw.Text(new Rect(b.x + LinkPadL, b.y, tw + 2f, b.height), label, LinkFont, Look.PastelLink);
                 var cr = new Rect(b.x + LinkPadL + tw + LinkGap, Mathf.Round(b.center.y - Chevron * 0.5f), Chevron, Chevron);
                 var m = GUI.matrix;

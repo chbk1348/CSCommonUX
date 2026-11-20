@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CSCommonUX.UI
+namespace CSCommonUX
 {
     /// <summary>
     /// 주차장 그리기 모드(Parking Lot Tool) 및 F1 서킷 툴킷 표준 머티리얼 상단 플로팅 툴바 엔진:
@@ -142,7 +142,7 @@ namespace CSCommonUX.UI
                 float h = CSCommonUX.PillBar.CellH;
                 var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
                 float open = CSCommonUX.PillBar.Open(w, selW);
-                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, 0f, CSCommonUX.Look.Press(key, r));
+                CSCommonUX.PillBar.Cell(r, icon, label, lw + extra, open, CSCommonUX.Look.Press(key, r));
                 if (bw > 0f && open > 0.98f)
                 {
                     string count = badge.ToString();

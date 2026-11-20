@@ -3,7 +3,7 @@ using ColossalFramework.Plugins;
 #if !CSCOMMON_NO_HARMONY
 using CitiesHarmony.API;
 using ColossalFramework.UI;
-using CSCommonUX.UI;
+using CSCommonUX;
 using ICities;
 #endif
 

@@ -5,7 +5,7 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace CSCommonUX.UI
+namespace CSCommonUX
 {
     /// <summary>
     /// 알림 창(F1 창 모양): 화면 가운데 창 하나 — 제목줄 · 주 색 띠 · 가상화 스크롤 본문 · 버튼.

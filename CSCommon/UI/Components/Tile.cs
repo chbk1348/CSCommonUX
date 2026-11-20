@@ -16,14 +16,14 @@ namespace CSCommonUX
         public static void Frame(Rect r, bool on, bool enabled = true, bool hoverable = true)
         {
             int key = Look.Key(r, "tile");
-            Back(r, key, on, enabled, 0f);
+            Back(r, key, on, enabled);
         }
 
-        static void Back(Rect r, int key, bool on, bool enabled, float hv, bool danger = false)
+        static void Back(Rect r, int key, bool on, bool enabled, bool danger = false)
         {
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (!Draw.Repaint) return;
-            Color bg = !enabled ? Look.BtnOff : Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), danger ? Look.FabCancelFill : Look.PastelFill, onT);
+            Color bg = !enabled ? Look.BtnOff : Color.Lerp(Look.Pill, danger ? Look.FabCancelFill : Look.PastelFill, onT);
             Draw.Round(r, bg, Mathf.Min(Radius, r.height * 0.5f));
         }
 
@@ -31,13 +31,13 @@ namespace CSCommonUX
         public static bool In(Rect r, bool on, bool enabled = true, string tip = null, Action content = null, bool danger = false)
         {
             int key = Look.Key(r, "tile");
-            float hv = 0f, pr = Look.Press(key, r, enabled);
+            float pr = Look.Press(key, r, enabled);
             bool paint = Draw.Repaint;
             if (paint) Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
-            Back(r, key, on, enabled, hv, danger);
+            Back(r, key, on, enabled, danger);
             content?.Invoke();
             if (paint) Draw.EndScale();
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
 

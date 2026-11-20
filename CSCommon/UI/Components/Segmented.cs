@@ -26,12 +26,10 @@ namespace CSCommonUX
         {
             float onT = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / FadeSeconds);
             int hk = key ^ 0x51ed270b;
-            float hv = 0f, pr = Look.Press(hk, c);
+            float pr = Look.Press(hk, c);
             if (Draw.Repaint)
             {
                 Draw.BeginScale(c.center, Look.PressScale(pr, PressScale));
-                float ha = hv * (1f - onT);
-                if (ha > 0.01f) Draw.Round(c, Draw.Alpha(Look.NeutralHover, ha), rad);
                 if (onT > 0.01f)
                 {
                     Draw.Round(c, Draw.Alpha(Look.SegmentOn, onT), rad);
@@ -54,7 +52,7 @@ namespace CSCommonUX
                 }
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(c, tip);
+            CSCommonUX.CSCommonToolbar.Tip(c, tip);
             return Draw.Button(c);
         }
 

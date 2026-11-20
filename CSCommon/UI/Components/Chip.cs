@@ -25,7 +25,7 @@ namespace CSCommonUX
             if (!draw) return w;
             var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
             int key = Look.Key(r, "chip", label);
-            float hv = 0f, pr = Look.Press(key, r);
+            float pr = Look.Press(key, r);
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {
@@ -39,7 +39,7 @@ namespace CSCommonUX
                     ink = Draw.Shade(color.Value, light ? TeamInkLight : TeamInkDark);
                     fill.a = ink.a = 1f;
                 }
-                Draw.Round(r, Color.Lerp(Color.Lerp(Look.Pill, Look.NeutralHover, hv), fill, onT), rad);
+                Draw.Round(r, Color.Lerp(Look.Pill, fill, onT), rad);
                 if (onT < 0.99f) Draw.RoundOutline(r, Draw.Alpha(Look.PillLine, 1f - onT), rad);
                 Color fg = Color.Lerp(Look.BarInk, ink, onT);
                 float tx = r.x + CSCommonDesign.ChipPadX, tw = Mathf.Ceil(Draw.TextWidth(label, CSCommonDesign.ChipFont, true));
@@ -51,7 +51,7 @@ namespace CSCommonUX
                 }
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             // ✕ 자리를 먼저(칩 오른쪽 끝 · 아이콘보다 넓게)
             if (canClear && Draw.Button(new Rect(r.xMax - CSCommonDesign.ChipPadX - CSCommonDesign.ChipIcon - 4f, r.y, CSCommonDesign.ChipPadX + CSCommonDesign.ChipIcon + 4f, h)))
             {
@@ -86,7 +86,7 @@ namespace CSCommonUX
                 Draw.Text(r, label, CSCommonDesign.ViewChipFont, Color.Lerp(Pal.Txt, Pal.Win, onT), on, TextAnchor.MiddleCenter);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (Draw.Button(r)) click?.Invoke();
             return w;
         }

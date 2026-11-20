@@ -15,15 +15,13 @@ namespace CSCommonUX
         public static bool In(Rect r, bool on, bool enabled = true, string tip = null)
         {
             int key = Look.Key(r, "listrow");
-            float hv = 0f;
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {
-                float rad = r.height * 0.5f, ha = hv * (1f - onT);
-                if (ha > 0.01f) Draw.Round(r, Draw.Alpha(Look.NeutralHover, ha), rad);
+                float rad = r.height * 0.5f;
                 if (onT > 0.01f) Draw.Round(r, Draw.Alpha(Look.PastelFill, onT), rad);
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return enabled && Draw.Button(r);
         }
 

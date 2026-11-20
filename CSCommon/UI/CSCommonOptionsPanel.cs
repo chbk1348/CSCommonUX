@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace CSCommonUX.UI
+namespace CSCommonUX
 {
     /// <summary>
     /// 게임 설정 화면 안 모드 패널(디자인 아티팩트 '게임 설정 메뉴 · F1 모드 옵션' 보드).

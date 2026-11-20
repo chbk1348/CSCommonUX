@@ -4,7 +4,7 @@ using UnityEngine;
 
 using CSCommonUX;
 
-namespace CSCommonUX.UI
+namespace CSCommonUX
 {
     /// <summary>버튼 톤(CSCommonUX.Button 과 같음): 보통(회색 톤) · 주(청록 톤) · 지움(회색 톤 + 빨강 글).</summary>
     public enum CSCommonButtonKind

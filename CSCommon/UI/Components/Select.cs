@@ -143,7 +143,7 @@ namespace CSCommonUX
                 GUI.matrix = m;
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             if (!enabled) return;
             bool hit = Draw.Button(r);
             if (hit && open)
@@ -244,13 +244,11 @@ namespace CSCommonUX
                 bool on = many ? i < openOn.Length && openOn[i] : i == openCur;
                 int k = Look.Key(it, "select.row", openItems[i]);
                 float onT = CSCommonAnim.Toward(k, on ? 1f : 0f, 1f / Tabs.FadeSeconds);
-                float hv = 0f, pr = Look.Press(k ^ 0x51ed270b, it, live);
+                float pr = Look.Press(k ^ 0x51ed270b, it, live);
                 if (Draw.Repaint)
                 {
                     float rad = row * 0.5f;
                     Draw.BeginScale(it.center, Look.PressScale(pr, PressScale));
-                    float ha = hv * (1f - onT);
-                    if (ha > 0.01f) Draw.Round(it, Draw.Alpha(Look.MenuHover, ha), rad);
                     if (onT > 0.01f) Draw.Round(it, Draw.Alpha(Look.PastelFill, onT), rad);
                     var m = new Rect(it.x + RowPadX, Mathf.Round(it.center.y - mark * 0.5f), mark, mark);
                     if (many) Box(m, onT);

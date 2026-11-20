@@ -36,7 +36,7 @@ namespace CSCommonUX
                 Draw.Icon(icon, new Rect(Mathf.Round(b.center.x - Icon * 0.5f), Mathf.Round(b.center.y - Icon * 0.5f), Icon, Icon), enabled ? Look.PillNeutralInk : Look.IconOffInk, 24f, Stroke);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(b, tip);
+            CSCommonUX.CSCommonToolbar.Tip(b, tip);
             return enabled && Draw.Button(b);
         }
     }

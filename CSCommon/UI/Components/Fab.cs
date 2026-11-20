@@ -21,7 +21,7 @@ namespace CSCommonUX
         public static bool In(Rect r, string icon, FabTone tone = FabTone.Plain, bool on = false, string tip = null)
         {
             int key = CSCommonAnim.Key("fab", icon) ^ (int)tone * 0x01000193; // 자리와 무관 · 색 종류별로 나눔
-            float hover = 0f, press = Look.Press(key, r);
+            float press = Look.Press(key, r);
             if (Draw.Repaint)
             {
                 Color fill = tone switch
@@ -43,12 +43,11 @@ namespace CSCommonUX
                 float rad = Mathf.Min(r.width, r.height) * 0.5f, s = PillBar.IconSize;
                 Draw.BeginScale(r.center, Look.PressScale(press, PillBar.PressScale));
                 Draw.Round(r, fill, rad);
-                if (hover > 0.01f) Draw.Round(r, Draw.Alpha(Pal.Haze, PillBar.HoverAlpha * hover), rad);
                 Draw.RoundOutline(r, Look.BarLine, rad);
                 if (!string.IsNullOrEmpty(icon)) Draw.Icon(icon, new Rect(Mathf.Round(r.center.x - s * 0.5f), Mathf.Round(r.center.y - s * 0.5f), s, s), ink, 24f, PillBar.Stroke);
                 Draw.EndScale();
             }
-            CSCommonUX.UI.CSCommonToolbar.Tip(r, tip);
+            CSCommonUX.CSCommonToolbar.Tip(r, tip);
             return Draw.Button(r);
         }
 
