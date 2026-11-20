@@ -15,7 +15,7 @@ namespace CSCommonUX
         public static bool In(Rect r, bool on, bool enabled = true, string tip = null)
         {
             int key = Look.Key(r, "listrow");
-            float hv = Look.Hover(key, r, enabled && !on);
+            float hv = 0f;
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {

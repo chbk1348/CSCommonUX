@@ -94,7 +94,7 @@ namespace CSCommonUX
                 var r = new Rect(x, y, w, TabH);
                 bool sel = i == cur;
                 int k = Look.Key(r, "dockbarpanel.tab", labels[i]);
-                float hv = Look.Hover(k, r, !sel), pr = Look.Press(k, r);
+                float hv = 0f, pr = Look.Press(k, r);
                 if (Draw.Repaint)
                 {
                     float rad = TabH * 0.5f;

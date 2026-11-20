@@ -18,7 +18,7 @@ namespace CSCommonUX
             if (!draw) return Size;
             var r = new Rect(x, Mathf.Round(cy - Size * 0.5f), Size, Size);
             int key = Look.Key(r, icon, tip) ^ 0x4cf5ad43;
-            float hv = Look.Hover(key, r, enabled), pr = Look.Press(key, r, enabled);
+            float hv = 0f, pr = Look.Press(key, r, enabled);
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 9f);
             if (Draw.Repaint)
             {

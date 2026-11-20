@@ -244,7 +244,7 @@ namespace CSCommonUX
                 bool on = many ? i < openOn.Length && openOn[i] : i == openCur;
                 int k = Look.Key(it, "select.row", openItems[i]);
                 float onT = CSCommonAnim.Toward(k, on ? 1f : 0f, 1f / Tabs.FadeSeconds);
-                float hv = Look.Hover(k ^ 0x51ed270b, it, live && !on), pr = Look.Press(k ^ 0x51ed270b, it, live);
+                float hv = 0f, pr = Look.Press(k ^ 0x51ed270b, it, live);
                 if (Draw.Repaint)
                 {
                     float rad = row * 0.5f;

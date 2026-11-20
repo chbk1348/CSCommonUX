@@ -21,7 +21,7 @@ namespace CSCommonUX
         public static bool In(Rect r, string icon, FabTone tone = FabTone.Plain, bool on = false, string tip = null)
         {
             int key = CSCommonAnim.Key("fab", icon) ^ (int)tone * 0x01000193; // 자리와 무관 · 색 종류별로 나눔
-            float hover = Look.Hover(key, r), press = Look.Press(key, r);
+            float hover = 0f, press = Look.Press(key, r);
             if (Draw.Repaint)
             {
                 Color fill = tone switch

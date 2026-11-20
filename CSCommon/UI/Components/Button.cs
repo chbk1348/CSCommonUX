@@ -41,7 +41,7 @@ namespace CSCommonUX
         {
             int key = Look.Key(r, icon, label) ^ 0x2f9a6b1d;
             bool live = enabled && !loading;
-            float hv = Look.Hover(key, r, live), pr = Look.Press(key, r, live);
+            float hv = 0f, pr = Look.Press(key, r, live);
             if (Draw.Repaint)
             {
                 Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));

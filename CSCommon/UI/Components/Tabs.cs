@@ -56,7 +56,7 @@ namespace CSCommonUX
         {
             float onT = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / FadeSeconds);
             int hk = key ^ 0x51ed270b;
-            float hv = Look.Hover(hk, c, !on), pr = Look.Press(hk, c);
+            float hv = 0f, pr = Look.Press(hk, c);
             if (Draw.Repaint)
             {
                 float rad = c.height * 0.5f;

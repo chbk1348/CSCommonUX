@@ -122,7 +122,7 @@ namespace CSCommonUX
         public static bool CloseButton(Rect c, bool filled = true)
         {
             int key = CSCommonAnim.Key("modal.close", filled ? "f" : "b");
-            float hv = Look.Hover(key, c), pr = Look.Press(key, c);
+            float hv = 0f, pr = Look.Press(key, c);
             if (Draw.Repaint)
             {
                 float rad = c.height * 0.5f;
@@ -149,7 +149,7 @@ namespace CSCommonUX
         public static bool Button(Rect b, string icon, string label, bool primary, bool enabled = true, string tip = null)
         {
             int key = Look.Key(b, "modal.btn", label);
-            float hv = Look.Hover(key, b, enabled), pr = Look.Press(key, b, enabled);
+            float hv = 0f, pr = Look.Press(key, b, enabled);
             if (Draw.Repaint)
             {
                 float rad = b.height * 0.5f;
@@ -303,7 +303,7 @@ namespace CSCommonUX
             var b = new Rect(sheet.x + SheetFootPadL, Mathf.Round(FooterCy(sheet) - BtnH * 0.5f), LinkPadL + tw + LinkGap + Chevron + LinkPadR, BtnH);
             // 폭이 움직이는 동안에도 같은 열쇠(자리로 만들면 호버가 끊김)
             int key = CSCommonAnim.Key("sheet.more", "link");
-            float hv = Look.Hover(key, b), pr = Look.Press(key, b);
+            float hv = 0f, pr = Look.Press(key, b);
             if (Draw.Repaint)
             {
                 Draw.BeginScale(b.center, Look.PressScale(pr, PillBar.PressScale));

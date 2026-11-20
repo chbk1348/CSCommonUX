@@ -16,7 +16,7 @@ namespace CSCommonUX
         public static void Frame(Rect r, bool on, bool enabled = true, bool hoverable = true)
         {
             int key = Look.Key(r, "tile");
-            Back(r, key, on, enabled, Look.Hover(key, r, enabled && hoverable && !on));
+            Back(r, key, on, enabled, 0f);
         }
 
         static void Back(Rect r, int key, bool on, bool enabled, float hv, bool danger = false)
@@ -31,7 +31,7 @@ namespace CSCommonUX
         public static bool In(Rect r, bool on, bool enabled = true, string tip = null, Action content = null, bool danger = false)
         {
             int key = Look.Key(r, "tile");
-            float hv = Look.Hover(key, r, enabled && !on), pr = Look.Press(key, r, enabled);
+            float hv = 0f, pr = Look.Press(key, r, enabled);
             bool paint = Draw.Repaint;
             if (paint) Draw.BeginScale(r.center, Look.PressScale(pr, PressScale));
             Back(r, key, on, enabled, hv, danger);

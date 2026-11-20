@@ -25,7 +25,7 @@ namespace CSCommonUX
             if (!draw) return w;
             var r = new Rect(x, Mathf.Round(cy - h * 0.5f), w, h);
             int key = Look.Key(r, "chip", label);
-            float hv = Look.Hover(key, r, !on && color == null), pr = Look.Press(key, r);
+            float hv = 0f, pr = Look.Press(key, r);
             float onT = CSCommonAnim.Toward(key ^ 0x5bd1e995, on ? 1f : 0f, 1f / FadeSeconds);
             if (Draw.Repaint)
             {

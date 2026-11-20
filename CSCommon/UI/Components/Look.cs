@@ -7,9 +7,6 @@ namespace CSCommonUX
     /// <summary>컴포넌트 눌림 · 그림자 · 열쇠(색 토큰은 Style/Look.cs).</summary>
     public static partial class Look
     {
-        /// <summary>호버 0 ~ 1(서서히).</summary>
-        public static float Hover(int key, Rect r, bool enabled = true) => 0f; // 호버 효과 없음(호출부 호환)
-
         /// <summary>눌림: 누르는 데 걸리는 초 · 떼고 돌아오는 초 · 돌아오는 곡선 cubic-bezier(.2, .9, .3, 1.3)(시안 '.press' — 살짝 넘쳤다 앉음).</summary>
         public const float PressInSeconds = 0.03f, PressOutSeconds = 0.26f, PressX1 = 0.2f, PressY1 = 0.9f, PressX2 = 0.3f, PressY2 = 1.3f;
 
