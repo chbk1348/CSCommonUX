@@ -54,6 +54,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Cells.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Check.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Chip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Concert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Dialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\DockBarPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\DockHint.cs" />
