@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.1
+# 🎨 CSCommon UX 3.1.1
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.1-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.1.1-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
