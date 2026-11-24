@@ -47,6 +47,9 @@ namespace CSCommonUX
             // 새로 누를 때마다 지난 누름은 버림(다른 데를 눌렀다 옛 버튼 위에서 떼도 눌리지 않게)
             var e = Event.current;
             guiStart = PerfWatch.Now;
+            FlushBakeBurst();
+            beginFrame = Time.frameCount;
+            if (!fontDiagOn) StartFontDiag();
             if (e != null && e.type == EventType.Repaint) InputBlocker.Painted(); // 허브 공유: 그린 순서(모드끼리 가림)
             if (e != null && e.type == EventType.MouseDown) held = false;
             // 스크롤 막대를 끄는 동안 다른 누름 · 휠은 아무 데도 안 감(뗌 · 끌기는 막대가 받음)

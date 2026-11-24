@@ -133,6 +133,7 @@ namespace CSCommonUX
             {
                 CSCommonLog.Exception(e, "Harmony 패치 떼기");
             }
+            Draw.StopFontDiag(); // 정적 이벤트 -= 라 던지지 않음
         }
 
         /// <summary>게임이 모드 설정 화면을 열 때 부름(반사로). 패널은 화면이 보일 때 UxOptionsHost가 지음.</summary>

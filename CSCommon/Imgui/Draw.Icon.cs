@@ -12,7 +12,7 @@ namespace CSCommonUX
 
         /// <summary>
         /// 한 틀에 새로 굽는 아이콘 수 상한(3.1): 넘치면 같은 아이콘의 다른 크기 구운 것을 늘려 찍고 다음 틀에 구움 — 크기가 움직이는 아이콘이 한 틀에 여러 장 굽지 않게.
-        /// 처음 보는 아이콘(다른 크기도 없음)은 상한과 상관없이 바로 구움(빈칸이 보이지 않게).
+        /// 처음 보는 아이콘(다른 크기도 없음)도 상한 · 굽기 시간 몫(CanBake)을 지킴 — 넘치면 그 틀은 비우고 다음 틀에 구움(창 열기 멈칫 줄이기, 3.2).
         /// </summary>
         const int IconBakesPerFrame = 6;
         static int iconBakeFrame = -1, iconBakes;
@@ -39,17 +39,21 @@ namespace CSCommonUX
                     iconBakeFrame = Time.frameCount;
                     iconBakes = 0;
                 }
-                if (iconBakes >= IconBakesPerFrame && iconAny.TryGetValue(d, out var any) && any != null)
+                if (iconBakes >= IconBakesPerFrame || !CanBake())
                 {
-                    // 이번 틀 굽기 몫을 다 씀: 다른 크기 것을 늘려 찍고 다음 틀에 구움
-                    Color o = GUI.color;
-                    GUI.color = Op(c);
-                    GUI.DrawTexture(new Rect(Mathf.Round(sr.x), Mathf.Round(sr.y), px, px), any);
-                    GUI.color = o;
+                    // 이번 틀 굽기 몫을 다 씀: 다른 크기 것이 있으면 늘려 찍고(없으면 비움) 다음 틀에 구움
+                    if (iconAny.TryGetValue(d, out var any) && any != null)
+                    {
+                        Color o = GUI.color;
+                        GUI.color = Op(c);
+                        GUI.DrawTexture(new Rect(Mathf.Round(sr.x), Mathf.Round(sr.y), px, px), any);
+                        GUI.color = o;
+                    }
                     return;
                 }
                 iconBakes++;
                 tex = BakeIcon(d, px, viewBox, stroke);
+                Baked();
                 iconCache.Put(key, tex);
                 iconAny[d] = tex;
             }

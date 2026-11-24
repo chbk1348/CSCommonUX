@@ -45,7 +45,9 @@ namespace CSCommonUX
             int px = SlicePx(r, radius);
             if (!roundStyles.TryGetValue(px, out var style))
             {
+                if (!CanBake()) { Fill(r, c); return; } // 이번 틀 굽기 몫을 다 씀: 네모로 그리고 다음 틀에 구움
                 style = NineSlice(MakeRounded(px, 0), px);
+                Baked();
                 roundStyles[px] = style;
             }
             Color old = GUI.color;
@@ -84,7 +86,9 @@ namespace CSCommonUX
             long key = ((long)px << 16) | (uint)wpx;
             if (!outlineStyles.TryGetValue(key, out var style))
             {
+                if (!CanBake()) { Border(r, c, width); return; } // 이번 틀 굽기 몫을 다 씀: 네모 테두리로 그리고 다음 틀에 구움
                 style = NineSlice(MakeRounded(Mathf.Max(px, wpx), wpx), Mathf.Max(px, wpx));
+                Baked();
                 outlineStyles[key] = style;
             }
             Color old = GUI.color;
@@ -115,7 +119,12 @@ namespace CSCommonUX
             var outer = new Rect(r.x - 8f, r.y - 2f, r.width + 16f, r.height + 16f);
             if (Off(outer, 1f, 1f)) return true;
             long key = ((long)rp << 32) | ((long)Mathf.RoundToInt(S * 1000f) << 12) | (uint)(Mathf.RoundToInt(alpha * 1000f) & 0xFFF);
-            if (!shadowStyles.TryGetValue(key, out var style)) shadowStyles[key] = style = BakeShadow(rp, alpha);
+            if (!shadowStyles.TryGetValue(key, out var style))
+            {
+                if (!CanBake()) return true; // 이번 틀 굽기 몫을 다 씀: 그림자는 다음 틀부터
+                shadowStyles[key] = style = BakeShadow(rp, alpha);
+                Baked();
+            }
             Color old = GUI.color;
             GUI.color = Op(Color.white);
             style.Draw(Snap(ToScreen(outer)), false, false, false, false);

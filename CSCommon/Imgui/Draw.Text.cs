@@ -72,11 +72,51 @@ namespace CSCommonUX
             }
         }
 
+        // 진단(3.2): IMGUI 가 쓰는 글꼴 텍스처가 다시 지어진 횟수. 게임 UI 와 같은 글꼴이라 다시 지으면 그 글꼴 쓰는 게임 UI 글 칸이 전부 다시 그려짐.
+        // 글자 요청(Draw · CalcSize) 안에서 바로 불리므로 content.text · lastPx = 그때 요청한 글 · 크기(게임 UI 가 지은 것이면 직전 IMGUI 요청).
+        // 고리는 Begin 이 걸고(StartFontDiag), 이 DLL 의 Begin 이 300틀 넘게 없으면 처리기가 스스로 뗌 — 모드 진입이 CSCommonMod 가 아니어도(정치 · 앰비언트)
+        // 끄기 · 다시 읽기 뒤 옛 어셈블리 처리기가 남아 줄을 겹쳐 남기지 않게. 다시 그리기 시작하면 Begin 이 다시 검.
+        static int lastPx, rebuilds, rebuildsLogged, beginFrame;
+        static float rebuildLogAt = -100f;
+        static bool fontDiagOn;
+
+        static void StartFontDiag()
+        {
+            Font.textureRebuilt -= OnFontRebuilt;
+            Font.textureRebuilt += OnFontRebuilt;
+            fontDiagOn = true;
+        }
+
+        static void OnFontRebuilt(Font font)
+        {
+            if (Time.frameCount - beginFrame > 300) { StopFontDiag(); return; }
+            if (font == null || font != faceRegular && font != faceBold && font != brandBold && font != brandRegular && font != brandWide) return;
+            rebuilds++;
+            // 처음 5번은 늘 바로, 그다음은 자세한 로그(PerfWatch.On)일 때만 10초에 한 줄(그 사이 횟수를 묶어)
+            bool first = rebuilds <= 5;
+            if (!first && (!PerfWatch.On() || Time.realtimeSinceStartup - rebuildLogAt < 10f)) return;
+            rebuildLogAt = Time.realtimeSinceStartup;
+            var tex = font.material != null ? font.material.mainTexture : null;
+            string req = content.text ?? "";
+            if (req.Length > 20) req = req.Substring(0, 20);
+            string line = $"글꼴: IMGUI 글꼴 {font.name} 텍스처 다시 지음 {rebuilds}회째(지난 줄 뒤 {rebuilds - rebuildsLogged}회) · 요청 {lastPx}px '{req}' · 텍스처 {(tex != null ? tex.width + "x" + tex.height : "?")}";
+            if (first) PerfWatch.SlowLog(line); else PerfWatch.Log(line);
+            rebuildsLogged = rebuilds;
+        }
+
+        /// <summary>글꼴 진단 고리를 뗌(모드가 꺼질 때 · 이 DLL 이 오래 안 그릴 때). 다음 Begin 이 다시 검.</summary>
+        public static void StopFontDiag()
+        {
+            Font.textureRebuilt -= OnFontRebuilt;
+            fontDiagOn = false;
+        }
+
         /// <summary>얼굴: 0 보통 · 1 굵게 · 2 넓게(방송 제목 — 브랜드 넓게, 없으면 굵게) · 3 브랜드 굵게 · 4 브랜드 보통(없으면 게임 굵게 · 보통). 게임 굵은 글꼴이 없으면 엔진 굵게.</summary>
         static GUIStyle TextStyle(int px, bool bold, TextAnchor anchor, bool wrap) => TextStyle(px, bold ? 1 : 0, anchor, wrap);
 
         static GUIStyle TextStyle(int px, int face, TextAnchor anchor, bool wrap)
         {
+            lastPx = px;
             int key = px * 256 + face * 32 + (wrap ? 16 : 0) + (int)anchor;
             if (!textStyles.TryGetValue(key, out var style))
             {
@@ -158,13 +198,12 @@ namespace CSCommonUX
         static float FaceWidthPx(string text, int px, int face)
         {
             var key = new TextKey(text, px, face, 1);
-            if (!widthCache.TryGetValue(key, out float w))
+            if (!widthCache.TryGet(key, out float w))
             {
                 var style = TextStyle(px, face, TextAnchor.MiddleLeft, false);
                 content.text = text;
                 w = style.CalcSize(content).x;
-                if (widthCache.Count > 4000) widthCache.Clear();
-                widthCache[key] = w;
+                widthCache.Put(key, w);
             }
             return w;
         }
@@ -323,9 +362,10 @@ namespace CSCommonUX
         }
 
         // 글 폭 캐시: (글, 화소 크기, 굵기) → CalcSize 화소 폭. 글꼴을 찾으면(EnsureFaces) 비움, 배율은 화소 크기에 들어 있음
-        static readonly Dictionary<TextKey, float> widthCache = new(TextKeyComparer.I);
+        // 3.2: 4000 개에서 통째로 비우면 다음 틀에 모든 글을 다시 재어(글꼴 요청) 멈칫했음 → 오래 안 쓴 것부터 지움(TexCache, 텍스처 없음)
+        static readonly TexCache<TextKey, float> widthCache = new(4000, null, TextKeyComparer.I);
         // 글 높이 캐시: (글, 화소 크기, 굵기, 화소 폭) → CalcHeight 화소 높이. widthCache 와 같이 비움
-        static readonly Dictionary<TextKey, float> heightCache = new(TextKeyComparer.I);
+        static readonly TexCache<TextKey, float> heightCache = new(4000, null, TextKeyComparer.I);
 
         /// <summary>
         /// 맞춤 여유(논리 px): 칸 폭을 '글 폭 + 여백'으로 잡아도 칸 x 가 소수(비율로 나눈 카드)면 right − x 가 글 폭보다 아주 조금(1e-5) 작아져,
@@ -338,15 +378,14 @@ namespace CSCommonUX
             if (string.IsNullOrEmpty(text)) return 0f;
             int px = Px(size);
             var key = new TextKey(text, px, bold ? 1 : 0, 0);
-            if (!widthCache.TryGetValue(key, out float w))
+            if (!widthCache.TryGet(key, out float w))
             {
                 var style = TextStyle(px, bold, TextAnchor.MiddleLeft, false);
                 content.text = text;
                 w = style.CalcSize(content).x;
                 // 굵게 잰 폭 = 굵게 · 보통 중 넓은 쪽: 알약은 굵게 재고 안 고른 칸은 보통으로 그리는데, 한글은 대체 글꼴이라 보통이 더 넓을 수 있음
                 if (bold) w = Mathf.Max(w, TextStyle(px, false, TextAnchor.MiddleLeft, false).CalcSize(content).x);
-                if (widthCache.Count > 4000) widthCache.Clear();
-                widthCache[key] = w;
+                widthCache.Put(key, w);
             }
             return w / S;
         }
@@ -357,13 +396,12 @@ namespace CSCommonUX
             int px = Px(size);
             float wpx = width * S;
             var key = new TextKey(text, px, bold ? 1 : 0, Mathf.RoundToInt(wpx));
-            if (!heightCache.TryGetValue(key, out float h))
+            if (!heightCache.TryGet(key, out float h))
             {
                 var style = TextStyle(px, bold, TextAnchor.UpperLeft, true);
                 content.text = text;
                 h = style.CalcHeight(content, wpx);
-                if (heightCache.Count > 4000) heightCache.Clear();
-                heightCache[key] = h;
+                heightCache.Put(key, h);
             }
             return h / S;
         }
