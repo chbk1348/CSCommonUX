@@ -82,6 +82,11 @@ namespace CSCommonUX
             check(Near(EmptyState.Height(false, false), 72f) && Near(EmptyState.Height(true, true), 152f), "empty height");
             check(Near(Surface.Height(Surface.Kind.Card, 100f, true, true), 240f) && Near(Surface.Inset(new Rect(0f, 0f, 560f, 300f), Surface.Kind.Modal).height, 300f), "surface height");
             check(Surface.Raise(Surface.Kind.Card) == Pal.GroundRaised && Surface.Raise(Surface.Kind.Hero) == Pal.GroundCard, "surface raise");
+
+            // 창 틀: 몸 = 머리 64 아래 ~ 창 바닥 · 스크롤 안쪽 아래 88 / 서브 148
+            var body = WindowFrame35.Body(new Rect(10f, 20f, CSCommonDesign.WindowW, CSCommonDesign.WindowH));
+            check(Near(body.y, 84f) && Near(body.yMax, 940f) && Near(body.x, 10f) && Near(body.width, 1180f)
+                && Near(WindowFrame35.BodyBottom(false), 88f) && Near(WindowFrame35.BodyBottom(true), 148f), "window frame body");
         }
     }
 }

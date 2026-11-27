@@ -113,6 +113,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\RowItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Chart35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Check35.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\WindowFrame35.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Chip35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Board.cs" />
   </ItemGroup>
 </Project>

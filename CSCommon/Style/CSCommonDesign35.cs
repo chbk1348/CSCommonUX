@@ -31,6 +31,16 @@ namespace CSCommonUX
         /// <summary>버튼 줄: 40 · 작은 버튼 32 · 버튼 사이 8. 카드 꼬리 위 16, 안쪽 칸 꼬리 위 12.</summary>
         public const float BtnH = 40f, BtnSmallH = 32f, BtnGap = 8f, CardFootGap = 16f, InnerFootGap = 12f;
 
+        // ---- 창 틀(R5Window · R5PartWindow) — 창 1180 × 920 은 CSCommonDesign.WindowW · WindowH, 모서리 RadiusWindow
+        /// <summary>창 머리 64 · 좌우 16 · 요소 사이 12. 몸 스크롤 안쪽 위 · 좌우 = WindowBodyPad, 아래 = 툴바 안전 영역(Toolbar.SafeH 88 · SubToolBar.SafeH 148).</summary>
+        public const float WindowHeadH = 64f, WindowHeadPadX = 16f, WindowHeadGap = 12f;
+        /// <summary>창 닫기 정사각 40(r8 · 투명 면, 아이콘 IconM 18).</summary>
+        public const float CloseBtn = 40f;
+        /// <summary>창 머리 시리즈 전환 칸: 판 40 · 안쪽 4(r8) · 칸 32 · 좌우 12(r4) · 칸 사이 4.</summary>
+        public const float SeriesSegH = 40f, SeriesSegPad = 4f, SeriesCellH = 32f, SeriesCellPadX = 12f, SeriesCellGap = 4f;
+        /// <summary>칩 · 상태 칩(Chip35): 높이 32 · 좌우 12 · r8 · 점 8 → 글 IconTextGap 8.</summary>
+        public const float ChipH = 32f, ChipPadX = 12f;
+
         // ---- 점 · 막대 · 알약
         /// <summary>상태 점 지름 8 · 툴바 점 둘레 2(알약 바탕색).</summary>
         public const float Dot = 8f, DotRing = 2f;
