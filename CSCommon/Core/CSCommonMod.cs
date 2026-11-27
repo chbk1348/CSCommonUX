@@ -36,7 +36,7 @@ namespace CSCommonUX
         public virtual string Channel => "개발 중";
 
         /// <summary>공유 UI(CSCommonUX) 판: 설정 패널 판 줄과 로그에 보임.</summary>
-        public const string UXVersion = "3.5.1";
+        public const string UXVersion = "3.5.2";
 
         public string VersionText
         {

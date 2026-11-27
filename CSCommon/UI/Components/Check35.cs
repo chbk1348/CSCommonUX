@@ -87,6 +87,8 @@ namespace CSCommonUX
             var body = WindowFrame35.Body(new Rect(10f, 20f, CSCommonDesign.WindowW, CSCommonDesign.WindowH));
             check(Near(body.y, 84f) && Near(body.yMax, 940f) && Near(body.x, 10f) && Near(body.width, 1180f)
                 && Near(WindowFrame35.BodyBottom(false), 88f) && Near(WindowFrame35.BodyBottom(true), 148f), "window frame body");
+            // 호버 면 = 놓인 면보다 한 단: 닫기(머리 GroundPage 위) Card · 시리즈 칸(판 GroundCard 위) Raised
+            check(WindowFrame35.CloseHover == Pal.GroundCard && WindowFrame35.CellHover == Pal.GroundRaised, "window hover faces");
         }
     }
 }

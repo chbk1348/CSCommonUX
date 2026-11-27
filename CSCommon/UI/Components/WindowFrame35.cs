@@ -44,7 +44,7 @@ namespace CSCommonUX
 
         /// <summary>
         /// 머리 왼쪽 시리즈 전환 칸(왼쪽 x · 세로 가운데 cy): 판 40 GroundCard + Hairline r8 · 안쪽 4 · 칸 32 r4 · 사이 4 · 글 14.
-        /// 고른 칸 = 강조 면 · 강조 위 글(면 색 0.15초), 안 고른 칸 = InkSub 글 · 누르면 0.97배. tips = 칸 툴팁 · 이름.
+        /// 고른 칸 = 강조 면 · 강조 위 글(면 색 0.15초), 안 고른 칸 = InkSub 글 · 호버 면 CellHover(판보다 한 단) · 누르면 0.97배. tips = 칸 툴팁 · 이름.
         /// 판 자리를 돌려주고(창 끌기에서 뺄 칸), 안 고른 칸을 눌러 떼면 picked = 그 번호(없으면 -1).
         /// </summary>
         public static Rect Series(float x, float cy, string[] labels, int cur, Color accent, Color onAccent, string[] tips, out int picked)
@@ -65,9 +65,11 @@ namespace CSCommonUX
                 int key = Look.Key(c, "series35", labels[i]);
                 float onT = CSCommonAnim.Toward(key, on ? 1f : 0f, 1f / D35.DurFeedback);
                 float pr = Look.Press(key ^ 0x6a09e667, c, !on);
+                float hover = CSCommonAnim.Toward(key ^ 0x3c6ef372, !on && Draw.Hover(c) ? 1f : 0f, 1f / D35.DurFeedback);
                 if (Draw.Repaint)
                 {
                     Draw.BeginScale(c.center, Look.PressScale(pr, D35.PressScale));
+                    if (hover > 0.01f) Draw.Round(c, Draw.Alpha(CellHover, hover), D35.RadiusTag);
                     if (onT > 0.01f) Draw.Round(c, Draw.Alpha(accent, onT), D35.RadiusTag);
                     Draw.Text(c, labels[i], D35.FontBody, Color.Lerp(Pal.InkSub, onAccent, onT), false, TextAnchor.MiddleCenter);
                     Draw.EndScale();
@@ -79,11 +81,26 @@ namespace CSCommonUX
             return frame;
         }
 
-        /// <summary>창 닫기 40 정사각(r8 · 투명 면) · Close 18 InkSub. tip = 툴팁 · 이름. 눌러 떼면 true.</summary>
+        /// <summary>호버 면 = 놓인 면보다 한 단(Surface.Raise): 닫기는 창 머리(GroundPage) 위라 GroundCard, 시리즈 칸은 판(GroundCard) 위라 GroundRaised.</summary>
+        internal static Color CloseHover => Surface.Raise(Surface.Kind.Ground);
+        internal static Color CellHover => Surface.Raise(Surface.Kind.Card);
+
+        /// <summary>창 닫기 40 정사각(r8 · 평소 투명 면, 호버 CloseHover 0.15초 · 누르면 면만 0.97배 — 아이콘 크기 그대로) · Close 18 InkSub. tip = 툴팁 · 이름. 눌러 떼면 true.</summary>
         public static bool Close(Rect r, string tip)
         {
+            int key = Look.Key(r, "close35");
+            float hover = CSCommonAnim.Toward(key, Draw.Hover(r) ? 1f : 0f, 1f / D35.DurFeedback);
+            float pr = Look.Press(key ^ 0x6a09e667, r);
             if (Draw.Repaint)
+            {
+                if (hover > 0.01f)
+                {
+                    Draw.BeginScale(r.center, Look.PressScale(pr, D35.PressScale));
+                    Draw.Round(r, Draw.Alpha(CloseHover, hover), D35.RadiusCtrl);
+                    Draw.EndScale();
+                }
                 Draw.Icon(Icons.Close, new Rect(Mathf.Round(r.center.x - D35.IconM * 0.5f), Mathf.Round(r.center.y - D35.IconM * 0.5f), D35.IconM, D35.IconM), Pal.InkSub, D35.IconBox, D35.IconLine);
+            }
             CSCommonToolbar.Tip(r, tip);
             return Draw.Button(r);
         }

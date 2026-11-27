@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.5.1
+# 🎨 CSCommon UX 3.5.2
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.5.1-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.5.2-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
@@ -90,9 +90,9 @@
 - **`RowItem`**: 줄 44 · 아이콘 18 → 12 → 제목 14 + 캡션 12, 호버 GroundRaised r8(좌우 8 밖) 0.15초, `TeamBar` 4 × 16.
 - **`Chart35`**: `Plot`(왼쪽 축 44 · 위 16 · 아래 28 · 오른쪽 범례 88) · `Grid`(가로 눈금선만, 축 숫자는 눈금선 높이에 세로 가운데) · `Line`(Catmull-Rom 부드러운 선 2, 조절점 영역 안, 재사용 버퍼) · `End` · `Cursor`(점선 2 / 4) · `EventBand` · `Legend`(팀 색 막대 3 × 12) · `Gray`(회색 4단계) · `Bar` + `PaintBar`(끝 4 둥글게 · 바닥 0).
 - **아이콘**: `Icons` 에 새 45개(Redo · Edit · More · Play · Pause · Stop · Pointer · Up · ArrowLeft · ArrowRight · Home · Grid · List · Lines · Sliders · Window · Lock · Bell · Bug · Eye · Pulse · Trend · Bars · Calendar · Clock · Pin · Map · Road · Bus · User · Users · Flag · Trophy · Star · Shield · Bolt · Bulb · Volume · Music · Mail · Chat · Ticket · Coin · Flame · Heart) — 기존 14개와 합쳐 59개, 경로 글은 캔버스 글자 그대로. `Icons.Paint(경로, 칸, 색)` 이 칸 폭으로 크기 단계를 골라 획 2 로 그립니다.
-- **`WindowFrame35`**: 창 틀(1180 × 920 · r20 · 면 `GroundPage` + 바깥 1px `Hairline` · 그림자 없음) — `Frame`(창 판 · 몸 `GroundDeep` 을 칠하고 몸 칸을 돌려줌) · `Body` · `BodyBottom`(몸 스크롤 안쪽 아래 = `Toolbar.SafeH` 88 · 서브 툴바가 있으면 `SubToolBar.SafeH` 148, 위 · 좌우는 `WindowBodyPad` 20) · `Series`(머리 왼쪽 시리즈 전환 칸 — 판 40 `GroundCard` + `Hairline` r8 · 안쪽 4 · 칸 32 r4 · 좌우 12 · 사이 4 · 글 14, 고른 칸 = 강조 면 · 강조 위 글, 안 고른 칸 `InkSub`, 강조는 모드가 넘김) · `Head`(머리 64 · 좌우 16 · 사이 12: 제목 16/24 + 아래 meta 12/16 `InkDim` … 상태 칩 → 날짜 14 `InkSub` 숫자 자리 폭 같음 → 닫기) · `Close`(40 정사각 · 투명 · Close 18 `InkSub`). 헤더에 뒤로 없음.
+- **`WindowFrame35`**: 창 틀(1180 × 920 · r20 · 면 `GroundPage` + 바깥 1px `Hairline` · 그림자 없음) — `Frame`(창 판 · 몸 `GroundDeep` 을 칠하고 몸 칸을 돌려줌) · `Body` · `BodyBottom`(몸 스크롤 안쪽 아래 = `Toolbar.SafeH` 88 · 서브 툴바가 있으면 `SubToolBar.SafeH` 148, 위 · 좌우는 `WindowBodyPad` 20) · `Series`(머리 왼쪽 시리즈 전환 칸 — 판 40 `GroundCard` + `Hairline` r8 · 안쪽 4 · 칸 32 r4 · 좌우 12 · 사이 4 · 글 14, 고른 칸 = 강조 면 · 강조 위 글, 안 고른 칸 `InkSub`, 강조는 모드가 넘김) · `Head`(머리 64 · 좌우 16 · 사이 12: 제목 16/24 + 아래 meta 12/16 `InkDim` … 상태 칩 → 날짜 14 `InkSub` 숫자 자리 폭 같음 → 닫기) · `Close`(40 정사각 · 투명 · Close 18 `InkSub`). 호버는 놓인 면보다 한 단 밝은 면(닫기 `GroundCard` · 안 고른 시리즈 칸 `GroundRaised`, `Surface.Raise`) 0.15초, 누르면 0.97배(닫기는 면만 — 아이콘 크기 그대로). 헤더에 뒤로 없음.
 - **`Chip35`**: 칩 32 · 좌우 12 · r8 · 점 8 → 8 → 글 14 `InkTxt` 가운데. `Status`(상태 칩 — 점 = 뜻 색 · 진행 중이면 1.2초 오감, 면은 놓인 면보다 한 단을 부르는 쪽이 넘김) · `Width`.
-- **자가 검사**: `Check35.SelfCheck(check)` — 곡선 · 축 · 막대 · 숫자 자리 폭 · 상태 점 · 아이콘 59개 중복 0 · 창 틀 몸 칸 등 28칸.
+- **자가 검사**: `Check35.SelfCheck(check)` — 곡선 · 축 · 막대 · 숫자 자리 폭 · 상태 점 · 아이콘 59개 중복 0 · 창 틀 몸 칸 · 호버 면 등 29칸.
 
 ### 🧭 하단 툴바 · 서브 툴바 · 독 (`CSCommonUX.Toolbar` · `SubToolBar` · `Dockbar` · `SubDockBar`)
 
@@ -119,6 +119,15 @@
 ---
 
 ## 📝 변경 내역
+
+<details open>
+<summary><b>UX 3.5.2 변경 (2026-11-27)</b></summary>
+
+- **창 틀 호버 · 누름(추가만):** `WindowFrame35.Close` · `Series` 안 고른 칸에 마우스를 올리면 놓인 면보다 한 단 밝은 면(`Surface.Raise` — 새 색 토큰 없음), 누르면 0.97배.
+- **자가 검사:** 호버 면 한 칸 더함(29칸).
+- **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.5.2 로.
+
+</details>
 
 <details open>
 <summary><b>UX 3.5.1 변경 (2026-11-27)</b></summary>
