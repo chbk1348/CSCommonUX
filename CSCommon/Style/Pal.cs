@@ -3,7 +3,7 @@ using UnityEngine;
 namespace CSCommonUX
 {
     /// <summary>F1 UX 색(설계 색). IMGUI(Draw)와 게임 UI 부품(CSCommonStyle)이 같이 씀.</summary>
-    internal static class Pal
+    internal static partial class Pal
     {
         public static Color Win = Draw.Hex("#14171C");
         /// <summary>고른 칸(떠오른 면) 바탕 · 그 위 글 · 아이콘(다크 #3A404B · 흰 글 / 라이트 흰 바탕 · 짙은 글).</summary>

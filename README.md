@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.1.1
+# 🎨 CSCommon UX 3.5
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.1.1-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.5-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
@@ -50,6 +50,9 @@
 | `CSCommon/UI/CSCommonKit.cs` · `CSCommonToolbar.cs` | 게임 UI(ColossalFramework) 부품 · 위 판 툴바 · 독(Dockbar) |
 | `CSCommon/UI/CSCommonUXToolbar.cs` | 모드 창 하단 Toolbar · SubToolBar · 상세 화면 뒤로 `Toolbar.BackFab` |
 | `CSCommon/UI/InputBlocker.cs` · `Core/FontPatch.cs` · `Core/PerfWatch.cs` · `Core/Scan.cs` | 입력 막기 · 글꼴 패치 · 계측 · 건물 스캔 공통 부품 |
+| `CSCommon/Style/CSCommonDesign35.cs` · `Style/Pal.Role35.cs` | 3.5 치수 · 글 · 움직임 토큰(`CSCommonDesign35`) · 역할 색(`Pal.Ground*` · `Ink*` · `Sem*` · `Chart*` · `Accent*`) — 다크 전용 |
+| `CSCommon/Imgui/Draw.Num.cs` · `Draw.Chart35.cs` | 3.5 숫자 글(600 · 자리 폭 같음) · 부드러운 선(`Draw.Smooth`) · 위만 둥근 막대(`Draw.RoundTop`) |
+| `CSCommon/UI/Components/Surface.cs` 외 | 3.5 부품 `Surface` · `StatusDot` · `Kpi` · `ScoreBar` · `StageTrack` · `EmptyState` · `RowItem` · `Chart35` · 아이콘 45개(`Icons.Set35.cs`) · 자가 검사 `Check35` |
 | `CSCommon/DesignCheck.targets` | 모드 코드에 색 값 · 치수 숫자 · 직접 그린 IMGUI 부품이 늘면 빌드 오류(CSC001) |
 
 ---
@@ -71,6 +74,23 @@
 ---
 
 ## 📐 부품 규격
+
+### 🧱 3.5 토큰 · 부품 (`CSCommonDesign35` · `Pal` 3.5 역할 색 · 다크 전용)
+
+3.0 부품 · 값은 그대로 두고 **추가만** 했습니다(3.0 부품 diff 0). 기준은 FIA 캔버스 '5.0 리뉴얼' R5Tok* · R5Part* 보드. 하단 툴바 · 서브 툴바 · FAB 은 3.1 그대로이고, 3.5 버튼 · 칩 · 스위치 · 창 틀은 아직 없습니다.
+
+- **색(`Pal`)**: 바탕 `GroundDeep #0e1014` · `GroundPage #14171c` · `GroundCard #191c22` · `GroundRaised #20242b`, 글 `InkTxt #eceef2` · `InkSub #9aa3af` · `InkDim #848c98`, 선 `Hairline`(#eceef2 8%) · `SelectedTopLine`, 시리즈 강조 `AccentF1` · `AccentNascar` · `AccentWec`(+ `OnAccent*`), 의미색 `SemGood` · `SemWarn` · `SemBad` · `OnSemBad`, 차트 `ChartGray1~4` · `ChartBase` · `ChartGrid` · `ChartCursor` · `ChartEventBand`, 덮개 `Scrim35`. 테마가 바꾸지 않습니다. 시리즈 강조는 부품이 고르지 않고 모드가 인자로 넘깁니다.
+- **치수(`CSCommonDesign35`)**: 4px 격자 `Step4~64`, 카드 안쪽 20 · 히어로 · 모달 24 · 제목 → 본문 12 · 묶음 사이 16, 모서리 4 · 8 · 16 · 20, 줄 28 · 36 · 44 · 56 · 64, 글 12/16 · 14/20 · 16/24 · 20/28 · 28/36 · 48/56, 아이콘 12 · 16 · 18 · 24(획 2 하나, 상자 24), 아이콘 ↔ 글 칩 · 버튼 8 · 목록 행 12, 움직임 곡선 `Ease`(cubic-bezier(0.22, 1, 0.36, 1)) · 0.15 / 0.2 / 0.3초 · 누름 0.97배.
+- **숫자 `Draw.Num` · `NumWidth`**: 굵기 600(게임 기본 UI 글꼴 = OpenSans-Semibold, 글꼴 파일 없음 · 엔진 굵게 안 씀) · 숫자 0~9 를 가장 넓은 숫자 폭 칸 가운데에(tabular) · 시계 콜론은 점 둘 · 매 틀 할당 0. KPI · 타이밍 · 축 · 수에 씁니다. 한글 제목은 `Draw.Text` 보통 굵기.
+- **`Surface`**: `Frame`(Card · Hero · Inner · Slot · Modal · Ground 6종 면 · 선 · 모서리) → `Head`(제목 + 오른쪽 meta) → 몸 → `Foot`(버튼 줄 칸), `Height` · `Raise`(놓인 면보다 한 단 밝은 면 — 칩 · 단계 막대 홈).
+- **`StatusDot`**: 줄 안 점 8(`Paint`, 진행 중만 1.2초 1 ↔ 0.4) · 툴바 칸 구석 점(`Corner`, 메인 위 6 · 오른쪽 6 / 서브 위 4 · 오른쪽 6 · 둘레 2 알약 바탕색 — 모드가 `Toolbar.Bar(extra)` · `SubToolBar.Bar(extra, extraW)` 콜백에서 부름) · 서브 칸 안 읽은 수 알약(`Count`, 높이 20 · '99+').
+- **`Kpi`**: `Cell`(GroundCard + Hairline · r16 · 라벨 12 → 숫자 28/36 600 → 보조 12) · `Col`(4열 · 사이 16) · 높이 `Kpi.H` 108.
+- **`ScoreBar` · `StageTrack`**: 점수 막대 6 / r3(지금 InkSub · 더해질 몫 강조 56%), 단계 · 섹터 3분할 막대 8 / r4 · 칸 사이 4 · 아래 라벨.
+- **`EmptyState`**: 원 40 안 아이콘 18(잠김 16) → 12 → 제목 14 → 4 → 설명 14 → 16 → 버튼 칸.
+- **`RowItem`**: 줄 44 · 아이콘 18 → 12 → 제목 14 + 캡션 12, 호버 GroundRaised r8(좌우 8 밖) 0.15초, `TeamBar` 4 × 16.
+- **`Chart35`**: `Plot`(왼쪽 축 44 · 위 16 · 아래 28 · 오른쪽 범례 88) · `Grid`(가로 눈금선만, 축 숫자는 눈금선 높이에 세로 가운데) · `Line`(Catmull-Rom 부드러운 선 2, 조절점 영역 안, 재사용 버퍼) · `End` · `Cursor`(점선 2 / 4) · `EventBand` · `Legend`(팀 색 막대 3 × 12) · `Gray`(회색 4단계) · `Bar` + `PaintBar`(끝 4 둥글게 · 바닥 0).
+- **아이콘**: `Icons` 에 새 45개(Redo · Edit · More · Play · Pause · Stop · Pointer · Up · ArrowLeft · ArrowRight · Home · Grid · List · Lines · Sliders · Window · Lock · Bell · Bug · Eye · Pulse · Trend · Bars · Calendar · Clock · Pin · Map · Road · Bus · User · Users · Flag · Trophy · Star · Shield · Bolt · Bulb · Volume · Music · Mail · Chat · Ticket · Coin · Flame · Heart) — 기존 14개와 합쳐 59개, 경로 글은 캔버스 글자 그대로. `Icons.Paint(경로, 칸, 색)` 이 칸 폭으로 크기 단계를 골라 획 2 로 그립니다.
+- **자가 검사**: `Check35.SelfCheck(check)` — 곡선 · 축 · 막대 · 숫자 자리 폭 · 상태 점 · 아이콘 59개 중복 0 등 27칸.
 
 ### 🧭 하단 툴바 · 서브 툴바 · 독 (`CSCommonUX.Toolbar` · `SubToolBar` · `Dockbar` · `SubDockBar`)
 
@@ -97,6 +117,14 @@
 ---
 
 ## 📝 변경 내역
+
+<details open>
+<summary><b>UX 3.5 변경 (2026-11-27)</b></summary>
+
+- **3.5 토큰 · 부품 추가(추가만):** 위 「3.5 토큰 · 부품」 절. 새 파일만 더하고 `Pal` · `Icons` 선언에 `partial` 한 단어씩, `CSCommon.projitems` 에 새 파일 줄만 더함 — 3.0 · 3.1 부품 · 툴바는 그대로라 모드는 서브모듈을 올려도 화면이 바뀌지 않음.
+- **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.5 로.
+
+</details>
 
 <details open>
 <summary><b>UX 3.0 변경 (2026-11-15)</b></summary>

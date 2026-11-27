@@ -36,8 +36,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.Arc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.Spinner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.Occlusion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.Num.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Imgui\Draw.Chart35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\Pal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Style\Pal.Role35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonDesign.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonDesign35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\CSCommonTheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Style\Look.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\CSCommonAtlas.cs" />
@@ -63,6 +67,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Gauge.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\IconButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Icons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Icons.Set35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\ListRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Look.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\MapPin.cs" />
@@ -100,6 +105,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\TrainTag.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Well.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\WindowHead.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Surface.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\StatusDot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Kpi.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Bars35.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\EmptyState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\RowItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Chart35.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Check35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Board.cs" />
   </ItemGroup>
 </Project>

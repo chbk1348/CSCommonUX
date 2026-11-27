@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CSCommonUX
 {
     /// <summary>컴포넌트 안에서 쓰는 선 아이콘(24 상자 SVG 경로).</summary>
-    public static class Icons
+    public static partial class Icons
     {
         public const string Minus = "M5 12h14";
         public const string Plus = "M12 5v14M5 12h14";
