@@ -6,7 +6,7 @@ namespace CSCommonUX
     /// CSCommonUX 3.5 치수 · 글 · 움직임 토큰(FIA 캔버스 '5.0 리뉴얼' R5Tok* 보드). 3.0 값(CSCommonDesign)은 그대로 두고 이름을 새로 둠.
     /// 4px 격자 — 예외는 1px 선 · 2px 맞춤 · 가운데 맞춤 홀수(점수 막대 6 / 3, 범례 막대 3 / 1.5)뿐. 다크 전용.
     /// </summary>
-    internal static class CSCommonDesign35
+    internal static partial class CSCommonDesign35
     {
         // ---- 간격 단계(이 밖 값은 쓰지 않음)
         public const float Step4 = 4f, Step8 = 8f, Step12 = 12f, Step16 = 16f, Step20 = 20f, Step24 = 24f, Step32 = 32f, Step40 = 40f, Step48 = 48f, Step56 = 56f, Step64 = 64f;
@@ -87,6 +87,11 @@ namespace CSCommonUX
         /// <summary>카드 · KPI 숫자 28 / 줄 36(사용자 결정 2026-11-27).</summary>
         public const float FontNumber = 28f, LineNumber = 36f;
         public const float FontHero = 48f, LineHero = 56f;
+
+        /// <summary>카드 숫자(.fig · .n28) 28 / 줄 32 — KPI 칸만 LineNumber 36(3.6, 탭 규격).</summary>
+        public const float LineFigure = 32f;
+        /// <summary>작은 숫자(.n20) 20 / 28 · 600(Draw.Num) — 피트 칸 · 팬층 · 통계 · 시설 값. 글(400)은 FontHeading.</summary>
+        public const float FontStat = 20f, LineStat = 28f;
 
         // ---- 움직임(곡선 하나 = Ease)
         /// <summary>호버 · 누름 · 토글 · 면 색 0.15초 · 메뉴 · 툴팁 0.2초 · 진입 0.3초(올라옴 8).</summary>

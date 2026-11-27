@@ -103,6 +103,52 @@ namespace CSCommonUX
             return row.y + h + HeadGap(kind);
         }
 
+        // ---- 3.6 머리 확장: 제목 앞 점 · 오른쪽 작은 버튼 · 점 붙은 meta 조각
+
+        /// <summary>머리 줄 칸(content 위, 높이 HeadH) — 오른쪽에 고르기 칸 · 버튼을 직접 놓을 때.</summary>
+        public static Rect HeadRow(Rect content, Kind kind) => new(content.x, content.y, content.width, HeadH(kind));
+
+        /// <summary>머리 — 제목 앞 점 8 → 8 → 제목(코션 · 개최 상태 · 트랙 카드). 오른쪽 meta 는 Head 와 같음. 몸이 시작하는 y 를 돌려줌.</summary>
+        public static float Head(Rect content, Kind kind, string title, string meta, Color dot, bool live = false)
+        {
+            var row = HeadRow(content, kind);
+            if (Draw.Repaint) StatusDot.Paint(new Vector2(row.x + D35.Dot * 0.5f, row.center.y), dot, live);
+            float inset = D35.Dot + D35.IconTextGap;
+            float metaW = string.IsNullOrEmpty(meta) ? 0f : Draw.NumWidth(meta, D35.FontCaption) + D35.IconTextGap;
+            Head(new Rect(content.x + inset, content.y, Mathf.Max(0f, content.width - inset - metaW), content.height), kind, title, null);
+            if (metaW > 0f && Draw.Repaint) Draw.Num(row, meta, D35.FontCaption, Pal.InkDim, TextAnchor.MiddleRight);
+            return row.y + row.height + HeadGap(kind);
+        }
+
+        /// <summary>
+        /// 머리 — 오른쪽에 작은 보조 버튼 하나(meta 대신, '전체 순위' · '전체 22명 보기'), dot 이 있으면 제목 앞 점. 버튼을 눌러 떼면 clicked. 몸이 시작하는 y 를 돌려줌.
+        /// </summary>
+        public static float Head(Rect content, Kind kind, string title, string action, out bool clicked, Color? dot = null)
+        {
+            var row = HeadRow(content, kind);
+            float right = row.xMax;
+            clicked = Button35.AtRight(ref right, row.center.y, action, Tone35.Secondary, default, default, null, true, true, null, kind);
+            var left = new Rect(content.x, content.y, Mathf.Max(0f, right - content.x), content.height);
+            return dot.HasValue ? Head(left, kind, title, null, dot.Value) : Head(left, kind, title, null);
+        }
+
+        /// <summary>
+        /// 점 붙은 meta 조각('●개인 최고' · '●5 / 5 충족'): 오른쪽 끝 right · 세로 가운데 cy 에 [점 8 → 8] 글 12 InkDim(숫자 자리 폭 같음)을 그리고
+        /// 다음 조각이 끝날 x(= 조각 왼쪽 − 8)를 돌려줌. 오른쪽 조각부터 차례로 부름. Head 는 meta 없이 부르고 그 머리 줄(HeadRow)에 놓음.
+        /// </summary>
+        public static float Meta(float right, float cy, string text, Color? dot = null)
+        {
+            float w = Mathf.Ceil(Draw.NumWidth(text ?? "", D35.FontCaption));
+            float x = right - w;
+            if (Draw.Repaint) Draw.Num(new Rect(x, Mathf.Round(cy - D35.LineCaption * 0.5f), w, D35.LineCaption), text, D35.FontCaption, Pal.InkDim, TextAnchor.MiddleRight);
+            if (dot.HasValue)
+            {
+                x -= D35.IconTextGap + D35.Dot;
+                StatusDot.Paint(new Vector2(x + D35.Dot * 0.5f, cy), dot.Value);
+            }
+            return x - D35.IconTextGap;
+        }
+
         /// <summary>꼬리 높이(위 여백 포함): 카드 · 히어로 16 + 40, 안쪽 칸 12 + 32, 모달 64, 빈 자리 · 바탕 0(꼬리 없음).</summary>
         public static float FootH(Kind kind) => kind switch
         {

@@ -59,5 +59,24 @@ namespace CSCommonUX
             Round(new Rect(0f, 0f, r.width, radius * 2f), c, radius);
             EndClip();
         }
+
+        /// <summary>
+        /// whole 을 둥글게 칠한 것 중 part 안만 그림(3.6): 쌓인 막대 조각은 바깥 끝만 둥글고 가운데는 각짐, 가로 막대는 오른쪽 끝만 둥긂.
+        /// 겹쳐 칠하지 않음(투명 색도 고르게).
+        /// </summary>
+        public static void RoundPart(Rect part, Rect whole, Color c, float radius)
+        {
+            if (!Repaint || c.a <= 0f || part.width <= 0f || part.height <= 0f) return;
+            BeginClip(part, Vector2.zero);
+            Round(new Rect(whole.x - part.x, whole.y - part.y, whole.width, whole.height), c, radius);
+            EndClip();
+        }
+
+        /// <summary>오른쪽 두 모서리만 둥근 채우기(가로 막대 차트 — 끝 radius, 시작 0).</summary>
+        public static void RoundRight(Rect r, Color c, float radius)
+        {
+            radius = Mathf.Min(radius, r.width, r.height * 0.5f);
+            RoundPart(r, new Rect(r.x - radius, r.y, r.width + radius, r.height), c, radius);
+        }
     }
 }

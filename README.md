@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.5.2
+# 🎨 CSCommon UX 3.6
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.5.2-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.6-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
@@ -53,6 +53,7 @@
 | `CSCommon/Style/CSCommonDesign35.cs` · `Style/Pal.Role35.cs` | 3.5 치수 · 글 · 움직임 토큰(`CSCommonDesign35`) · 역할 색(`Pal.Ground*` · `Ink*` · `Sem*` · `Chart*` · `Accent*`) — 다크 전용 |
 | `CSCommon/Imgui/Draw.Num.cs` · `Draw.Chart35.cs` | 3.5 숫자 글(600 · 자리 폭 같음) · 부드러운 선(`Draw.Smooth`) · 위만 둥근 막대(`Draw.RoundTop`) |
 | `CSCommon/UI/Components/Surface.cs` 외 | 3.5 부품 `Surface` · `StatusDot` · `Kpi` · `ScoreBar` · `StageTrack` · `EmptyState` · `RowItem` · `Chart35` · 아이콘 45개(`Icons.Set35.cs`) · 자가 검사 `Check35` |
+| `CSCommon/Style/CSCommonDesign35.Tabs.cs` · `.Layout.cs` · `UI/Components/Button35.cs` 외 | 3.6 탭 부품 치수 · 배치(열 폭 · 그림 크기) 토큰과 `Button35` · `Inputs35`(고르기 · 스위치 · 체크 · 폼 · 슬라이더 · 스테퍼) · `Tags35` · `Table35` · `Nav35`(탐색 줄 · 화면 머리 · 달력) · `Overlay35`(모달 · 확인 줄 · 토스트 · 툴팁 · 런처) · `Chat35` |
 | `CSCommon/DesignCheck.targets` | 모드 코드에 색 값 · 치수 숫자 · 직접 그린 IMGUI 부품이 늘면 빌드 오류(CSC001) |
 
 ---
@@ -116,11 +117,33 @@
 
 - `CSCommonOptionsPanel.LogoIcon`(SVG path, viewBox 24)을 넘기면 로고 그림이 없는 모드 머리에 28px 둥근 타일 + 아이콘이 붙음. 둘 다 없으면 자리를 비움(예전 빨강 "F1" 글 제거).
 
+### 🧩 3.6 탭 부품 (FIA 5.0 탭 화면 — 대시보드 · 서킷 · 레이스 · 팬 · 팀 · 설정)
+
+3.0 · 3.1 부품과 토큰은 그대로이고 **추가만** 했습니다. 3.5 부품(`Surface` · `StageTrack` · `RowItem` · `Chart35` · `Chip35` · `EmptyState`)은 오버로드 · 새 함수만 더해 기존 호출은 그대로입니다. 강조 · 강조 위 글은 모드가 넘깁니다.
+
+- **토큰**: 숫자 줄 `LineFigure` 32(카드 28/32, KPI 는 36 그대로) · 작은 숫자 `FontStat` · `LineStat` 20/28 600, 선 `ChartMuted`(.16) · `FocusLine`(.32) · `RefLine`(.48), 비 세기 `Rain1~4`, 서킷 그림 `MapPlate` · `MapPlateLine` · `MapGrid` · `MapPitLine` · `MapTrack` · `MapCorner` · `MapCornerLine` · `MapCornerInk` · `MapMissing` · `MapAttrMid` · `MapChip`. 부품 치수는 `CSCommonDesign35.Tabs.cs`, 열 폭 · 그림 크기는 `CSCommonDesign35.Layout.cs`(모드에 숫자 금지).
+- **`Button35`**(주 · 보조 · 고스트 · 위험, 40 · 좌우 16 / 작은 32 · 좌우 12, r8 · 글 14 · 아이콘 18 → 8, 누름 0.97 · 꺼짐 = 한 단 면 · InkDim · 초점 링 강조 2 · 바깥 2) · `IconButton35`(32 · 40 정사각) · `TextLink35`(14 → 4 → Right 16, 호버 InkTxt).
+- **입력**: `Segmented35`(판 40 · 칸 32 / 작은 32 · 칸 24 · 고른 칸 GroundRaised + 위 선, `Tiles` 등급 칸) · `Switch35`(40 × 24 · 손잡이 16 · 켜짐 강조 면) · `CheckBox35`(18 · r4) · `Field35`(폼 줄 56 · 라벨 96 · 값 칸 40 · 입력 칸 32) · `Select35`(264 × 56 · 목록은 3.0 Select) · `Slider35`(240 × 16 · 홈 4) · `Stepper35`(값 48 · 버튼 32 × 2).
+- **표시**: `Chip35.Plain`(점 없음 · 글 색 · 고정 폭) · `Chip35.Status(…, w)`(고정 폭 120) · `Chip35.Filter`(고르기 칩) · `Tag35`(번호 24 · 글 태그 · 차 번호 32 × 20) · `TyreBadge35`(원 20 · 테 1.5) · `Avatar35`(20 ~ 32 · 상태 점 · 봇 칸) · `Meter35`(가는 막대 8 · 4) · `StackBar35`(쌓인 · 몫 막대 12 · 조각 사이 2) · `HBar35`(가로 막대 20 · 끝 r4 · 세로 눈금 · 기준 점선) · `StageTrack`(칸 폭 비율 · 부분 채움 · 라벨 둘 · 섹터 칸 색).
+- **줄 · 표 · 머리**: `RowItem.Line`(한 줄 + 캡션 + 꺾쇠) · `Message`(56) · `Step`(44 · 됨 · 지금 · 남음) · `Status`(56 + 오른쪽 칸) · `Value`(24 ~ 44 값 줄) · `Table35`(칸 나누기 · 머리 · 선두 줄) · `Surface.Head`(제목 앞 점 · 오른쪽 작은 버튼) · `Surface.Meta`(점 붙은 meta) · `PageHead35`(56) · `NavRow35`(44 / 36).
+- **겹치는 판**: `Modal35`(덮개 Scrim35 · 판 560 / 720 · 머리 56 · 바닥 64 · 0.3초 8 올라옴) · `Notice35`(44) · `Toast35`(52 · r16 · 정보 · 성공 · 경고 · 오류) · `Tooltip35`(32 · 등록은 `CSCommonToolbar.Tip35`) · `Launcher35`(원 40 · 점 8 / 6).
+- **달력 · 채팅 · 차트**: `Calendar35`(7열 · 작은 날 32 · 주 120 · 일정 칩 5꼴) · `Chat35`(날짜 줄 · 메시지 · 반응 태그 · 봇 · 알림 줄 · 입력 중) · `ChatInput35`(48) · `EmptyState.Row`(가로형) · `Chart35.Grid(…, ticks, top, bottom)` · `StageLine` · 세로 막대 묶음(`BarPlot` · `BarGrid` · `BarSlot` · `BarValue` · `FutureBar` · `BarLegend`).
+- **아이콘**: 15개 더함(Alert · Article · Doc · Hash · Branch · Smile · Swap · Toolkit · Camera · Cloud · Chequer · Circle · NoteCircle · Rings · BusFront) — 74개, 획 2 하나.
+- **자가 검사**: 칸 폭 비율 · 섹터 색 · 쌓인 막대 조각 · 가로 막대 · 표 칸 · 달력 · 모달 · 막대 묶음 · 스위치 · 채팅 띠 · 열 폭 합 · 토큰 4px 격자 18칸 더함(47칸).
+
 ---
 
 ## 📝 변경 내역
 
 <details open>
+<summary><b>UX 3.6 변경 (2026-11-27)</b></summary>
+
+- **탭 부품 추가(추가만):** 위 「3.6 탭 부품」 절. 3.0 · 3.1 부품 · 토큰은 그대로라 다른 모드 화면은 바뀌지 않음. `CSCommonToolbar` 에는 3.5 툴팁 등록(`Tip35`)과 그리기 분기만 더함 — 기존 `Tip` 은 그대로.
+- **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.6 으로.
+
+</details>
+
+<details>
 <summary><b>UX 3.5.2 변경 (2026-11-27)</b></summary>
 
 - **창 틀 호버 · 누름(추가만):** `WindowFrame35.Close` · `Series` 안 고른 칸에 마우스를 올리면 놓인 면보다 한 단 밝은 면(`Surface.Raise` — 새 색 토큰 없음), 누르면 0.97배.

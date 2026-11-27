@@ -3,7 +3,7 @@ using UnityEngine;
 namespace CSCommonUX
 {
     /// <summary>
-    /// 3.5 공통 아이콘 새 45개(기존 14 와 합쳐 59, FIA 캔버스 R5TokIcon). 상자 24 · 획 2 하나 · 끝 · 이음 둥글게 · 채운 아이콘 없음.
+    /// 3.5 공통 아이콘 새 45개(기존 14 와 합쳐 59, FIA 캔버스 R5TokIcon) + 3.6 탭 화면 15개(74). 상자 24 · 획 2 하나 · 끝 · 이음 둥글게 · 채운 아이콘 없음.
     /// 경로 글은 원본 글자 그대로(공백 하나도 바꾸지 않음 — 옮긴 모드의 화소 · 굽기 캐시 키가 같게). 그릴 때는 Paint.
     /// </summary>
     public static partial class Icons
@@ -105,6 +105,38 @@ namespace CSCommonUX
         public const string Flame = "M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 2 3 4 1-2 1-4 0-7z";
         /// <summary>좋아요.</summary>
         public const string Heart = "M12 20s-7-4.4-7-9.6A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.4C19 15.6 12 20 12 20z";
+
+        // ---- 3.6 탭 화면(대시보드 · 서킷 · 레이스 · 팬 · 팀 · 설정 보드 경로 그대로)
+        /// <summary>오류(원 + 느낌표 — 지우기 모달 · 오류 토스트).</summary>
+        public const string Alert = "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 8v5M12 16h.01";
+        /// <summary>기사.</summary>
+        public const string Article = "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5";
+        /// <summary>문서(경기 규칙).</summary>
+        public const string Doc = "M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4";
+        /// <summary>채널(해시).</summary>
+        public const string Hash = "M5 9h14M5 15h14M10 4L8 20M16 4l-2 16";
+        /// <summary>갈래(스레드).</summary>
+        public const string Branch = "M6 4v8a4 4 0 0 0 4 4h8M14 12l4 4-4 4";
+        /// <summary>웃는 얼굴(반응).</summary>
+        public const string Smile = "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.5 14a4 4 0 0 0 7 0M9 9.5h.01M15 9.5h.01";
+        /// <summary>맞바꿈(이적).</summary>
+        public const string Swap = "M7 7h12l-3-3M17 17H5l3 3";
+        /// <summary>서킷 툴킷(런처).</summary>
+        public const string Toolkit = "M7 21L10 3M17 21L14 3M12 7v2M12 13v2";
+        /// <summary>카메라(선두 따라가기).</summary>
+        public const string Camera = "M3 7.5h11.5v9H3zM14.5 10.5 20.5 7v10l-6-3.5";
+        /// <summary>구름(날씨).</summary>
+        public const string Cloud = "M7 18a4.5 4.5 0 1 1 .9-8.9A6 6 0 0 1 19.5 11 3.5 3.5 0 0 1 18 18z";
+        /// <summary>체커 깃발(지난 레이스).</summary>
+        public const string Chequer = "M4 21V4M4 4h6v6H4M10 4h6v6h-6M10 10h6v6h-6M4 10h6v6H4";
+        /// <summary>빈 원(할 일 — 길잡이 · 시설 하나로, 반지름 8).</summary>
+        public const string Circle = "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z";
+        /// <summary>참고(원 + 느낌표).</summary>
+        public const string NoteCircle = "M12 8v5M12 16v.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z";
+        /// <summary>겹침(두 원).</summary>
+        public const string Rings = "M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0";
+        /// <summary>버스 앞모습(도시 셔틀).</summary>
+        public const string BusFront = "M6 17h12M7 17V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11M7 11h10M8 20l1-3M16 20l-1-3";
 
         /// <summary>
         /// 3.5 아이콘 그리기: 칸 폭으로 크기 단계(14 미만 12 · 17 미만 16 · 21 미만 18 · 그 밖 24)를 골라 칸 가운데에 획 2(상자 24 기준, 화면 획 = 크기 ÷ 12)로 그림.

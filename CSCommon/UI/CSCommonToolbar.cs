@@ -349,6 +349,21 @@ namespace CSCommonUX
                 tip = text;
                 // 잘라 그리는 영역(스크롤 칸 · 타일) 안의 칸이면 맨 위 논리 좌표로 — 말풍선은 영역 밖 맨 위에서 그리므로 안 그러면 스크롤 · 영역 시작점만큼 어긋남
                 tipAt = Draw.ToRoot(r);
+                tip35 = false;
+            }
+        }
+
+        /// <summary>지금 툴팁이 3.5 모양인지(Tip35 로 등록).</summary>
+        static bool tip35;
+
+        /// <summary>3.5 툴팁 등록(Tooltip35 모양 — 한 줄 · GroundRaised · 앵커 아래 8). 그리는 곳 · 지연은 Tip 과 같음(DrawTip).</summary>
+        public static void Tip35(Rect r, string text)
+        {
+            if (!string.IsNullOrEmpty(text) && Draw.Hover(r) && !Draw.Holding)
+            {
+                tip = text;
+                tipAt = Draw.ToRoot(r);
+                tip35 = true;
             }
         }
 
@@ -365,7 +380,8 @@ namespace CSCommonUX
             if (tip != tipShown || now - tipSeen > 0.1f) { tipShown = tip; tipSince = now; }
             tipSeen = now;
             if (!Draw.Repaint || now - tipSince < CSCommonUX.Tooltip.Delay) return;
-            CSCommonUX.Tooltip.Draw(tipAt, tip);
+            if (tip35) Tooltip35.Draw(tipAt, tip);
+            else CSCommonUX.Tooltip.Draw(tipAt, tip);
         }
     }
 }

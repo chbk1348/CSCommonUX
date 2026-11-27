@@ -33,5 +33,24 @@ namespace CSCommonUX
             if (!button) return new Rect(r.x, y + Height(hasDesc, false), r.width, 0f);
             return new Rect(r.x, y + Height(hasDesc, false) + D35.EmptyBtnGap, r.width, D35.BtnH);
         }
+
+        /// <summary>
+        /// 가로형(뉴스 · 채팅 · 기사 없음): r 가운데 한 줄 · 사이 16 — 원 40(아이콘 18 InkDim) · 글 14 InkTxt · [작은 보조 버튼 32, 폭 buttonW].
+        /// 버튼 자리를 돌려줌(buttonW ≤ 0 이면 폭 0) — 버튼은 부르는 쪽이 Button35 로 그 칸에.
+        /// </summary>
+        public static Rect Row(Rect r, string icon, string text, float buttonW = 0f)
+        {
+            float tw = Mathf.Ceil(Draw.TextWidth(text ?? "", D35.FontBody));
+            float total = D35.EmptyCircle + D35.GroupGap + tw + (buttonW > 0f ? D35.GroupGap + buttonW : 0f);
+            float x = Mathf.Round(r.center.x - total * 0.5f), cy = r.center.y, rad = D35.EmptyCircle * 0.5f;
+            if (Draw.Repaint)
+            {
+                Draw.Dot(new Vector2(x + rad, cy), rad, Pal.GroundRaised);
+                Draw.Icon(icon, new Rect(x + rad - D35.IconM * 0.5f, cy - D35.IconM * 0.5f, D35.IconM, D35.IconM), Pal.InkDim, D35.IconBox, D35.IconLine);
+                Draw.Text(new Rect(x + D35.EmptyCircle + D35.GroupGap, Mathf.Round(cy - D35.LineBody * 0.5f), tw + 2f, D35.LineBody), text, D35.FontBody, Pal.InkTxt);
+            }
+            float bx = x + D35.EmptyCircle + D35.GroupGap + tw + D35.GroupGap;
+            return buttonW > 0f ? new Rect(bx, Mathf.Round(cy - D35.BtnSmallH * 0.5f), buttonW, D35.BtnSmallH) : new Rect(bx, cy, 0f, 0f);
+        }
     }
 }

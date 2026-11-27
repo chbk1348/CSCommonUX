@@ -60,5 +60,26 @@ namespace CSCommonUX
 
         /// <summary>확인 상자 · 모달 덮개(rgba(5,6,8,.62)).</summary>
         public static readonly Color Scrim35 = new(5f / 255f, 6f / 255f, 8f / 255f, 0.62f);
+
+        // ---- 3.6 탭 부품 선 세기(#ECEEF2 위 알파)
+        /// <summary>지난 막대 · 단계 끝 점선 · 남은 라운드 테(16%).</summary>
+        public static readonly Color ChartMuted = new(236f / 255f, 238f / 255f, 242f / 255f, 0.16f);
+        /// <summary>고른 칩 · 초점 칸 · 고른 등급 칸 안쪽 테(32%).</summary>
+        public static readonly Color FocusLine = new(236f / 255f, 238f / 255f, 242f / 255f, 0.32f);
+        /// <summary>기준 점선(WEC 최소 45분)(48%).</summary>
+        public static readonly Color RefLine = new(236f / 255f, 238f / 255f, 242f / 255f, 0.48f);
+
+        // ---- 비 세기 4단계(약 → 강, 레이더 · 강수 막대 · 젖은 노면)
+        public static readonly Color Rain1 = Draw.Hex("#4A6290"), Rain2 = Draw.Hex("#7090C8"), Rain3 = Draw.Hex("#9BB5E8"), Rain4 = Draw.Hex("#C6D8FF");
+
+        // ---- 서킷 그림 3.5(모드 CircuitMap 이 씀 · 다크 전용)
+        /// <summary>그림 판 면(#0B0D10) · 판 안쪽 선 · 격자 · 피트 레인 점선 · 트랙 몸.</summary>
+        public static readonly Color MapPlate = Draw.Hex("#0B0D10"), MapPlateLine = Draw.Hex("#1F232A"), MapGrid = Draw.Hex("#161A20"), MapPitLine = Draw.Hex("#8A929E"), MapTrack = Draw.Hex("#262A32");
+        /// <summary>코너 원 면 · 선 · 번호 글.</summary>
+        public static readonly Color MapCorner = Draw.Hex("#1B1E24"), MapCornerLine = Draw.Hex("#343A44"), MapCornerInk = Draw.Hex("#C9CFD8");
+        /// <summary>트랙 없음 선(고르기 mini) · 매력 가운데 단계(50% 이상).</summary>
+        public static readonly Color MapMissing = Draw.Hex("#4B525C"), MapAttrMid = Draw.Hex("#C1AAAE");
+        /// <summary>그림 위 글 칩 면(레이더 · #0B0D10 86%).</summary>
+        public static readonly Color MapChip = new(11f / 255f, 13f / 255f, 16f / 255f, 0.86f);
     }
 }

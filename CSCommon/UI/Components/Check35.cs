@@ -78,7 +78,7 @@ namespace CSCommonUX
             int consts = 0;
             foreach (var f in typeof(Icons).GetFields(BindingFlags.Public | BindingFlags.Static))
                 if (f.IsLiteral && f.FieldType == typeof(string)) { consts++; seen.Add((string)f.GetValue(null)); }
-            check(consts == 59 && seen.Count == 59, "icons 59 unique");
+            check(consts == 74 && seen.Count == 74, "icons 74 unique");
             check(Near(EmptyState.Height(false, false), 72f) && Near(EmptyState.Height(true, true), 152f), "empty height");
             check(Near(Surface.Height(Surface.Kind.Card, 100f, true, true), 240f) && Near(Surface.Inset(new Rect(0f, 0f, 560f, 300f), Surface.Kind.Modal).height, 300f), "surface height");
             check(Surface.Raise(Surface.Kind.Card) == Pal.GroundRaised && Surface.Raise(Surface.Kind.Hero) == Pal.GroundCard, "surface raise");
@@ -89,6 +89,80 @@ namespace CSCommonUX
                 && Near(WindowFrame35.BodyBottom(false), 88f) && Near(WindowFrame35.BodyBottom(true), 148f), "window frame body");
             // 호버 면 = 놓인 면보다 한 단: 닫기(머리 GroundPage 위) Card · 시리즈 칸(판 GroundCard 위) Raised
             check(WindowFrame35.CloseHover == Pal.GroundCard && WindowFrame35.CellHover == Pal.GroundRaised, "window hover faces");
+
+            // ---- 3.6 탭 부품
+            // 단계 막대 칸 폭 비율(7 : 8 : 15, 폭 308 · 사이 4) · 비율 없으면 같은 폭
+            var trk = new Rect(0f, 0f, 308f, 8f);
+            var wts = new float[] { 7f, 8f, 15f };
+            var k0 = StageTrack.Cell(trk, 3, wts, 0); var k1 = StageTrack.Cell(trk, 3, wts, 1); var k2 = StageTrack.Cell(trk, 3, wts, 2);
+            check(Near(k0.width, 70f) && Near(k1.x, 74f) && Near(k1.width, 80f) && Near(k2.x - k1.xMax, 4f) && Near(k2.xMax, 308f), "track weighted cells");
+            check(Near(StageTrack.Cell(trk, 3, null, 2).x, StageTrack.Cell(trk, 3, 2).x), "track weights null = even");
+            check(StageTrack.SectorColor(SectorMark.Pending, Color.red) == Pal.Hairline && StageTrack.SectorColor(SectorMark.Done, Color.red) == Pal.ChartGray4
+                && StageTrack.SectorColor(SectorMark.Personal, Color.red) == Pal.SemGood && StageTrack.SectorColor(SectorMark.Overall, Color.red) == Color.red, "sector colors");
+
+            // 쌓인 막대 조각: 사이 2 · 마지막 채운 조각은 끝까지 · 0 조각 뒤엔 틈 없음 · max 로 나눔
+            var bar100 = new Rect(0f, 0f, 100f, 12f);
+            var sv = new float[] { 50f, 30f, 20f };
+            check(Near(StackBar35.Piece(bar100, sv, 3, 0f, 0).width, 48f) && Near(StackBar35.Piece(bar100, sv, 3, 0f, 1).x, 50f)
+                && Near(StackBar35.Piece(bar100, sv, 3, 0f, 2).xMax, 100f), "stack pieces gap 2");
+            check(Near(StackBar35.Piece(bar100, new float[] { 50f, 0f, 0f }, 3, 0f, 0).width, 100f), "stack last piece no gap");
+            check(Near(StackBar35.Piece(bar100, new float[] { 50f, 50f }, 2, 200f, 1).xMax, 50f) && Near(StackBar35.Piece(bar100, sv, 3, 0f, 7).width, 0f), "stack max and range");
+
+            // 가로 막대: 0분 = 112 · 150분 = 1012 에서 45분 = 382(캔버스 WEC 기준선 자리)
+            var hp = new Rect(112f, 24f, 900f, 112f);
+            check(Near(HBar35.Bar(hp, 40f, 45f, 150f).xMax, 382f) && Near(HBar35.Bar(hp, 40f, 45f, 150f).height, 20f) && Near(HBar35.Bar(hp, 40f, 999f, 150f).xMax, 1012f), "hbar length");
+
+            // 표 칸: 고정 폭 + 남는 칸 하나 · 사이 12
+            var cols = new Rect[4];
+            Table35.Cols(new Rect(0f, 0f, 700f, 36f), new float[] { 40f, -1f, 80f, 72f }, cols);
+            check(Near(cols[1].x, 52f) && Near(cols[1].width, 472f) && Near(cols[3].xMax, 700f) && Near(cols[2].x - cols[1].xMax, 12f), "table columns");
+
+            // 달력: 7열 · 요일 줄 28 · 주 120 · 칩 자리(날 글 아래) · 칸에 칩 3개
+            var grid = new Rect(0f, 0f, 840f, 28f + 120f * 6f);
+            var day = Calendar35.Cell(grid, 6, 8);
+            check(Near(day.x, 120f) && Near(day.y, 148f) && Near(day.width, 120f) && Near(day.height, 120f), "calendar cell");
+            check(Near(Calendar35.ChipRect(day, 0).y, 180f) && Near(Calendar35.ChipRect(day, 1).y, 208f) && Near(Calendar35.ChipRect(day, 0).x, 122f) && Calendar35.ChipsFit(day) == 3, "calendar chips");
+
+            // 모달: 높이 = 56 + 몸 + 64 · 바닥 버튼 줄 = 바닥 64 가운데 · 좌우 24
+            var modal = new Rect(0f, 0f, CSCommonDesign35.ModalW, CSCommonDesign35.ModalFixedH);
+            var foot = Modal35.Foot(modal);
+            check(Near(Modal35.Height(280f), CSCommonDesign35.ModalFixedH) && Near(foot.y, 348f) && Near(foot.x, 24f) && Near(foot.width, 512f), "modal foot");
+            check(Near(Modal35.Place(new Rect(0f, 0f, 1180f, 920f), 400f).x, 310f) && Near(Modal35.Place(new Rect(0f, 0f, 1180f, 920f), 400f).y, 260f), "modal place");
+
+            // 막대 묶음 영역(축 48 + 8 · 위 16 · 아래 28) · 막대 자리 사이 12
+            var bp = Chart35.BarPlot(new Rect(0f, 0f, 700f, 236f));
+            check(Near(bp.x, 56f) && Near(bp.y, 16f) && Near(bp.yMax, 208f) && Near(bp.xMax, 700f), "bar plot area");
+            check(Near(Chart35.BarSlot(bp, 4, 3).xMax, bp.xMax) && Near(Chart35.BarSlot(bp, 4, 1).x - Chart35.BarSlot(bp, 4, 0).xMax, 12f), "bar slots");
+
+            // 스위치: 꺼짐 손잡이 왼쪽 4 · 켜짐 왼쪽 20 · 높이 안 가운데(24 = 4 + 16 + 4)
+            check(Near(CSCommonDesign35.SwitchW - CSCommonDesign35.SwitchInset - CSCommonDesign35.SwitchKnob, 20f)
+                && Near(CSCommonDesign35.SwitchH, CSCommonDesign35.SwitchKnob + CSCommonDesign35.SwitchInset * 2f), "switch knob travel");
+            // 채팅 띠 = 창 몸 보이는 높이 856 − 위 20 − 서브 안전 148 · 세 칸 + 선 둘(양옆 16)이 내용 폭 1140
+            check(Near(CSCommonDesign35.ChatBandH, CSCommonDesign.WindowH - CSCommonDesign35.WindowHeadH - CSCommonDesign35.WindowBodyPad - WindowFrame35.BodyBottom(true))
+                && Near(CSCommonDesign35.ChatServerW + CSCommonDesign35.ChatSideW + 574f + (16f * 2f + 1f) * 2f, CSCommonDesign35.ContentW), "chat band fits body");
+            // 배치: 두 열 · 세 열이 내용 폭 1140 에 맞음
+            const float G = CSCommonDesign35.GroupGap, W = CSCommonDesign35.ContentW;
+            check(Near(CSCommonDesign35.ColWide + G + CSCommonDesign35.ColNarrow, W) && Near(CSCommonDesign35.ColMain + G + CSCommonDesign35.ColSide, W)
+                && Near(CSCommonDesign35.ColChart + G + CSCommonDesign35.ColChartSide, W) && Near(CSCommonDesign35.ColNav + G + CSCommonDesign35.ColDetail, W)
+                && Near(CSCommonDesign35.ColStandings + CSCommonDesign35.ColThird * 2f + G * 2f, W)
+                && Near(CSCommonDesign35.ColNascarStand + CSCommonDesign35.ColNascarStage + CSCommonDesign35.ColNascarSide + G * 2f, W)
+                && Near(CSCommonDesign35.ColFanZone + CSCommonDesign35.ColVolunteer + CSCommonDesign35.ColNearby + G * 2f, W)
+                && Near(CSCommonDesign35.ColGuideSlot + G + CSCommonDesign35.ColGuideLast, W) && Near(CSCommonDesign35.ColHalf * 2f + G, CSCommonDesign35.ColWide)
+                && Near(CSCommonDesign35.ColDetailHalf * 2f + G, CSCommonDesign35.ColDetail), "layout columns fill 1140");
+
+            // 4px 격자: 2 이하(선 · 맞춤) · 시간 · 배율 · 글 크기 · 캔버스 값 그대로 둔 이름 말고는 모두 4 의 배수
+            var offGrid = new HashSet<string> { "DotMainTop", "DotMainRight", "DotSubRight", "ScoreBarH", "ScoreBarR", "ChartXLabelY", "LegendBarW", "IconM", "CheckBox",
+                "ToastPadRAction", "LauncherDotOn", "RainValueGap", "MapCarR", "MapNameHalo", "MapNameRise", "ColDetailHalf", "SettingColW", "MapDirectorH", "MapMiniW", "RowSlotBand" };
+            string stray = null;
+            foreach (var f in typeof(CSCommonDesign35).GetFields(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (!f.IsLiteral || f.FieldType != typeof(float)) continue;
+                string n = f.Name;
+                float v = (float)f.GetValue(null);
+                if (v <= 2f || offGrid.Contains(n) || n.StartsWith("Font") || n.Contains("Alpha") || n.Contains("Dur") || n.Contains("Scale") || n.Contains("Blink") || n.Contains("Delay")) continue;
+                if (Mathf.Abs(v / 4f - Mathf.Round(v / 4f)) > 1e-4f) { stray = n; break; }
+            }
+            check(stray == null, "tokens on 4px grid" + (stray == null ? "" : " — " + stray));
         }
     }
 }
