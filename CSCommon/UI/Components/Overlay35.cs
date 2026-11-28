@@ -129,7 +129,7 @@ namespace CSCommonUX
 
         /// <summary>
         /// 비켜 가기(3.7): 화면 아래 자리가 avoidA · avoidB(아래 독 · 안내 칸 등, 빈 칸이면 무시)와 겹치면 겹친 칸 위 8 로 올려 그림.
-        /// Bounds 는 올린 자리. 겹침 판정은 AvoidY.
+        /// Bounds 는 올린 자리. 겹침 판정은 AvoidY. 그 자리는 앞 판(Draw.Block) — 먼저 그린 창 단추가 토스트 밑 클릭 · 호버를 받지 않음(3.8.1).
         /// </summary>
         public static void Flush(Rect avoidA, Rect avoidB)
         {
@@ -140,7 +140,11 @@ namespace CSCommonUX
             float y = AvoidY(x, Mathf.Round(Draw.Height - CSCommonDesign.ToastSafeGap - D35.ToastH), w, D35.ToastH, avoidA, avoidB);
             var r = new Rect(x, y, w, D35.ToastH);
             Bounds = r;
-            if (In(r, sTitle, sDesc, sKind, sAction, sAccent, sOnAccent, age, sLife))
+            Draw.Block(r);
+            Draw.BeginOverlay();
+            bool hit = In(r, sTitle, sDesc, sKind, sAction, sAccent, sOnAccent, age, sLife);
+            Draw.EndOverlay();
+            if (hit)
             {
                 var click = sClick;
                 sAt = -100f;

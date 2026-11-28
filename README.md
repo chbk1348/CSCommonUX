@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.8
+# 🎨 CSCommon UX 3.8.1
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.8-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.8.1-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
@@ -170,6 +170,14 @@
 ## 📝 변경 내역
 
 <details open>
+<summary><b>UX 3.8.1 변경 (2026-11-28)</b></summary>
+
+- **토스트 앞 판 등록(고침):** `Toast35.Flush` 가 그린 자리를 `Draw.Block` 으로 앞 판에 남기고 그 안에서 그림. 토스트 밑에 있던 창 단추 · 목록이 토스트 위 클릭 · 호버를 함께 받던 것을 막음 — 토스트 단추는 그대로 눌림. 시그니처 · 치수 · 색은 그대로.
+- **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.8.1 로.
+
+</details>
+
+<details>
 <summary><b>UX 3.8 변경 (2026-11-28)</b></summary>
 
 - **방송 카드 토큰 · 순위 변화 칸 · 포디움 칸 · B5 결승 뒤 장면 토큰(추가만):** 위 「3.8 방송 카드 토큰」 절. 기존 부품 · 토큰 · 시그니처는 그대로라 다른 모드 화면은 바뀌지 않음.
