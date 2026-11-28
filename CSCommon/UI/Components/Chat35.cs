@@ -99,6 +99,30 @@ namespace CSCommonUX
             Draw.Text(new Rect(x, c.y + D35.LineCaption + D35.KpiGap, w, BodyH(body, w)), body, D35.FontBody, muted ? Pal.InkSub : Pal.InkTxt, false, TextAnchor.UpperLeft, true);
         }
 
+        /// <summary>관리봇 한 줄 높이 52: 바깥 위아래 4 + 안쪽 칸(위아래 12 + 글 20).</summary>
+        public static float BotLineH => D35.Step4 * 2f + D35.InnerPadY * 2f + D35.LineBody;
+
+        /// <summary>
+        /// 관리봇 한 줄(3.7 · Bot 변형): 메시지 칸 r(높이 BotLineH) 안 바깥 위아래 4 · 왼쪽 44 → 안쪽 칸(GroundRaised r8 · 위아래 12 · 좌우 16) 안 가로 사이 8:
+        /// Shield 16 InkDim · 이름 14 InkSub · 글 14 InkSub(한 줄 — 넘치면 문구를 줄임).
+        /// </summary>
+        public static void BotLine(Rect r, string name, string body)
+        {
+            var box = new Rect(r.x + D35.ChatIndent, r.y + D35.Step4, Mathf.Max(0f, r.width - D35.ChatIndent), Mathf.Max(0f, r.height - D35.Step4 * 2f));
+            var c = Surface.Frame(box, Surface.Kind.Inner, Surface.Kind.Card);
+            if (!Draw.Repaint) return;
+            float x = c.x, top = Mathf.Round(c.center.y - D35.LineBody * 0.5f);
+            Draw.Icon(Icons.Shield, new Rect(x, Mathf.Round(c.center.y - D35.IconS * 0.5f), D35.IconS, D35.IconS), Pal.InkDim, D35.IconBox, D35.IconLine);
+            x += D35.IconS + D35.IconTextGap;
+            if (!string.IsNullOrEmpty(name))
+            {
+                float nw = Mathf.Ceil(Draw.TextWidth(name, D35.FontBody));
+                Draw.Text(new Rect(x, top, nw + 2f, D35.LineBody), name, D35.FontBody, Pal.InkSub);
+                x += nw + D35.IconTextGap;
+            }
+            Draw.Text(new Rect(x, top, Mathf.Max(0f, c.xMax - x), D35.LineBody), body, D35.FontBody, Pal.InkSub);
+        }
+
         /// <summary>한 줄 알림(들여쓰기 44 · 아이콘 16 → 8 → 글 14): 스레드 생김 36(Branch InkDim · 글 InkSub, 스레드 이름 name 만 InkTxt) · 지운 글 28(Trash · InkDim).</summary>
         public static void Note(Rect r, string icon, string lead, string name, string tail, Color ink)
         {
@@ -137,14 +161,22 @@ namespace CSCommonUX
     /// </summary>
     public static class ChatInput35
     {
-        public static string Paint(Rect r, string value, int maxLength, string placeholder, Color accent, Color onAccent, string reactTip, string sendTip, out bool send, out bool react, string name = null)
+        public static string Paint(Rect r, string value, int maxLength, string placeholder, Color accent, Color onAccent, string reactTip, string sendTip, out bool send, out bool react, string name = null) =>
+            Core(r, value, maxLength, placeholder, accent, onAccent, true, reactTip, sendTip, out send, out react, name);
+
+        /// <summary>반응 버튼 없는 꼴(3.7 — 반응 동작이 없는 화면): 글 칸 · 주 아이콘 버튼 32('보내기')만. 글 칸은 보내기 버튼 앞 4 까지.</summary>
+        public static string Paint(Rect r, string value, int maxLength, string placeholder, Color accent, Color onAccent, string sendTip, out bool send, string name = null) =>
+            Core(r, value, maxLength, placeholder, accent, onAccent, false, null, sendTip, out send, out _, name);
+
+        static string Core(Rect r, string value, int maxLength, string placeholder, Color accent, Color onAccent, bool reactions, string reactTip, string sendTip, out bool send, out bool react, string name)
         {
             name ??= Field35.NameOf(Look.Key(r, "chatin35"));
             value ??= "";
             if (Draw.Repaint) Draw.Box(r, Pal.GroundRaised, Pal.Hairline, D35.RadiusCtrl);
             float b = D35.BtnSmallH, by = Mathf.Round(r.center.y - b * 0.5f);
             var sendR = new Rect(r.xMax - D35.Step8 - b, by, b, b);
-            var reactR = new Rect(sendR.x - D35.Step4 - b, by, b, b);
+            // 반응 없는 꼴은 반응 칸 폭 0 · 사이 0(글 칸이 보내기 앞 4 까지)
+            var reactR = reactions ? new Rect(sendR.x - D35.Step4 - b, by, b, b) : new Rect(sendR.x, by, 0f, b);
             var ev = Event.current;
             bool focus = GUI.GetNameOfFocusedControl() == name;
             send = focus && ev.type == EventType.KeyDown && (ev.keyCode == KeyCode.Return || ev.keyCode == KeyCode.KeypadEnter) && !Draw.Composing && value.Length > 0;
@@ -160,7 +192,7 @@ namespace CSCommonUX
                 GUI.FocusControl(null);
                 GUIUtility.keyboardControl = 0;
             }
-            react = IconButton35.Paint(reactR, Icons.Smile, reactTip, Tone35.Ghost, D35.IconM, true, Surface.Kind.Card);
+            react = reactions && IconButton35.Paint(reactR, Icons.Smile, reactTip, Tone35.Ghost, D35.IconM, true, Surface.Kind.Card);
             send |= Button35.Paint(sendR, null, Tone35.Primary, accent, onAccent, Icons.ArrowRight, v.Length > 0, false, sendTip, Surface.Kind.Card);
             return v;
         }

@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.6
+# 🎨 CSCommon UX 3.7
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.6-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.7-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
@@ -131,11 +131,39 @@
 - **아이콘**: 15개 더함(Alert · Article · Doc · Hash · Branch · Smile · Swap · Toolkit · Camera · Cloud · Chequer · Circle · NoteCircle · Rings · BusFront) — 74개, 획 2 하나.
 - **자가 검사**: 칸 폭 비율 · 섹터 색 · 쌓인 막대 조각 · 가로 막대 · 표 칸 · 달력 · 모달 · 막대 묶음 · 스위치 · 채팅 띠 · 열 폭 합 · 토큰 4px 격자 18칸 더함(47칸).
 
+### 🧩 3.7 탭 토큰 · 꼴 모음 (FIA 5.0 탭 구현 뒤 — 모드가 '정본에 필요'로 남긴 것)
+
+3.6 과 같이 **추가만** 했습니다(기존 시그니처는 그대로, 선택 인자 · 오버로드만). 이름은 쓰임으로 짓고, 같은 쓰임은 탭이 달라도 하나로 합쳤습니다.
+
+- **열 폭**(`CSCommonDesign35.Layout.cs`, 칸 사이 `TableColGap` 12): 순위 `ColRank` 28 · 숫자 `ColNumXs` 32 · `ColNumS` 44 · `ColNum` 48 · 변화 `ColMove` 36 · 짧은 값 `ColShort` 40 · `ColCarWide` 56 · `ColStage` 64 · 간격 `ColGap` 72 · 랩 시간 `ColLapTime` 80 · 약어 `ColCode` 72 · 이름표 `ColLabel` 88 · 이름 `ColNameS` 80 · `ColNameM` 112 · `ColName` 120 · `ColNameL` 128 · `ColNameXl` 152 · 시각 칸 `ColGutter` 56.
+- **칸 · 그림 크기**: 줄 오른쪽 칸 `RowSideW` 120 · 카드 오른쪽 칸 `CardSideW` 240 · 차트 넓은 범례 `ChartLegendWideW` 120 · 뉴스 히어로 `NewsHeroH` 296 · 팩트 첫 칸 `FactLeadW` 236 · 포디움 `PodiumRowW` 420 · `PodiumFirstH` 160 / `SecondH` 132 / `ThirdH` 116 · 라운드 점 `RoundDot` 20.
+- **부품 치수 · 투명도**(`CSCommonDesign35.Tabs.cs`): 1px 선 `HairW` · 강수 그림 `RainChartH` 140 · `RainPlotH` 100 · 섹터 줄 `RowSector` 64 · `SectorNameW` 24 · 비 세기 `RainAlpha1~4` .28 / .38 / .5 / .56 · 지도 띠 `MapBandAlpha` .22 · `MapBandSoftAlpha` .16 · 순위 변화 차트 `BumpAxisW` 64 · `BumpTop` 12 · `BumpLegendX` 16 / `Wide` 24 · 차트 캡션 줄 `ChartNoteH` 20 · 기사 링크 줄 `RowArticle` 64 · 참가자 줄 `RowMember` 32 · 설명 머리 `PageHeadDescH` 52 · 값 줄 `RowLabelMinW` 240 · `RowValueShare` .4 · 토스트 비켜 가기 `ToastAvoidGap` 8.
+- **서킷 그림 치수**(모드 `CircuitMap` 이 씀, 캔버스 값 — 격자 밖 홀수는 자가 검사 예외): `MapTrackW` 18 · `MapTrackMiniW` 6 · `MapLineW` 5 · `MapLineMiniW` 2 · `MapStartW` 3 · `MapCornerD` 20 · `MapPitW` 2 · `MapPitDash` / `Gap` 6 · `MapGridRow` 80 · `MapGridCol` 100 · `MapMiniR` 12 · 핀 `MapPinW` 44 × `MapPinH` 22 · `MapPinR` 11 · 머리 글 `FontMapHead` 15 · 범례 `MapLegendW` 14 × `MapLegendH` 4 · `MapLegendGap` 6.
+- **색**: `Pal.LauncherRing`(게임 화면 위 런처 점 둘레 — GroundDeep 과 같은 값).
+- **꼴 · 옵션**
+  - `ChatInput35.Paint(r, value, max, placeholder, accent, onAccent, sendTip, out send, name)` — 반응 버튼 없는 입력 줄.
+  - `Toast35.Flush(avoidA, avoidB)` · `Toast35.AvoidY` — 아래 독 · 안내 칸과 겹치면 그 위 8 로 비켜 그림(`Flush()` 는 그대로).
+  - `EmptyState.Height(…, smallButton)` · `EmptyState.Paint(…, smallButton)` — 버튼 줄 32(작은 보조 버튼).
+  - `Surface.Head(…, titleInk:)` — 제목 색 인자(기본 · 점 붙은 머리). 위치 인자 `Color` 는 점 붙은 머리로 가니 이름으로 넘깁니다.
+  - `PageHead35.Desc(r, title, desc, meta)` — 설명 붙은 머리 52(제목 20 → 4 → 설명 14 · 오른쪽 meta).
+  - `Tooltip35.Float(anchor, text, show)` — 창 밖(게임 화면 위 런처) 툴팁, 그 자리에서 0.4초 머물면 그림.
+  - `Chat35.BotLine(r, name, body)` · `Chat35.BotLineH` 52 — 관리봇 한 줄(왼쪽 44 · Shield 16 · 이름 · 글 InkSub).
+- **자가 검사**: 토스트 비켜 가기 · 작은 버튼 빈 상태 · 관리봇 줄 · 설명 머리 · 열 폭 단계 · 투명도 단계 · 포디움 · 강수 그림 · 런처 둘레 6칸 더함(53칸), 새 토큰도 4px 격자 검사에 들어갑니다.
+
 ---
 
 ## 📝 변경 내역
 
 <details open>
+<summary><b>UX 3.7 변경 (2026-11-28)</b></summary>
+
+- **탭 토큰 · 꼴 모음(추가만):** 위 「3.7 탭 토큰 · 꼴 모음」 절. 기존 부품 · 토큰 · 시그니처는 그대로라 다른 모드 화면은 바뀌지 않음.
+- **넣지 않음:** `Menu35`(펼친 목록 3.5) — 캔버스 규격이 없어 다음으로 미룸(지금은 3.0 `Select` 목록).
+- **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.7 로.
+
+</details>
+
+<details>
 <summary><b>UX 3.6 변경 (2026-11-27)</b></summary>
 
 - **탭 부품 추가(추가만):** 위 「3.6 탭 부품」 절. 3.0 · 3.1 부품 · 토큰은 그대로라 다른 모드 화면은 바뀌지 않음. `CSCommonToolbar` 에는 3.5 툴팁 등록(`Tip35`)과 그리기 분기만 더함 — 기존 `Tip` 은 그대로.

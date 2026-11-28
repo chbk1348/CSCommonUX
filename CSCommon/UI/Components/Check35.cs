@@ -150,9 +150,30 @@ namespace CSCommonUX
                 && Near(CSCommonDesign35.ColGuideSlot + G + CSCommonDesign35.ColGuideLast, W) && Near(CSCommonDesign35.ColHalf * 2f + G, CSCommonDesign35.ColWide)
                 && Near(CSCommonDesign35.ColDetailHalf * 2f + G, CSCommonDesign35.ColDetail), "layout columns fill 1140");
 
+            // ---- 3.7 탭 토큰 · 꼴
+            // 토스트 비켜 가기: 겹치면 그 칸 위 8 · 올린 자리에서 다른 칸과 또 겹치면 그 위 · 안 겹치면 그대로 · 빈 칸 무시
+            var dock = new Rect(400f, 900f, 400f, 60f);
+            var hint = new Rect(500f, 820f, 200f, 60f);
+            check(Near(Toast35.AvoidY(450f, 932f, 300f, 52f, dock, default), 840f) && Near(Toast35.AvoidY(450f, 932f, 300f, 52f, dock, hint), 760f)
+                && Near(Toast35.AvoidY(0f, 932f, 300f, 52f, dock, hint), 932f) && Near(Toast35.AvoidY(450f, 932f, 300f, 52f, new Rect(400f, 900f, 0f, 60f), default), 932f), "toast avoid");
+            // 빈 상태 작은 버튼 32 · 관리봇 한 줄 52 · 설명 머리 52
+            check(Near(EmptyState.Height(true, true, true), 144f) && Near(EmptyState.Height(true, true), 152f), "empty small button");
+            check(Near(Chat35.BotLineH, 52f) && Near(CSCommonDesign35.PageHeadDescH, CSCommonDesign35.LineHeading + CSCommonDesign35.KpiGap + CSCommonDesign35.LineBody), "bot line · desc head 52");
+            // 열 폭 단계가 오름(이름 · 숫자) · 비 세기 투명도 오름 · 지도 띠 옅게 < 보통
+            check(CSCommonDesign35.ColNameS < CSCommonDesign35.ColLabel && CSCommonDesign35.ColLabel < CSCommonDesign35.ColNameM && CSCommonDesign35.ColNameM < CSCommonDesign35.ColName
+                && CSCommonDesign35.ColName < CSCommonDesign35.ColNameL && CSCommonDesign35.ColNameL < CSCommonDesign35.ColNameXl
+                && CSCommonDesign35.ColRank < CSCommonDesign35.ColNumXs && CSCommonDesign35.ColNumXs < CSCommonDesign35.ColShort && CSCommonDesign35.ColShort < CSCommonDesign35.ColNumS
+                && CSCommonDesign35.ColNumS < CSCommonDesign35.ColNum, "column ladders rise");
+            check(CSCommonDesign35.RainAlpha1 < CSCommonDesign35.RainAlpha2 && CSCommonDesign35.RainAlpha2 < CSCommonDesign35.RainAlpha3 && CSCommonDesign35.RainAlpha3 < CSCommonDesign35.RainAlpha4
+                && CSCommonDesign35.RainAlpha4 < 1f && CSCommonDesign35.MapBandSoftAlpha < CSCommonDesign35.MapBandAlpha, "alpha steps rise");
+            // 포디움: 1위 > 2위 > 3위 · 강수 막대 위 100 이 그림 140 안 · 런처 둘레 = 바탕 GroundDeep
+            check(CSCommonDesign35.PodiumFirstH > CSCommonDesign35.PodiumSecondH && CSCommonDesign35.PodiumSecondH > CSCommonDesign35.PodiumThirdH
+                && CSCommonDesign35.RainPlotH < CSCommonDesign35.RainChartH && Pal.LauncherRing == Pal.GroundDeep, "podium · rain chart · launcher ring");
+
             // 4px 격자: 2 이하(선 · 맞춤) · 시간 · 배율 · 글 크기 · 캔버스 값 그대로 둔 이름 말고는 모두 4 의 배수
             var offGrid = new HashSet<string> { "DotMainTop", "DotMainRight", "DotSubRight", "ScoreBarH", "ScoreBarR", "ChartXLabelY", "LegendBarW", "IconM", "CheckBox",
-                "ToastPadRAction", "LauncherDotOn", "RainValueGap", "MapCarR", "MapNameHalo", "MapNameRise", "ColDetailHalf", "SettingColW", "MapDirectorH", "MapMiniW", "RowSlotBand" };
+                "ToastPadRAction", "LauncherDotOn", "RainValueGap", "MapCarR", "MapNameHalo", "MapNameRise", "ColDetailHalf", "SettingColW", "MapDirectorH", "MapMiniW", "RowSlotBand",
+                "MapTrackW", "MapTrackMiniW", "MapLineW", "MapStartW", "MapPitDash", "MapPitGap", "MapPinH", "MapPinR", "MapLegendW", "MapLegendGap" };
             string stray = null;
             foreach (var f in typeof(CSCommonDesign35).GetFields(BindingFlags.Public | BindingFlags.Static))
             {

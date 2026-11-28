@@ -66,6 +66,19 @@ namespace CSCommonUX
             }
             return r.x + tw + D35.PageHeadGap;
         }
+
+        /// <summary>
+        /// 설명 붙은 머리(3.7 — 설정 오른쪽 머리, 카드 아님): r 위부터 높이 PageHeadDescH 52 = 제목 20/28 InkTxt → 4 → 설명 14/20 InkSub.
+        /// meta('항목 12개')는 제목 줄 오른쪽 12 InkDim(숫자 자리 폭 같음) — 제목은 meta 앞 16 까지.
+        /// </summary>
+        public static void Desc(Rect r, string title, string desc, string meta = null)
+        {
+            if (!Draw.Repaint) return;
+            float mw = string.IsNullOrEmpty(meta) ? 0f : Mathf.Ceil(Draw.NumWidth(meta, D35.FontCaption));
+            if (mw > 0f) Draw.Num(new Rect(r.xMax - mw, r.y, mw, D35.LineHeading), meta, D35.FontCaption, Pal.InkDim, TextAnchor.MiddleRight);
+            Draw.Text(new Rect(r.x, r.y, Mathf.Max(0f, r.width - (mw > 0f ? mw + D35.PageHeadItemGap : 0f)), D35.LineHeading), title, D35.FontHeading, Pal.InkTxt);
+            if (!string.IsNullOrEmpty(desc)) Draw.Text(new Rect(r.x, r.y + D35.LineHeading + D35.KpiGap, r.width, D35.LineBody), desc, D35.FontBody, Pal.InkSub);
+        }
     }
 
     /// <summary>날 칸 꼴: 다른 달 · 이 달 · 오늘.</summary>

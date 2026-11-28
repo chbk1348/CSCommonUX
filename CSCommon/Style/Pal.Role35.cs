@@ -81,5 +81,9 @@ namespace CSCommonUX
         public static readonly Color MapMissing = Draw.Hex("#4B525C"), MapAttrMid = Draw.Hex("#C1AAAE");
         /// <summary>그림 위 글 칩 면(레이더 · #0B0D10 86%).</summary>
         public static readonly Color MapChip = new(11f / 255f, 13f / 255f, 16f / 255f, 0.86f);
+
+        // ---- 3.7
+        /// <summary>게임 화면 위 런처 점 둘레 2(캔버스 없음 — 가장 가까운 바탕 GroundDeep 과 같은 값).</summary>
+        public static readonly Color LauncherRing = Draw.Hex("#0E1014");
     }
 }

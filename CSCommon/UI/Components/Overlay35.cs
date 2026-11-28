@@ -125,13 +125,20 @@ namespace CSCommonUX
             return string.IsNullOrEmpty(action) ? w + D35.ToastPadR : w + D35.ToastGap + Button35.Width(null, action, true) + D35.ToastPadRAction;
         }
 
-        public static void Flush()
+        public static void Flush() => Flush(default, default);
+
+        /// <summary>
+        /// 비켜 가기(3.7): 화면 아래 자리가 avoidA · avoidB(아래 독 · 안내 칸 등, 빈 칸이면 무시)와 겹치면 겹친 칸 위 8 로 올려 그림.
+        /// Bounds 는 올린 자리. 겹침 판정은 AvoidY.
+        /// </summary>
+        public static void Flush(Rect avoidA, Rect avoidB)
         {
             Bounds = default;
             float age = Time.realtimeSinceStartup - sAt;
             if (string.IsNullOrEmpty(sTitle) || age >= sLife) return;
-            float w = Width(sTitle, sDesc, sAction);
-            var r = new Rect(Mathf.Round((Draw.Width - w) * 0.5f), Mathf.Round(Draw.Height - CSCommonDesign.ToastSafeGap - D35.ToastH), w, D35.ToastH);
+            float w = Width(sTitle, sDesc, sAction), x = Mathf.Round((Draw.Width - w) * 0.5f);
+            float y = AvoidY(x, Mathf.Round(Draw.Height - CSCommonDesign.ToastSafeGap - D35.ToastH), w, D35.ToastH, avoidA, avoidB);
+            var r = new Rect(x, y, w, D35.ToastH);
             Bounds = r;
             if (In(r, sTitle, sDesc, sKind, sAction, sAccent, sOnAccent, age, sLife))
             {
@@ -140,6 +147,20 @@ namespace CSCommonUX
                 click?.Invoke();
             }
         }
+
+        /// <summary>토스트 위 y: (x, y, w, h) 가 a · b 와 겹치면 겹친 칸 위 8 로 — 올린 자리에서 한 번 더 봐 둘 중 높은 것 위(3.0 Toast.Flush 와 같은 규칙).</summary>
+        public static float AvoidY(float x, float y, float w, float h, Rect a, Rect b)
+        {
+            for (int pass = 0; pass < 2; pass++)
+            {
+                if (Overlaps(a, x, y, w, h)) y = a.y - D35.ToastAvoidGap - h;
+                if (Overlaps(b, x, y, w, h)) y = b.y - D35.ToastAvoidGap - h;
+            }
+            return Mathf.Round(y);
+        }
+
+        static bool Overlaps(Rect a, float x, float y, float w, float h) =>
+            a.width > 0f && a.height > 0f && a.xMax > x && a.x < x + w && a.yMax > y && a.y < y + h;
 
         /// <summary>r(높이 52)에 그림 — 버튼을 눌러 떼면 true. age · life 를 넘기면 들어오고 사라지는 움직임.</summary>
         public static bool In(Rect r, string title, string desc, Toast35Kind kind, string action, Color accent, Color onAccent, float age = float.MaxValue, float life = float.MaxValue)
@@ -193,6 +214,22 @@ namespace CSCommonUX
             var r = new Rect(x, above ? anchor.y - D35.TipGap - h : anchor.yMax + D35.TipGap, w, h);
             CSCommonUX.Draw.Box(r, Pal.GroundRaised, Pal.Hairline, D35.RadiusCtrl);
             CSCommonUX.Draw.Text(r, text, D35.FontCaption, Pal.InkTxt, false, TextAnchor.MiddleCenter);
+        }
+
+        static string floatTip;
+        static float floatSince, floatSeen;
+
+        /// <summary>
+        /// 창 밖 툴팁(3.7 — 게임 화면 위 런처처럼 툴바 DrawTip 이 그리지 않는 곳): anchor 위에 0.4초 머물면 그 자리에서 Draw.
+        /// anchor 를 그린 뒤 OnGUI 맨 끝 쪽에서 부름. show = false(끌기 중 등)면 그리지 않음. 다른 글로 옮기거나 0.1초 넘게 안 보이면 다시 셈(DrawTip 과 같음).
+        /// </summary>
+        public static void Float(Rect anchor, string text, bool show = true)
+        {
+            if (!show || string.IsNullOrEmpty(text) || !CSCommonUX.Draw.Hover(anchor) || CSCommonUX.Draw.Holding) return;
+            float now = Time.unscaledTime;
+            if (text != floatTip || now - floatSeen > 0.1f) { floatTip = text; floatSince = now; }
+            floatSeen = now;
+            if (now - floatSince >= D35.TipDelay) Draw(anchor, text);
         }
     }
 

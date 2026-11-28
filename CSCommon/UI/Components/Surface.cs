@@ -83,8 +83,9 @@ namespace CSCommonUX
         /// <summary>
         /// 머리(제목 줄)를 그리고 몸이 시작하는 y 를 돌려줌. content = Frame 이 돌려준 칸.
         /// 카드 · 히어로 · 바탕: 제목 16 InkTxt + 오른쪽 meta 12 InkDim(숫자 자리 폭 같음). 빈 자리: 제목 InkSub. 안쪽 칸: 라벨 12 InkDim. 모달: 제목 20 InkTxt.
+        /// titleInk(3.7) = 제목 색을 판 꼴 기본 대신(고를 수 없는 카드 제목 InkSub 등) — 위치 인자 Color 는 점 붙은 Head 로 가니 이름(titleInk:)으로 넘김.
         /// </summary>
-        public static float Head(Rect content, Kind kind, string title, string meta = null)
+        public static float Head(Rect content, Kind kind, string title, string meta = null, Color? titleInk = null)
         {
             float h = HeadH(kind);
             var row = new Rect(content.x, content.y, content.width, h);
@@ -94,9 +95,9 @@ namespace CSCommonUX
                 var titleRow = new Rect(row.x, row.y, row.width - metaW, h);
                 switch (kind)
                 {
-                    case Kind.Inner: Draw.Text(titleRow, title, D35.FontCaption, Pal.InkDim); break;
-                    case Kind.Modal: Draw.Text(titleRow, title, D35.FontHeading, Pal.InkTxt); break;
-                    default: Draw.Text(titleRow, title, D35.FontTitle, kind == Kind.Slot ? Pal.InkSub : Pal.InkTxt); break;
+                    case Kind.Inner: Draw.Text(titleRow, title, D35.FontCaption, titleInk ?? Pal.InkDim); break;
+                    case Kind.Modal: Draw.Text(titleRow, title, D35.FontHeading, titleInk ?? Pal.InkTxt); break;
+                    default: Draw.Text(titleRow, title, D35.FontTitle, titleInk ?? (kind == Kind.Slot ? Pal.InkSub : Pal.InkTxt)); break;
                 }
                 if (metaW > 0f) Draw.Num(row, meta, D35.FontCaption, Pal.InkDim, TextAnchor.MiddleRight);
             }
@@ -108,14 +109,14 @@ namespace CSCommonUX
         /// <summary>머리 줄 칸(content 위, 높이 HeadH) — 오른쪽에 고르기 칸 · 버튼을 직접 놓을 때.</summary>
         public static Rect HeadRow(Rect content, Kind kind) => new(content.x, content.y, content.width, HeadH(kind));
 
-        /// <summary>머리 — 제목 앞 점 8 → 8 → 제목(코션 · 개최 상태 · 트랙 카드). 오른쪽 meta 는 Head 와 같음. 몸이 시작하는 y 를 돌려줌.</summary>
-        public static float Head(Rect content, Kind kind, string title, string meta, Color dot, bool live = false)
+        /// <summary>머리 — 제목 앞 점 8 → 8 → 제목(코션 · 개최 상태 · 트랙 카드). 오른쪽 meta 는 Head 와 같음. 몸이 시작하는 y 를 돌려줌. titleInk(3.7) = 제목 색.</summary>
+        public static float Head(Rect content, Kind kind, string title, string meta, Color dot, bool live = false, Color? titleInk = null)
         {
             var row = HeadRow(content, kind);
             if (Draw.Repaint) StatusDot.Paint(new Vector2(row.x + D35.Dot * 0.5f, row.center.y), dot, live);
             float inset = D35.Dot + D35.IconTextGap;
             float metaW = string.IsNullOrEmpty(meta) ? 0f : Draw.NumWidth(meta, D35.FontCaption) + D35.IconTextGap;
-            Head(new Rect(content.x + inset, content.y, Mathf.Max(0f, content.width - inset - metaW), content.height), kind, title, null);
+            Head(new Rect(content.x + inset, content.y, Mathf.Max(0f, content.width - inset - metaW), content.height), kind, title, null, titleInk);
             if (metaW > 0f && Draw.Repaint) Draw.Num(row, meta, D35.FontCaption, Pal.InkDim, TextAnchor.MiddleRight);
             return row.y + row.height + HeadGap(kind);
         }

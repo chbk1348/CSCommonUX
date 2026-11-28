@@ -118,5 +118,35 @@ namespace CSCommonUX
         public const float FrameCellH = 28f, LapStripH = 16f, LapStripGap = 2f, LapStripR = 2f, SpanBarH = 16f, NowMarkW = 2f, RainAxisW = 52f, RainBarW = 32f, RainValueGap = 6f, ForecastAlpha = 0.5f;
         /// <summary>맵 위 차 점: 반지름 약 5.2 · 테 약 1.7 · 이름 테 약 3.4 · 점 위 약 10(캔버스 viewBox 0.431 배 값).</summary>
         public const float MapCarR = 5.2f, MapCarRing = 1.7f, MapNameHalo = 3.4f, MapNameRise = 10f;
+
+        // ---- 3.7 탭 토큰(8b ③ 탭 구현 뒤 모음 — Docs 8b 규격 '정본에 더할 것')
+        /// <summary>1px 선 굵기(Hairline 구분선 · 테 · 눈금선).</summary>
+        public const float HairW = 1f;
+        /// <summary>강수 막대 그림 높이 140 · 막대 위 높이 100(4 mm/h × 25) · 섹터 줄 64 · 섹터 이름 칸 24.</summary>
+        public const float RainChartH = 140f, RainPlotH = 100f, RowSector = 64f, SectorNameW = 24f;
+        /// <summary>비 세기 4단계 투명도(Rain1 ~ 4 위, 약 → 강 .28 · .38 · .5 · .56 — 캔버스 값).</summary>
+        public const float RainAlpha1 = 0.28f, RainAlpha2 = 0.38f, RainAlpha3 = 0.5f, RainAlpha4 = 0.56f;
+        /// <summary>지도 위 강조 띠 투명도: 보통 .22(트랙 카드) · 옅게 .16(큰 지도).</summary>
+        public const float MapBandAlpha = 0.22f, MapBandSoftAlpha = 0.16f;
+        /// <summary>
+        /// 서킷 그림(모드 CircuitMap 이 씀 — 캔버스 값, 격자 밖 홀수 그대로): 트랙 몸 18 · mini 6 · 가운데 선 5 · mini 2 · 출발선 3 · 코너 원 20 ·
+        /// 피트 선 2 · 대시 6 · 틈 6 · 격자 가로 선 사이 80 · 세로 선 사이 100 · mini 판 r12.
+        /// </summary>
+        public const float MapTrackW = 18f, MapTrackMiniW = 6f, MapLineW = 5f, MapLineMiniW = 2f, MapStartW = 3f, MapCornerD = 20f,
+            MapPitW = 2f, MapPitDash = 6f, MapPitGap = 6f, MapGridRow = 80f, MapGridCol = 100f, MapMiniR = 12f;
+        /// <summary>매력 핀 44 × 22 · r11 · 그림 머리 이름 글 15(서킷 그림 안만 — 3.5 글 여섯 크기 밖 캔버스 값) · 범례 막대 14 × 4 · 막대 → 이름 6.</summary>
+        public const float MapPinW = 44f, MapPinH = 22f, MapPinR = 11f, FontMapHead = 15f, MapLegendW = 14f, MapLegendH = 4f, MapLegendGap = 6f;
+        /// <summary>순위 변화 차트: 눈금 글 칸 64(영역 왼쪽) · 위 12 · 선 끝 이름표 영역 오른쪽 + 16(겹치면 + 24).</summary>
+        public const float BumpAxisW = 64f, BumpTop = 12f, BumpLegendX = 16f, BumpLegendXWide = 24f;
+        /// <summary>차트 아래 캡션 줄 20(위 4 + 캡션 16 — '랩 뒤라 빠졌어요', 켜져도 높이 그대로).</summary>
+        public const float ChartNoteH = 20f;
+        /// <summary>기사 링크 줄(관련 뉴스) 64 · 참가자 줄(음성 채널) 32.</summary>
+        public const float RowArticle = 64f, RowMember = 32f;
+        /// <summary>설명 붙은 머리(PageHead35.Desc) 52 = 제목 28 + 4 + 설명 20.</summary>
+        public const float PageHeadDescH = 52f;
+        /// <summary>값 줄 이름 칸이 이보다 좁으면 조작을 작은 꼴로(고르기 칸 · 슬라이더 → 스테퍼) 240 · 목록 값 글이 줄 폭에서 차지할 몫 0.4.</summary>
+        public const float RowLabelMinW = 240f, RowValueShare = 0.4f;
+        /// <summary>토스트 비켜 가기: 겹친 칸 위 8(3.0 FloatingGap 과 같은 값).</summary>
+        public const float ToastAvoidGap = 8f;
     }
 }
