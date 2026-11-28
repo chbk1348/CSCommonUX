@@ -148,5 +148,19 @@ namespace CSCommonUX
         public const float RowLabelMinW = 240f, RowValueShare = 0.4f;
         /// <summary>토스트 비켜 가기: 겹친 칸 위 8(3.0 FloatingGap 과 같은 값).</summary>
         public const float ToastAvoidGap = 8f;
+
+        // ---- 3.8 방송 카드(FIA 캔버스 R5BcLayout · R5BcBattle · R5BcPit · R5BcDelta — 게임 화면 1920 × 1080 논리 px)
+        /// <summary>방송 카드 폭 400 · 화면 오른쪽 여백 24 · 화면 아래 여백 120(카드 아래 맞춤).</summary>
+        public const float CastCardW = 400f, CastEdge = 24f, CastBottom = 120f;
+        /// <summary>카드 높이: 배틀 252 · 피트 스톱 212. 카드 바꿈 이동 8(앞 카드 내려가며 나감 · 다음 카드 올라오며 들어옴, 각 DurEnter).</summary>
+        public const float CastBattleH = 252f, CastPitH = 212f, CastSwapShift = 8f;
+        /// <summary>배틀 카드: 두 차 줄 · 타이어 줄 양쪽 칸 120 · 번호 태그 폭 24 · 간격 추이 칸 64 · 그 안 라벨 칸 96.</summary>
+        public const float CastSideW = 120f, CastTagW = 24f, CastSparkH = 64f, CastSparkLabelW = 96f;
+        /// <summary>피트 스톱 카드 안쪽 칸: 정지 120 · 타이어 · 순위 112(사이 BtnGap 8).</summary>
+        public const float CastStopW = 120f, CastCellW = 112f;
+        /// <summary>퀄리 델타 바 320 × 76(r16 · 안쪽 위아래 12 · 좌우 16) · 랩 패널과 사이 8 · 델타 글 칸 80 · 막대 끝 값 ±0.5초.</summary>
+        public const float DeltaBarW = 320f, DeltaBarH = 76f, DeltaGap = 8f, DeltaValueW = 80f, DeltaRange = 0.5f;
+        /// <summary>순위 변화 칸(Move35): 아이콘 → 수 2.</summary>
+        public const float MoveGap = 2f;
     }
 }

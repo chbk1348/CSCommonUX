@@ -87,6 +87,14 @@ namespace CSCommonUX
             Draw.Dot(p, D35.ChartEndR - D35.ChartEndRing * 0.5f, accent);
         }
 
+        /// <summary>3.8 놓인 면이 GroundCard 가 아닐 때(배틀 카드 간격 추이 — 안쪽 칸 GroundRaised): 반지름 4 · 테두리 1 ring(SVG r4 stroke 1).</summary>
+        public static void End(Vector2 p, Color accent, Color ring)
+        {
+            if (!Draw.Repaint) return;
+            Draw.Dot(p, D35.ChartEndR + D35.HairW * 0.5f, ring);
+            Draw.Dot(p, D35.ChartEndR - D35.HairW * 0.5f, accent);
+        }
+
         /// <summary>
         /// 선 끝 이름표(세로 가운데 = 그 선 끝 y): 팀 색 막대 3 × 12(x = 영역 오른쪽 + 8) + 이름 12(x = + 16).
         /// ink: 강조 계열 InkTxt · 나머지 InkSub · 선 없는 기준(선두) InkDim. 막대 색 = 팀 색(선 색 아님).

@@ -160,6 +160,29 @@ namespace CSCommonUX
             t = Mathf.Clamp01(t);
             if (t > 0f) Draw.Round(new Rect(r.x, r.y, Mathf.Max(r.height, r.width * t), r.height), fill, rad);
         }
+
+        /// <summary>
+        /// 3.8 ± 막대 채움 칸(R5BcDelta): 가운데 0 · 끝 ±range · 음수는 가운데에서 왼쪽으로 · 양수는 오른쪽으로(넘으면 끝까지). 0 이면 폭 0.
+        /// </summary>
+        public static Rect SignedFill(Rect track, float v, float range)
+        {
+            float half = track.width * 0.5f, mid = track.x + half;
+            float w = range > 0f ? Mathf.Min(Mathf.Abs(v) / range, 1f) * half : 0f;
+            return new Rect(v < 0f ? mid - w : mid, track.y, w, track.height);
+        }
+
+        /// <summary>
+        /// 3.8 ± 막대(퀄리 델타 — 줄 r 높이 16): 홈 TrackH 8 · r4(home) 세로 가운데 · 채움 SignedFill(fill) · 가운데 표시 NowMarkW 2 × 줄 높이 InkDim.
+        /// </summary>
+        public static void Signed(Rect r, float v, float range, Color fill, Color home)
+        {
+            if (!Draw.Repaint) return;
+            var track = new Rect(r.x, Mathf.Round(r.center.y - D35.TrackH * 0.5f), r.width, D35.TrackH);
+            Draw.Round(track, home, D35.TrackR);
+            var f = SignedFill(track, v, range);
+            if (f.width > 0f) Draw.Round(f, fill, Mathf.Min(D35.TrackR, f.width * 0.5f));
+            Draw.Round(new Rect(Mathf.Round(r.center.x - D35.NowMarkW * 0.5f), r.y, D35.NowMarkW, r.height), Pal.InkDim, D35.NowMarkW * 0.5f);
+        }
     }
 
     /// <summary>

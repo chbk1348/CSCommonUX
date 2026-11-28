@@ -57,6 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Bracket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Button.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Card.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Cast35.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Cells.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Check.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Components\Chip.cs" />

@@ -39,6 +39,22 @@ namespace CSCommonUX
             return w;
         }
 
+        /// <summary>
+        /// 3.8 아이콘 글 태그(R5BcBattle '오버테이크 모드'): 높이 24 · 좌우 8 · r4 · 아이콘 12(iconInk) → 4 → 글 12 InkTxt(400). centerX = 태그 가운데 · 폭을 돌려줌.
+        /// </summary>
+        public static float IconLabel(float centerX, float cy, string icon, Color iconInk, string text, Color face)
+        {
+            float w = D35.TagLabelPadX * 2f + D35.IconXs + D35.LinkGap + Mathf.Ceil(Draw.TextWidth(text ?? "", D35.FontCaption));
+            if (!Draw.Repaint) return w;
+            var r = new Rect(Mathf.Round(centerX - w * 0.5f), Mathf.Round(cy - D35.TagH * 0.5f), w, D35.TagH);
+            Draw.Round(r, face, D35.RadiusTag);
+            float x = r.x + D35.TagLabelPadX;
+            Draw.Icon(icon, new Rect(x, Mathf.Round(cy - D35.IconXs * 0.5f), D35.IconXs, D35.IconXs), iconInk, D35.IconBox, D35.IconLine);
+            x += D35.IconXs + D35.LinkGap;
+            Draw.Text(new Rect(x, r.y, r.xMax - x, r.height), text, D35.FontCaption, Pal.InkTxt);
+            return w;
+        }
+
         /// <summary>차 번호 칸 32 × 20 · 글 12 600 InkTxt. 면: NASCAR GroundRaised · WEC 팀 색 40%(TeamFace).</summary>
         public static void Car(float x, float cy, string number, Color face)
         {

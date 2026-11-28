@@ -3,14 +3,14 @@
 
 <div align="center">
 
-# 🎨 CSCommon UX 3.7
+# 🎨 CSCommon UX 3.8
 
 ### 시티즈: 스카이라인 모드 공용 UI · 디자인 정본
 
 **모드 9개가 같은 모양 · 같은 치수로 그려지게 합니다.**<br>
 색 · 치수 토큰과 버튼 · 입력 칸 · 모달 · 툴바 부품을 한곳에 두고, 모드는 git 서브모듈로 가져다 씁니다.
 
-![UX](https://img.shields.io/badge/UX-3.7-2ED4BF?style=for-the-badge)
+![UX](https://img.shields.io/badge/UX-3.8-2ED4BF?style=for-the-badge)
 ![License](https://img.shields.io/badge/라이선스-수정·배포%20금지-C62828?style=for-the-badge)
 ![Mods](https://img.shields.io/badge/사용%20모드-9개-5CC8FF?style=for-the-badge)
 
@@ -150,11 +150,33 @@
   - `Chat35.BotLine(r, name, body)` · `Chat35.BotLineH` 52 — 관리봇 한 줄(왼쪽 44 · Shield 16 · 이름 · 글 InkSub).
 - **자가 검사**: 토스트 비켜 가기 · 작은 버튼 빈 상태 · 관리봇 줄 · 설명 머리 · 열 폭 단계 · 투명도 단계 · 포디움 · 강수 그림 · 런처 둘레 6칸 더함(53칸), 새 토큰도 4px 격자 검사에 들어갑니다.
 
+### 📺 3.8 방송 카드 토큰 · 순위 변화 칸 · 포디움 칸 (FIA 5.0 방송 오버레이 B1 · B2 · B3 · B5)
+
+3.7 과 같이 **추가만** 했습니다(기존 시그니처는 그대로, 오버로드 · 새 부품만). 값은 FIA 캔버스 R5BcLayout · R5BcBattle · R5BcPit · R5BcDelta · R5BcPost 의 게임 화면 1920 × 1080 논리 px 그대로입니다.
+
+- **방송 카드 토큰**(`CSCommonDesign35.Tabs.cs`): 카드 폭 `CastCardW` 400 · 화면 오른쪽 `CastEdge` 24 · 화면 아래 `CastBottom` 120(아래 맞춤) · 높이 배틀 `CastBattleH` 252 · 피트 스톱 `CastPitH` 212 · 카드 바꿈 이동 `CastSwapShift` 8 · 양쪽 칸 `CastSideW` 120 · 번호 태그 `CastTagW` 24 · 간격 추이 칸 `CastSparkH` 64 · 라벨 칸 `CastSparkLabelW` 96 · 피트 안쪽 칸 `CastStopW` 120 · `CastCellW` 112.
+- **퀄리 델타 바 토큰**: `DeltaBarW` 320 × `DeltaBarH` 76 · 랩 패널과 사이 `DeltaGap` 8 · 델타 글 칸 `DeltaValueW` 80 · 막대 끝 값 `DeltaRange` ±0.5초 · 변화 칸 아이콘 → 수 `MoveGap` 2.
+- **부품**
+  - `Move35.Paint(r, change, count)` · `Move35.Icon(change)` · `Move35.Ink(change)` — 순위 변화 칸(폭 `ColMove` 36 · 아이콘 12 → 2 → 수 12 · 오름 Up SemGood · 내림 Chevron SemBad · 그대로 Minus InkDim, 수 없음). 방송 판은 Icon · Ink 만 골라 씁니다.
+  - `Podium35.Slot(left, bottom, place, w, gap, first, second, third)` · `Podium35.Column(place)` — 포디움 칸 자리(2 · 1 · 3위 차례 · 폭 같음 · 바닥 맞춤). 판 · 글은 부르는 쪽 룩으로 그립니다.
+  - `Meter35.Signed(r, v, range, fill, home)` · `Meter35.SignedFill(track, v, range)` — ± 막대(가운데 0 · 홈 8 r4 · 가운데 표시 2 InkDim).
+  - `Tag35.IconLabel(centerX, cy, icon, iconInk, text, face)` — 아이콘 글 태그 24(좌우 8 · 아이콘 12 → 4 → 글 12).
+  - `Chart35.End(p, accent, ring)` — 놓인 면이 GroundCard 가 아닐 때 선 끝 표식(반지름 4 · 테 1).
+- **자가 검사**: 배틀 카드 252 · 피트 카드 212 · 델타 바 320 × 76 칸 합 · ± 막대 채움 · 순위 변화 칸 · 포디움 칸 자리 6칸 더함(59칸), 새 토큰도 4px 격자 검사에 들어갑니다.
+
 ---
 
 ## 📝 변경 내역
 
 <details open>
+<summary><b>UX 3.8 변경 (2026-11-28)</b></summary>
+
+- **방송 카드 토큰 · 순위 변화 칸 · 포디움 칸(추가만):** 위 「3.8 방송 카드 토큰」 절. 기존 부품 · 토큰 · 시그니처는 그대로라 다른 모드 화면은 바뀌지 않음.
+- **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.8 로.
+
+</details>
+
+<details>
 <summary><b>UX 3.7 변경 (2026-11-28)</b></summary>
 
 - **탭 토큰 · 꼴 모음(추가만):** 위 「3.7 탭 토큰 · 꼴 모음」 절. 기존 부품 · 토큰 · 시그니처는 그대로라 다른 모드 화면은 바뀌지 않음.

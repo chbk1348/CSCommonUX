@@ -170,6 +170,35 @@ namespace CSCommonUX
             check(CSCommonDesign35.PodiumFirstH > CSCommonDesign35.PodiumSecondH && CSCommonDesign35.PodiumSecondH > CSCommonDesign35.PodiumThirdH
                 && CSCommonDesign35.RainPlotH < CSCommonDesign35.RainChartH && Pal.LauncherRing == Pal.GroundDeep, "podium · rain chart · launcher ring");
 
+            // ---- 3.8 방송 카드
+            // 배틀 252 = 안쪽 20 × 2 + 머리 32 + 12 + 두 차 줄 44 + 12 + 간격 추이 64 + 12 + 타이어 줄 36 · 추이 그림 폭 220 = 400 − 40 − 32 − 라벨 96 − 12
+            const float CP = CSCommonDesign35.CardPad, CH = CSCommonDesign35.CardHeadH, HG = CSCommonDesign35.HeadGap, CW = CSCommonDesign35.CastCardW;
+            check(Near(CP * 2f + CH + HG * 3f + CSCommonDesign35.RowList + CSCommonDesign35.CastSparkH + CSCommonDesign35.RowTiming, CSCommonDesign35.CastBattleH)
+                && Near(CW - CP * 2f - CSCommonDesign35.InnerPadX * 2f - CSCommonDesign35.CastSparkLabelW - HG, 220f)
+                && CSCommonDesign35.CastSideW * 2f < CW - CP * 2f, "cast battle card 252");
+            // 피트 212 = 20 × 2 + 32 + 12 + 드라이버 줄 44 + 12 + 안쪽 칸 72(12 + 라벨 16 + 4 + 값 28 + 12) · 칸 셋 120 + 112 × 2 + 8 × 2 = 360
+            check(Near(CP * 2f + CH + HG * 2f + CSCommonDesign35.RowList + CSCommonDesign35.InnerPadY * 2f + CSCommonDesign35.LineCaption + CSCommonDesign35.KpiGap + CSCommonDesign35.LineStat, CSCommonDesign35.CastPitH)
+                && Near(CSCommonDesign35.CastStopW + CSCommonDesign35.CastCellW * 2f + CSCommonDesign35.BtnGap * 2f, CW - CP * 2f), "cast pit card 212");
+            // 델타 바 76 = 12 + 줄 28 + 8 + 막대 줄 16 + 12 · 막대 204 = 320 − 16 × 2 − 섹터 칸 72 − 12
+            check(Near(CSCommonDesign35.InnerPadY * 2f + CSCommonDesign35.LineHeading + CSCommonDesign35.LabelGap + CSCommonDesign35.SpanBarH, CSCommonDesign35.DeltaBarH)
+                && Near(CSCommonDesign35.DeltaBarW - CSCommonDesign35.InnerPadX * 2f - CSCommonDesign35.SectorCellsW - HG, 204f), "delta bar 320 × 76");
+            // ± 막대: −0.25 / 0.5 = 왼쪽 반의 반 · +1 은 오른쪽 끝까지 · 0 · 범위 0 은 폭 0
+            var sTrack = new Rect(0f, 4f, 204f, 8f);
+            var sNeg = Meter35.SignedFill(sTrack, -0.25f, CSCommonDesign35.DeltaRange);
+            var sPos = Meter35.SignedFill(sTrack, 1f, CSCommonDesign35.DeltaRange);
+            check(Near(sNeg.x, 51f) && Near(sNeg.xMax, 102f) && Near(sPos.x, 102f) && Near(sPos.xMax, 204f)
+                && Near(Meter35.SignedFill(sTrack, 0f, 0.5f).width, 0f) && Near(Meter35.SignedFill(sTrack, 0.3f, 0f).width, 0f), "signed meter fill");
+            // 순위 변화 칸: 오름 Up SemGood · 내림 Chevron SemBad · 그대로 Minus InkDim · 아이콘 12 + 2 + 두 자리 수가 칸 36 안
+            check(Move35.Icon(2) == Icons.Up && Move35.Icon(-1) == Icons.Chevron && Move35.Icon(0) == Icons.Minus
+                && Move35.Ink(1) == Pal.SemGood && Move35.Ink(-3) == Pal.SemBad && Move35.Ink(0) == Pal.InkDim
+                && CSCommonDesign35.IconXs + CSCommonDesign35.MoveGap + CSCommonDesign35.FontCaption < CSCommonDesign35.ColMove, "move cell");
+            // 포디움 칸: 2 · 1 · 3위 차례 · 폭 360 사이 24 · 바닥 760 맞춤(R5BcPostPodium)
+            var pod1 = Podium35.Slot(236f, 760f, 0, 360f, 24f, 360f, 300f, 260f);
+            var pod2 = Podium35.Slot(236f, 760f, 1, 360f, 24f, 360f, 300f, 260f);
+            var pod3 = Podium35.Slot(236f, 760f, 2, 360f, 24f, 360f, 300f, 260f);
+            check(Near(pod2.x, 236f) && Near(pod1.x, 620f) && Near(pod3.x, 1004f) && Near(pod1.y, 400f) && Near(pod2.y, 460f) && Near(pod3.yMax, 760f)
+                && Podium35.Column(0) == 1 && Podium35.Column(1) == 0 && Podium35.Column(2) == 2, "podium slots");
+
             // 4px 격자: 2 이하(선 · 맞춤) · 시간 · 배율 · 글 크기 · 캔버스 값 그대로 둔 이름 말고는 모두 4 의 배수
             var offGrid = new HashSet<string> { "DotMainTop", "DotMainRight", "DotSubRight", "ScoreBarH", "ScoreBarR", "ChartXLabelY", "LegendBarW", "IconM", "CheckBox",
                 "ToastPadRAction", "LauncherDotOn", "RainValueGap", "MapCarR", "MapNameHalo", "MapNameRise", "ColDetailHalf", "SettingColW", "MapDirectorH", "MapMiniW", "RowSlotBand",
