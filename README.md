@@ -156,13 +156,14 @@
 
 - **방송 카드 토큰**(`CSCommonDesign35.Tabs.cs`): 카드 폭 `CastCardW` 400 · 화면 오른쪽 `CastEdge` 24 · 화면 아래 `CastBottom` 120(아래 맞춤) · 높이 배틀 `CastBattleH` 252 · 피트 스톱 `CastPitH` 212 · 카드 바꿈 이동 `CastSwapShift` 8 · 양쪽 칸 `CastSideW` 120 · 번호 태그 `CastTagW` 24 · 간격 추이 칸 `CastSparkH` 64 · 라벨 칸 `CastSparkLabelW` 96 · 피트 안쪽 칸 `CastStopW` 120 · `CastCellW` 112.
 - **퀄리 델타 바 토큰**: `DeltaBarW` 320 × `DeltaBarH` 76 · 랩 패널과 사이 `DeltaGap` 8 · 델타 글 칸 `DeltaValueW` 80 · 막대 끝 값 `DeltaRange` ±0.5초 · 변화 칸 아이콘 → 수 `MoveGap` 2.
+- **B5 결승 뒤 장면 토큰**(`CSCommonDesign35.CastPost` — 방송 연출 보드 1600 × 900 px, 인트로 방송 룩이라 3.5 글 크기 · 4px 격자 밖이어서 따로 둠): 띠 칸 `Col2X` 560 · `Col3X` 860 · 구분선 `Div1X` 520 · `Div2X` 820 · 체커기 `FlagD` 40 · 우승 팀 막대 `WinnerBarW` 6 × `WinnerBarH` 30 · 결과 기다림 글 `WaitFont` 24 · 기다린 시간 막대 `ProgressH` 4 · 건너뛰기 `SkipRight` 44 · `SkipTopBand` 40 / `SkipTopPlate` 128 · `SkipFont` 16 · 표 `RowX` 240 · `RowW` 1120 · `RowTop` 148 · 머리 `HeadY` 120 · 변화 `ChangeW` 60 · 팀 `TeamW` 160 · 이번 라운드 `RoundW` 96 · 점수 `PtsW` 120 · 시상대 `PodiumX` 236 · `PodiumW` 360 · `PodiumGap` 24 · 높이 360 / 300 / 260 · 바닥 `PodiumBottom` 760 · 칸 안 글 30 / 32 / 20. 줄 50 · 간격 58 · P 칸 68 · 띠 머리 42 · 몸 95 처럼 인트로에 이미 있는 값은 모드 인트로 상수를 그대로 씁니다.
 - **부품**
   - `Move35.Paint(r, change, count)` · `Move35.Icon(change)` · `Move35.Ink(change)` — 순위 변화 칸(폭 `ColMove` 36 · 아이콘 12 → 2 → 수 12 · 오름 Up SemGood · 내림 Chevron SemBad · 그대로 Minus InkDim, 수 없음). 방송 판은 Icon · Ink 만 골라 씁니다.
   - `Podium35.Slot(left, bottom, place, w, gap, first, second, third)` · `Podium35.Column(place)` — 포디움 칸 자리(2 · 1 · 3위 차례 · 폭 같음 · 바닥 맞춤). 판 · 글은 부르는 쪽 룩으로 그립니다.
   - `Meter35.Signed(r, v, range, fill, home)` · `Meter35.SignedFill(track, v, range)` — ± 막대(가운데 0 · 홈 8 r4 · 가운데 표시 2 InkDim).
   - `Tag35.IconLabel(centerX, cy, icon, iconInk, text, face)` — 아이콘 글 태그 24(좌우 8 · 아이콘 12 → 4 → 글 12).
   - `Chart35.End(p, accent, ring)` — 놓인 면이 GroundCard 가 아닐 때 선 끝 표식(반지름 4 · 테 1).
-- **자가 검사**: 배틀 카드 252 · 피트 카드 212 · 델타 바 320 × 76 칸 합 · ± 막대 채움 · 순위 변화 칸 · 포디움 칸 자리 6칸 더함(59칸), 새 토큰도 4px 격자 검사에 들어갑니다.
+- **자가 검사**: 배틀 카드 252 · 피트 카드 212 · 델타 바 320 × 76 칸 합 · ± 막대 채움 · 순위 변화 칸 · 포디움 칸 자리 · 결승 뒤 장면 배치 7칸 더함(60칸), 새 토큰도 4px 격자 검사에 들어갑니다.
 
 ---
 
@@ -171,7 +172,7 @@
 <details open>
 <summary><b>UX 3.8 변경 (2026-11-28)</b></summary>
 
-- **방송 카드 토큰 · 순위 변화 칸 · 포디움 칸(추가만):** 위 「3.8 방송 카드 토큰」 절. 기존 부품 · 토큰 · 시그니처는 그대로라 다른 모드 화면은 바뀌지 않음.
+- **방송 카드 토큰 · 순위 변화 칸 · 포디움 칸 · B5 결승 뒤 장면 토큰(추가만):** 위 「3.8 방송 카드 토큰」 절. 기존 부품 · 토큰 · 시그니처는 그대로라 다른 모드 화면은 바뀌지 않음.
 - **판:** 설정 패널 머리 · 켜짐 로그의 CSCommonUX 판을 3.8 로.
 
 </details>

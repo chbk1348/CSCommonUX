@@ -162,5 +162,28 @@ namespace CSCommonUX
         public const float DeltaBarW = 320f, DeltaBarH = 76f, DeltaGap = 8f, DeltaValueW = 80f, DeltaRange = 0.5f;
         /// <summary>순위 변화 칸(Move35): 아이콘 → 수 2.</summary>
         public const float MoveGap = 2f;
+
+        /// <summary>
+        /// 3.8 B5 결승 뒤 장면(FIA 캔버스 R5BcPost · PostWait · PostPodium · PostStand): 방송 연출 보드 1600 × 900 px 그대로(화면에는 k = min(W / 1600, H / 900) 배).
+        /// 인트로 방송 룩(700 · 900 · 모서리 0)이라 3.5 글 여섯 크기 · 4px 격자 밖 — 그래서 격자 검사를 받는 바깥 토큰과 따로 둠.
+        /// 띠 머리 · 띠 몸 높이 · 판 머리 · 줄 높이 50 · 간격 58 · P 칸 68 처럼 인트로(모드 Intro.D)에 이미 있는 값은 거기 것을 씀.
+        /// </summary>
+        public static class CastPost
+        {
+            /// <summary>아래 정보 띠(체커 · 결과 기다림) 몸 칸: 둘째 · 셋째 칸 x 560 · 860 · 세로 구분선 x 520 · 820(띠 왼쪽 기준).</summary>
+            public const float Col2X = 560f, Col3X = 860f, Div1X = 520f, Div2X = 820f;
+            /// <summary>체커기 40(칸 10) · 띠 왼쪽 22 · 몸 위 27 · 우승 팀 막대 6 × 30 → 14 → 이름 · 결과 기다림 글 24 · 기다린 시간 막대 높이 4.</summary>
+            public const float FlagX = 22f, FlagY = 27f, FlagD = 40f, WinnerBarW = 6f, WinnerBarH = 30f, WinnerBarGap = 14f, WaitFont = 24f, ProgressH = 4f;
+            /// <summary>건너뛰기 글: 오른쪽 44 · 위 40(띠 장면) / 128(전체 화면 판) · 글 16 / 20 · 투명도 .72.</summary>
+            public const float SkipRight = 44f, SkipTopBand = 40f, SkipTopPlate = 128f, SkipFont = 16f, SkipH = 20f, SkipAlpha = 0.72f;
+            /// <summary>챔피언십 변동 표: 줄 x 240 · 폭 1120 · 첫 줄 148 · 머리 줄 y 120 · 높이 20 · 글 14.</summary>
+            public const float RowX = 240f, RowW = 1120f, RowTop = 148f, HeadY = 120f, HeadH = 20f, HeadFont = 14f;
+            /// <summary>변화 칸 60(아이콘 16 · 획 2.5 → 2 → 수 18) · 이름 앞 18 · 팀 160 · 이번 라운드 96(글 22) · 점수 120(오른쪽 24 · 글 26).</summary>
+            public const float ChangeW = 60f, ChangeIcon = 16f, ChangeStroke = 2.5f, ChangeGap = 2f, ChangeFont = 18f, NamePad = 18f, TeamW = 160f, RoundW = 96f, RoundFont = 22f, PtsW = 120f, PtsPadR = 24f, PtsFont = 26f;
+            /// <summary>시상대: 칸 셋 왼쪽 236 · 폭 360 · 사이 24 · 높이 1위 360 · 2위 300 · 3위 260 · 바닥 760 · 위 팀 색 띠 6.</summary>
+            public const float PodiumX = 236f, PodiumW = 360f, PodiumGap = 24f, PodiumFirstH = 360f, PodiumSecondH = 300f, PodiumThirdH = 260f, PodiumBottom = 760f, PodiumStripeH = 6f;
+            /// <summary>시상대 칸 안: 위 22 · 좌우 26 · P 칸 → 18 → 차이 30 / 38 · 이름 위 18 · 32 / 40 · 팀 위 4 · 20 / 28.</summary>
+            public const float PodiumPadTop = 22f, PodiumPadX = 26f, PodiumChipGap = 18f, GapFont = 30f, GapH = 38f, NameTop = 18f, NameFont = 32f, NameH = 40f, TeamTop = 4f, TeamFont = 20f, TeamH = 28f;
+        }
     }
 }

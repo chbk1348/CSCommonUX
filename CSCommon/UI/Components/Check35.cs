@@ -193,11 +193,20 @@ namespace CSCommonUX
                 && Move35.Ink(1) == Pal.SemGood && Move35.Ink(-3) == Pal.SemBad && Move35.Ink(0) == Pal.InkDim
                 && CSCommonDesign35.IconXs + CSCommonDesign35.MoveGap + CSCommonDesign35.FontCaption < CSCommonDesign35.ColMove, "move cell");
             // 포디움 칸: 2 · 1 · 3위 차례 · 폭 360 사이 24 · 바닥 760 맞춤(R5BcPostPodium)
-            var pod1 = Podium35.Slot(236f, 760f, 0, 360f, 24f, 360f, 300f, 260f);
-            var pod2 = Podium35.Slot(236f, 760f, 1, 360f, 24f, 360f, 300f, 260f);
-            var pod3 = Podium35.Slot(236f, 760f, 2, 360f, 24f, 360f, 300f, 260f);
+            const float PX = CSCommonDesign35.CastPost.PodiumX, PB = CSCommonDesign35.CastPost.PodiumBottom, PW = CSCommonDesign35.CastPost.PodiumW, PG = CSCommonDesign35.CastPost.PodiumGap;
+            const float P1 = CSCommonDesign35.CastPost.PodiumFirstH, P2 = CSCommonDesign35.CastPost.PodiumSecondH, P3 = CSCommonDesign35.CastPost.PodiumThirdH;
+            var pod1 = Podium35.Slot(PX, PB, 0, PW, PG, P1, P2, P3);
+            var pod2 = Podium35.Slot(PX, PB, 1, PW, PG, P1, P2, P3);
+            var pod3 = Podium35.Slot(PX, PB, 2, PW, PG, P1, P2, P3);
             check(Near(pod2.x, 236f) && Near(pod1.x, 620f) && Near(pod3.x, 1004f) && Near(pod1.y, 400f) && Near(pod2.y, 460f) && Near(pod3.yMax, 760f)
                 && Podium35.Column(0) == 1 && Podium35.Column(1) == 0 && Podium35.Column(2) == 2, "podium slots");
+            // 결승 뒤 장면(보드 1600 × 900): 시상대 셋 가운데 800 · 표 열(P 68 · 띠 6 포함) 합이 줄 폭 안 · 10줄(간격 58 · 줄 50)이 보드 안 · 머리 줄이 첫 줄 위 · 띠 칸 차례
+            check(Near(pod2.x + (pod3.xMax - pod2.x) * 0.5f, 800f)
+                && 68f + CSCommonDesign35.CastPost.ChangeW + 6f + CSCommonDesign35.CastPost.TeamW + CSCommonDesign35.CastPost.RoundW + CSCommonDesign35.CastPost.PtsW < CSCommonDesign35.CastPost.RowW
+                && CSCommonDesign35.CastPost.RowTop + 58f * 9f + 50f <= 900f && CSCommonDesign35.CastPost.HeadY + CSCommonDesign35.CastPost.HeadH <= CSCommonDesign35.CastPost.RowTop
+                && CSCommonDesign35.CastPost.Div1X < CSCommonDesign35.CastPost.Col2X && CSCommonDesign35.CastPost.Col2X < CSCommonDesign35.CastPost.Div2X
+                && CSCommonDesign35.CastPost.Div2X < CSCommonDesign35.CastPost.Col3X && CSCommonDesign35.CastPost.Col3X < CSCommonDesign35.CastPost.RowW
+                && CSCommonDesign35.CastPost.SkipTopBand < CSCommonDesign35.CastPost.SkipTopPlate, "post scene fits board");
 
             // 4px 격자: 2 이하(선 · 맞춤) · 시간 · 배율 · 글 크기 · 캔버스 값 그대로 둔 이름 말고는 모두 4 의 배수
             var offGrid = new HashSet<string> { "DotMainTop", "DotMainRight", "DotSubRight", "ScoreBarH", "ScoreBarR", "ChartXLabelY", "LegendBarW", "IconM", "CheckBox",
